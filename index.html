@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Almere & Co — Portofolio Investasi Publik</title>
+  <meta name="description" content="Halaman portofolio investasi publik milik Almere & Co. Transparansi kepemilikan aset secara real-time dan terverifikasi tanpa mengekspos wallet address.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="background-mesh" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <!-- Navigation Header -->
+    <header class="header">
+      <nav class="nav-container" aria-label="Navigasi Utama">
+        <a href="#hero" class="brand">
+          <span class="dot"></span>
+          <span class="brand-text">Almere &amp; Co</span>
+        </a>
+
+        <div class="nav-links">
+          <!-- Aset Dropdown Menu (Navigasi Terintegrasi ke Tabs) -->
+          <div class="nav-item-dropdown" id="nav-asset-dropdown">
+            <a href="#aset" class="nav-link nav-link-trigger" id="nav-link-aset">
+              <span>Aset</span>
+              <svg class="nav-chevron" viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 6l4 4 4-4"/>
+              </svg>
+            </a>
+            <div class="nav-sub-menu" role="menu" aria-label="Menu Aset">
+              <a href="#aset" class="nav-sub-item" data-switch-tab="holdings" role="menuitem">
+                <span class="sub-icon">☰</span>
+                <span class="sub-text">
+                  <span class="sub-title">Daftar Aset</span>
+                  <span class="sub-desc">Komposisi &amp; valuasi holdings</span>
+                </span>
+              </a>
+              <a href="#aset" class="nav-sub-item" data-switch-tab="distribution" role="menuitem">
+                <span class="sub-icon">◔</span>
+                <span class="sub-text">
+                  <span class="sub-title">Distribusi</span>
+                  <span class="sub-desc">Diagram breakdown alokasi</span>
+                </span>
+              </a>
+              <a href="#aset" class="nav-sub-item" data-switch-tab="history" role="menuitem">
+                <span class="sub-icon">📈</span>
+                <span class="sub-text">
+                  <span class="sub-title">Grafik Historis</span>
+                  <span class="sub-desc">Valuasi dari waktu ke waktu</span>
+                </span>
+              </a>
+              <a href="#aset" class="nav-sub-item" data-switch-tab="verification" role="menuitem">
+                <span class="sub-icon">🛡️</span>
+                <span class="sub-text">
+                  <span class="sub-title">Bukti Verifikasi</span>
+                  <span class="sub-desc">Attestation &amp; signed message</span>
+                </span>
+              </a>
+            </div>
+          </div>
+
+          <a href="#tentang" class="nav-link">Tentang</a>
+          <a href="#kontak" class="nav-link">Kontak</a>
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" class="cta-pill" id="open-community-btn" aria-haspopup="dialog">
+            Gabung Komunitas
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="hero" id="hero">
+        <div class="hero-content">
+          <h1 class="hero-headline">Hello, <em>here's what Almere &amp;<br>Co hold.</em></h1>
+          <p class="hero-tagline">Keterbukaan data kepemilikan aset secara publik dan objektif</p>
+        </div>
+      </section>
+
+      <!-- Ringkasan Total Aset (Section 3 & Spesifikasi Poin F) -->
+      <section class="summary-section" id="ringkasan" aria-label="Ringkasan Portofolio">
+        <div class="summary-card">
+          <div class="summary-left">
+            <h2 class="section-title">Aset yang sedang kami pegang.</h2>
+            <div class="total-display">
+              <span class="currency-symbol" id="main-curr-symbol">$</span>
+              <span class="total-value odometer" id="portfolio-total-val">186,420</span>
+            </div>
+            <div class="sync-indicator">
+              <span class="live-pulse" aria-hidden="true"></span>
+              <span class="sync-text">Live sync · <span id="sync-time-counter">5 detik lalu</span></span>
+              <span class="sync-divider">·</span>
+              <span class="sync-status">Terverifikasi</span>
+            </div>
+          </div>
+
+          <div class="summary-right">
+            <div class="summary-note">
+              Terbuka untuk siapa saja — jumlah dan perkembangannya, apa adanya tanpa klaim berlebih.
+            </div>
+            <div class="performance-badge" title="Performa gabungan bulan ini">
+              <span class="badge-arrow">▲</span>
+              <span class="badge-value">12.8%</span>
+              <span class="badge-period">bulan ini</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Rincian Aset Terintegrasi (Holdings, Distribusi & Historis dengan Tab) -->
+      <section class="holdings-section" id="aset" aria-label="Rincian Portofolio &amp; Aset">
+        <!-- Target anchor untuk navigasi menu #grafik -->
+        <div id="grafik" class="scroll-anchor" aria-hidden="true"></div>
+
+        <div class="section-header-row">
+          <div>
+            <div class="panel-eyebrow">Analisis &amp; Komposisi</div>
+            <h2 class="section-title">Rincian Aset</h2>
+          </div>
+
+          <div class="section-controls-group">
+            <!-- Tab Bar Navigasi Rincian Aset -->
+            <div class="asset-view-tabs" role="tablist" aria-label="Pilihan Tampilan Aset">
+              <button class="asset-view-tab active" data-tab="holdings" role="tab" aria-selected="true" aria-controls="pane-holdings" id="tab-holdings">
+                <svg class="tab-icon-svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+                  <path d="M2.5 3.5h11v2h-11zm0 4h11v2h-11zm0 4h11v2h-11z"/>
+                </svg>
+                <span>Daftar Aset</span>
+              </button>
+              <button class="asset-view-tab" data-tab="distribution" role="tab" aria-selected="false" aria-controls="pane-distribution" id="tab-distribution">
+                <svg class="tab-icon-svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+                  <path d="M8 1a7 7 0 1 0 7 7A7 7 0 0 0 8 1zm0 2.5a4.5 4.5 0 0 1 4.47 4H8zm-1 0v5H2.53A4.5 4.5 0 0 1 7 3.5zm-4.47 6H7v4.47A4.5 4.5 0 0 1 2.53 9.5zm5.47 4.47V9.5h4.47A4.5 4.5 0 0 1 8 13.97z"/>
+                </svg>
+                <span>Distribusi Portofolio</span>
+              </button>
+              <button class="asset-view-tab" data-tab="history" role="tab" aria-selected="false" aria-controls="pane-history" id="tab-history">
+                <svg class="tab-icon-svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+                  <path d="M1.5 13h13v1.5h-13zm1.2-4.5 3.3-3.3 2.5 2.5 4.2-4.7 1.1 1-5.3 5.9-2.5-2.5-2.2 2.2z"/>
+                </svg>
+                <span>Historis Performa</span>
+              </button>
+              <button class="asset-view-tab" data-tab="verification" role="tab" aria-selected="false" aria-controls="pane-verification" id="tab-verification">
+                <svg class="tab-icon-svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+                  <path d="M8 1.2l5.5 2.1v4.2c0 3.6-2.3 6.9-5.5 8.1-3.2-1.2-5.5-4.5-5.5-8.1V3.3L8 1.2zm-.7 9.8l4-4-1.1-1.1-2.9 2.9-1.4-1.4-1.1 1.1 2.5 2.5z"/>
+                </svg>
+                <span>Bukti Verifikasi</span>
+              </button>
+            </div>
+
+            <!-- Searchable Currency Dropdown (Nge-baris ke bawah & Ada Fitur Search) -->
+            <div class="currency-dropdown-wrap" id="currency-dropdown-wrap">
+              <button type="button" class="currency-dropdown-trigger" id="currency-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Pilih mata uang portofolio">
+                <span class="currency-globe-icon" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="8" cy="8" r="6.5"/>
+                    <path d="M1.5 8h13M8 1.5c1.8 2.2 2.8 4.3 2.8 6.5s-1 4.3-2.8 6.5c-1.8-2.2-2.8-4.3-2.8-6.5S6.2 3.7 8 1.5z"/>
+                  </svg>
+                </span>
+                <span class="currency-trigger-text">
+                  <span class="currency-trigger-prefix">Mata Uang:</span>
+                  <span class="currency-trigger-current" id="currency-trigger-val">USD ($)</span>
+                </span>
+                <svg class="currency-chevron" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M4 6l4 4 4-4"/>
+                </svg>
+              </button>
+
+              <!-- Popover Menu List Vertikal -->
+              <div class="currency-dropdown-popover" id="currency-dropdown-popover" role="dialog" aria-label="Pilihan Mata Uang">
+                <div class="currency-dropdown-search-box">
+                  <svg class="search-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <circle cx="7" cy="7" r="4.5"/>
+                    <path d="M10.5 10.5L14 14"/>
+                  </svg>
+                  <input type="text" id="currency-search-input-field" placeholder="Cari mata uang (USD, IDR, EUR...)" autocomplete="off">
+                  <button type="button" id="clear-currency-search" class="clear-search-btn" aria-label="Hapus pencarian" style="display:none;">&times;</button>
+                </div>
+
+                <div class="currency-list-vertical" id="currency-list-vertical" role="listbox" aria-label="Daftar Mata Uang Global">
+                  <!-- Diisi secara dinamis oleh JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 1: DAFTAR ASET (HOLDINGS) -->
+        <div class="asset-tab-pane active" id="pane-holdings" role="tabpanel" aria-labelledby="tab-holdings">
+          <div class="pane-caption-bar">
+            <span class="table-legend-caption">
+              *Nilai otomatis menyesuaikan mata uang aktif (<span class="active-currency-label">USD</span>)
+            </span>
+          </div>
+
+          <div class="holdings-panel">
+            <!-- Row 1: Bitcoin -->
+            <article class="holding-row" data-holding="btc">
+              <div class="col-asset">
+                <div class="asset-icon" aria-hidden="true">₿</div>
+                <div class="asset-details">
+                  <h3 class="asset-name">Bitcoin</h3>
+                  <span class="asset-units">1.24 BTC · Custody Tier 1</span>
+                </div>
+              </div>
+
+              <div class="col-metric">
+                <div class="col-label">Valuasi Terkonversi</div>
+                <div class="col-value asset-converted-val odometer" data-base-usd="118900">$118,900</div>
+              </div>
+
+              <div class="col-metric">
+                <div class="col-label">Perubahan 30H</div>
+                <div class="change-tag mono-up">
+                  <span class="change-arrow">▲</span> 9.4%
+                </div>
+              </div>
+
+              <div class="col-allocation">
+                <div class="col-label flex-between">
+                  <span>Alokasi Total</span>
+                  <span class="alloc-num">63.8%</span>
+                </div>
+                <div class="track" title="Alokasi 63.8% dari total portofolio">
+                  <div class="fill" style="width: 63.8%;"></div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Row 2: Hyperliquid -->
+            <article class="holding-row" data-holding="hype">
+              <div class="col-asset">
+                <div class="asset-icon" aria-hidden="true">H</div>
+                <div class="asset-details">
+                  <h3 class="asset-name">Hyperliquid</h3>
+                  <span class="asset-units">2,150 HYPE · Vault Protocol</span>
+                </div>
+              </div>
+
+              <div class="col-metric">
+                <div class="col-label">Valuasi Terkonversi</div>
+                <div class="col-value asset-converted-val odometer" data-base-usd="52300">$52,300</div>
+              </div>
+
+              <div class="col-metric">
+                <div class="col-label">Perubahan 30H</div>
+                <div class="change-tag mono-up">
+                  <span class="change-arrow">▲</span> 21.6%
+                </div>
+              </div>
+
+              <div class="col-allocation">
+                <div class="col-label flex-between">
+                  <span>Alokasi Total</span>
+                  <span class="alloc-num">28.1%</span>
+                </div>
+                <div class="track" title="Alokasi 28.1% dari total portofolio">
+                  <div class="fill" style="width: 28.1%;"></div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Row 3: Kas Tunai -->
+            <article class="holding-row" data-holding="cash">
+              <div class="col-asset">
+                <div class="asset-icon" aria-hidden="true">$</div>
+                <div class="asset-details">
+                  <h3 class="asset-name">Kas Tunai</h3>
+                  <span class="asset-units">USDC / USD · Cadangan Kas</span>
+                </div>
+              </div>
+
+              <div class="col-metric">
+                <div class="col-label">Valuasi Terkonversi</div>
+                <div class="col-value asset-converted-val odometer" data-base-usd="15220">$15,220</div>
+              </div>
+
+              <div class="col-metric">
+                <div class="col-label">Perubahan 30H</div>
+                <div class="change-tag mono-down">
+                  <span class="change-arrow">▼</span> 1.1%
+                </div>
+              </div>
+
+              <div class="col-allocation">
+                <div class="col-label flex-between">
+                  <span>Alokasi Total</span>
+                  <span class="alloc-num">8.2%</span>
+                </div>
+                <div class="track" title="Alokasi 8.2% dari total portofolio">
+                  <div class="fill" style="width: 8.2%;"></div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 2: DISTRIBUSI PORTOFOLIO (BREAKDOWN ALOKASI) -->
+        <div class="asset-tab-pane" id="pane-distribution" role="tabpanel" aria-labelledby="tab-distribution" hidden>
+          <div class="allocation-panel tab-embedded">
+            <div class="allocation-header">
+              <div>
+                <div class="panel-eyebrow">Breakdown Alokasi</div>
+                <h3 class="panel-heading">Distribusi Portofolio</h3>
+              </div>
+              <div class="allocation-total-note">Total 100% dari valuasi aktif</div>
+            </div>
+
+            <div class="allocation-content">
+              <div class="donut-container">
+                <svg class="donut-chart" viewBox="0 0 140 140" aria-label="Diagram Alokasi Portofolio">
+                  <circle class="donut-bg" cx="70" cy="70" r="54" />
+                  <!-- Segment Bitcoin (63.78%) -->
+                  <circle class="donut-segment segment-btc" cx="70" cy="70" r="54" 
+                    stroke-dasharray="216.4 339.3" stroke-dashoffset="0" data-asset="Bitcoin" data-pct="63.8%" />
+                  <!-- Segment Hyperliquid (28.05%) -->
+                  <circle class="donut-segment segment-hype" cx="70" cy="70" r="54" 
+                    stroke-dasharray="95.2 339.3" stroke-dashoffset="-216.4" data-asset="Hyperliquid" data-pct="28.1%" />
+                  <!-- Segment Kas (8.16%) -->
+                  <circle class="donut-segment segment-cash" cx="70" cy="70" r="54" 
+                    stroke-dasharray="27.7 339.3" stroke-dashoffset="-311.6" data-asset="Kas tunai" data-pct="8.2%" />
+                </svg>
+                <div class="donut-center-label">
+                  <span class="donut-center-val">3</span>
+                  <span class="donut-center-sub">Klasifikasi</span>
+                </div>
+              </div>
+
+              <div class="allocation-legend-grid">
+                <div class="legend-item" data-target="btc">
+                  <div class="legend-left">
+                    <span class="legend-swatch swatch-btc"></span>
+                    <div class="legend-info">
+                      <span class="legend-name">Bitcoin</span>
+                      <span class="legend-sub">1.24 BTC · Core Reserve</span>
+                    </div>
+                  </div>
+                  <div class="legend-pct">63.8%</div>
+                </div>
+
+                <div class="legend-item" data-target="hype">
+                  <div class="legend-left">
+                    <span class="legend-swatch swatch-hype"></span>
+                    <div class="legend-info">
+                      <span class="legend-name">Hyperliquid</span>
+                      <span class="legend-sub">2,150 HYPE · DeFi Ecosystem</span>
+                    </div>
+                  </div>
+                  <div class="legend-pct">28.1%</div>
+                </div>
+
+                <div class="legend-item" data-target="cash">
+                  <div class="legend-left">
+                    <span class="legend-swatch swatch-cash"></span>
+                    <div class="legend-info">
+                      <span class="legend-name">Kas Tunai</span>
+                      <span class="legend-sub">Treasury · Likuiditas Stabil</span>
+                    </div>
+                  </div>
+                  <div class="legend-pct">8.2%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 3: HISTORIS PERFORMA (GRAFIK VALUASI) -->
+        <div class="asset-tab-pane" id="pane-history" role="tabpanel" aria-labelledby="tab-history" hidden>
+          <div class="chart-container-card tab-embedded">
+            <div class="chart-embedded-header">
+              <div>
+                <div class="panel-eyebrow">Historis Performa</div>
+                <h3 class="embedded-chart-h3">Valuasi Total dari Waktu ke Waktu</h3>
+              </div>
+
+              <!-- 4 Tab Rentang Waktu (7H / 30H / 90H / 1T) -->
+              <div class="timeframe-tabs" role="tablist" aria-label="Rentang Waktu Grafik">
+                <button class="time-tab" data-range="7D" role="tab" aria-selected="false">7H</button>
+                <button class="time-tab active" data-range="30D" role="tab" aria-selected="true">30H</button>
+                <button class="time-tab" data-range="90D" role="tab" aria-selected="false">90H</button>
+                <button class="time-tab" data-range="1Y" role="tab" aria-selected="false">1T</button>
+              </div>
+            </div>
+
+            <div class="chart-meta-bar">
+              <div class="chart-stat">
+                <span class="stat-caption">Titik Awal Periode</span>
+                <span class="stat-num" id="chart-start-val">$165,240</span>
+              </div>
+              <div class="chart-stat">
+                <span class="stat-caption">Valuasi Sekarang</span>
+                <span class="stat-num" id="chart-current-val">$186,420</span>
+              </div>
+              <div class="chart-stat">
+                <span class="stat-caption">Pertumbuhan Periode</span>
+                <span class="stat-num badge-mono" id="chart-growth-val">+12.8% (+21,180 USD)</span>
+              </div>
+            </div>
+
+            <!-- Interactive Line Chart Canvas -->
+            <div class="canvas-wrapper">
+              <canvas id="portfolioChart" width="1100" height="380"></canvas>
+              <div id="chartTooltip" class="chart-tooltip" style="opacity: 0;"></div>
+            </div>
+
+            <div class="chart-footer-note">
+              <span>Kurva dinamis dihitung berdasarkan saldo on-chain dan kurs historis harian.</span>
+              <span class="chart-update-note">Arahkan kursor / sentuh untuk melihat detail tanggal.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 4: BUKTI VERIFIKASI (INTEGRITAS DATA & ATTESTATION) -->
+        <div class="asset-tab-pane" id="pane-verification" role="tabpanel" aria-labelledby="tab-verification" hidden>
+          <div class="verification-panel tab-embedded">
+            <div class="verification-embedded-header">
+              <div>
+                <div class="panel-eyebrow">Integritas Data</div>
+                <h3 class="embedded-chart-h3">Bukti Kepemilikan &amp; Verifikasi</h3>
+              </div>
+              <div class="security-badge">
+                <span class="shield-dot" aria-hidden="true"></span>
+                <span>Zero Public Address Exposure</span>
+              </div>
+            </div>
+
+            <p class="verification-intro">
+              Untuk memitigasi risiko keamanan fisik, phishing terarah, dan pemerasan terhadap pemegang aset, 
+              kami tidak mempublikasikan raw wallet address secara terbuka. Kredibilitas dibangun melalui 
+              attestation pihak ketiga independen, verifikasi custodian institusional, dan signed cryptographic message.
+            </p>
+
+            <div class="attestation-grid">
+              <!-- Card 1: Custodian Attestation -->
+              <div class="attestation-card">
+                <div class="card-top">
+                  <div class="card-status-pill">
+                    <span class="status-marker"></span>
+                    <span>Terverifikasi</span>
+                  </div>
+                  <span class="card-date">Audit Q3 2026</span>
+                </div>
+                <h4 class="card-title">Institutional Custody Attestation</h4>
+                <p class="card-desc">
+                  Pernyataan saldo independen dari lembaga kustodian berlisensi yang mengonfirmasi kecukupan cadangan Bitcoin 1.24 BTC tanpa mengekspos public key ke web publik.
+                </p>
+                <div class="attestation-meta">
+                  <div class="meta-row">
+                    <span class="meta-key">Pihak Pemeriksa:</span>
+                    <span class="meta-val">Tier-1 Digital Custody Audit</span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="meta-key">Attestation Hash:</span>
+                    <span class="meta-val font-mono">0x7f2a...88c9</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: ZK Merkle Proof -->
+              <div class="attestation-card">
+                <div class="card-top">
+                  <div class="card-status-pill">
+                    <span class="status-marker"></span>
+                    <span>Kriptografis</span>
+                  </div>
+                  <span class="card-date">Real-time Snapshot</span>
+                </div>
+                <h4 class="card-title">Zero-Knowledge Merkle Attestation</h4>
+                <p class="card-desc">
+                  Pembuktian matematis bahwa total saldo kas dan derivatif tercatat valid dalam pohon status (state root) protokol tanpa membuka jejak identitas on-chain.
+                </p>
+                <div class="attestation-meta">
+                  <div class="meta-row">
+                    <span class="meta-key">Protokol:</span>
+                    <span class="meta-val">zk-Proof of Solvency</span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="meta-key">Root Digest:</span>
+                    <span class="meta-val font-mono">0x3b91...441e</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3: Community Gated On-Chain Proof -->
+              <div class="attestation-card highlight-card">
+                <div class="card-top">
+                  <div class="card-status-pill">
+                    <span class="status-marker"></span>
+                    <span>Akses Khusus</span>
+                  </div>
+                  <span class="card-date">Community Portal</span>
+                </div>
+                <h4 class="card-title">Signed Message On-Chain</h4>
+                <p class="card-desc">
+                  Bagi anggota komunitas Almere &amp; Co yang membutuhkan validasi on-chain mendalam, signed cryptographic message dapat diinspeksi secara aman di balik portal komunitas.
+                </p>
+                <button type="button" class="btn-subtle open-community-modal-trigger">
+                  Minta Akses On-Chain →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <!-- Tentang / Siapa di Balik Almere & Co (Spesifikasi Poin 3D) -->
+      <section class="about-section" id="tentang" aria-label="Tentang Kami">
+        <div class="about-card">
+          <div class="about-header">
+            <div class="panel-eyebrow">Konteks Tata Kelola</div>
+            <h2 class="about-heading">Tentang Almere &amp; Co</h2>
+          </div>
+          <div class="about-body">
+            <p class="about-text">
+              Portofolio ini mencerminkan <em>kekayaan pribadi yang dikelola secara mandiri</em> oleh Almere &amp; Co. Kami tidak menerima dana dari pihak luar, tidak beroperasi sebagai hedge fund, dan tidak menjalankan skema investasi bersama (bukan pooled investment fund).
+            </p>
+            <p class="about-subtext">
+              Halaman ini hadir semata-mata untuk membangun rekam jejak transparansi data yang dapat dipertanggungjawabkan dari waktu ke waktu.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer (Spesifikasi Poin 3C, Poin 5: Disclaimer, Kontak, Real-time Sync) -->
+    <footer class="footer" id="kontak">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="brand">
+            <span class="dot"></span>
+            <span>Almere &amp; Co</span>
+          </div>
+        </div>
+
+        <div class="footer-links-group">
+          <div class="footer-col">
+            <div class="footer-col-title">Navigasi</div>
+            <a href="#hero">Beranda</a>
+            <a href="#aset">Rincian Aset</a>
+            <a href="#grafik">Grafik Historis</a>
+          </div>
+
+          <div class="footer-col">
+            <div class="footer-col-title">Kontak &amp; Keamanan</div>
+            <a href="mailto:inquiry@almere.co">inquiry@almere.co</a>
+            <a href="#kontak" id="show-pgp-btn">Kunci PGP Publik</a>
+            <a href="#komunitas" class="open-community-modal-trigger">Pendaftaran Komunitas</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copy">
+          &copy; 2026 Almere &amp; Co. Seluruh hak cipta dilindungi. Murni display/read-only.
+        </div>
+        <div class="footer-telemetry">
+          <span class="telemetry-item"><span class="pulse-tiny"></span> Node: Connected</span>
+          <span class="telemetry-item">Latensi: 18ms</span>
+          <span class="telemetry-item">Kurs: Real-time FX feed</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Modal: Join Community (Spesifikasi Poin 3E & Poin E) -->
+  <div class="modal-backdrop" id="community-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="community-modal-title">
+    <div class="modal-card">
+      <button type="button" class="modal-close-btn" id="close-community-btn" aria-label="Tutup formulir">&times;</button>
+      <div class="modal-header">
+        <div class="panel-eyebrow">Akses Eksklusif</div>
+        <h2 id="community-modal-title" class="modal-title">Gabung Komunitas Almere &amp; Co</h2>
+        <p class="modal-subtitle">
+          Dapatkan akses ke diskusi riset alokasi, catatan kuartalan, dan verifikasi cryptographic signature on-chain.
+        </p>
+      </div>
+
+      <form id="community-form" class="modal-form">
+        <div class="form-group">
+          <label for="comm-name">Nama atau Alias</label>
+          <input type="text" id="comm-name" placeholder="Mis. Adrian / anonym" required>
+        </div>
+
+        <div class="form-group">
+          <label for="comm-email">Alamat Email</label>
+          <input type="email" id="comm-email" placeholder="nama@domain.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="comm-interest">Tujuan / Minat Utama</label>
+          <select id="comm-interest" required>
+            <option value="" disabled selected>Pilih salah satu...</option>
+            <option value="research">Riset &amp; Analisis Pasar</option>
+            <option value="verification">Verifikasi On-Chain Mendalam</option>
+            <option value="networking">Diskusi Privat &amp; Diskusi Alokasi</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="comm-note">Catatan Tambahan (Opsional)</label>
+          <textarea id="comm-note" rows="2" placeholder="Sebutkan latar belakang singkat Anda..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="cancel-community-btn">Batal</button>
+          <button type="submit" class="btn-submit">Kirim Permohonan Akses</button>
+        </div>
+      </form>
+
+      <div class="form-success-notice" id="form-success-msg" style="display: none;">
+        <div class="success-icon">✓</div>
+        <h3 class="success-title">Permohonan Telah Diterima</h3>
+        <p class="success-text">
+          Terima kasih. Tim Almere &amp; Co akan meninjau dan mengirimkan konfirmasi undangan melalui email terdaftar.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: PGP Key Info -->
+  <div class="modal-backdrop" id="pgp-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button type="button" class="modal-close-btn" id="close-pgp-btn" aria-label="Tutup PGP">&times;</button>
+      <div class="modal-header">
+        <div class="panel-eyebrow">Keamanan Komunikasi</div>
+        <h2 class="modal-title">Kunci PGP Almere &amp; Co</h2>
+        <p class="modal-subtitle">Gunakan kunci publik ini untuk mengirimkan korespondensi terenkripsi.</p>
+      </div>
+      <div class="pgp-box">
+        <pre class="font-mono">-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: OpenPGP v4.1.0
+Comment: Almere & Co Key ID 0x98EF241A
+
+mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
+[VERIFIED KEY FINGERPRINT: 4B82 91A0 EF23 77CD 91C0]
+-----END PGP PUBLIC KEY BLOCK-----</pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

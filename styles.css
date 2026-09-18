@@ -2173,3 +2173,48 @@ body {
     padding: 24px 20px;
   }
 }
+
+/* Empty Holdings & Zero Ledger State */
+.empty-holdings-card {
+  padding: 48px 32px;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty-icon {
+  font-size: 36px;
+  margin-bottom: 4px;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-pure);
+}
+
+.empty-desc {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  max-width: 520px;
+  line-height: 1.6;
+}
+
+.empty-desc a {
+  color: var(--text-pure);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.empty-legend {
+  font-size: 13px;
+  color: var(--text-faint);
+  font-style: italic;
+  padding: 16px 0;
+}
+

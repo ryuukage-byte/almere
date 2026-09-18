@@ -1,4 +1,13 @@
 require('dotenv').config();
+
+process.on('uncaughtException', (err) => {
+  console.error('⚠️ [Uncaught Exception]:', err.message);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('⚠️ [Unhandled Rejection]:', reason);
+});
+
 const http = require('http');
 const fs = require('fs');
 const path = require('path');

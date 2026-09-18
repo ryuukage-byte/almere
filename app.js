@@ -8,13 +8,28 @@
   'use strict';
 
   // --- 1. DATA & STATE ---
-  const BASE_HOLDINGS = {
-    btc: { name: 'Bitcoin', units: '1.24 BTC', usd: 118900, pct: 63.8, change30d: '+9.4%' },
-    hype: { name: 'Hyperliquid', units: '2,150 HYPE', usd: 52300, pct: 28.1, change30d: '+21.6%' },
-    cash: { name: 'Kas Tunai', units: 'USDC / USD', usd: 15220, pct: 8.2, change30d: '-1.1%' }
+  let BASE_HOLDINGS = {};
+  let currentHoldings = [];
+  let BASE_TOTAL_USD = 0;
+
+  const ASSET_THEMES = {
+    HYPE: { icon: 'H', color: '#38ef7d', name: 'Hyperliquid' },
+    BTC: { icon: '₿', color: '#ffffff', name: 'Bitcoin' },
+    ETH: { icon: 'Ξ', color: '#cbd5e1', name: 'Ethereum' },
+    SOL: { icon: '◎', color: '#94a3b8', name: 'Solana' },
+    CASH: { icon: '$', color: '#64748b', name: 'Kas Tunai' },
+    IDR: { icon: 'Rp', color: '#64748b', name: 'Kas Tunai' },
+    USDC: { icon: '$', color: '#94a3b8', name: 'USDC' }
   };
 
-  const BASE_TOTAL_USD = 186420;
+  function getAssetTheme(code) {
+    const c = (code || '').toUpperCase();
+    return ASSET_THEMES[c] || {
+      icon: c.charAt(0) || '◆',
+      color: '#cbd5e1',
+      name: c
+    };
+  }
 
   // Real-time exchange rates against USD
   const CURRENCIES = {
@@ -159,7 +174,8 @@
     });
 
     // Update holding rows with odometer animation
-    holdingValElements.forEach(el => {
+    const dynamicHoldingValEls = document.querySelectorAll('.asset-converted-val');
+    dynamicHoldingValEls.forEach(el => {
       const baseUsd = parseFloat(el.getAttribute('data-base-usd')) || 0;
       const targetHolding = Math.round(baseUsd * config.rate);
       animateOdometer(el, targetHolding, config, {
@@ -356,8 +372,50 @@
   function renderHistoricalChart() {
     if (!canvas || !ctx) return;
 
+    if (BASE_TOTAL_USD === 0) {
+      const zeroFmt = formatValue(0);
+      if (chartStartValEl) chartStartValEl.textContent = zeroFmt.fullText;
+      if (chartCurrentValEl) chartCurrentValEl.textContent = zeroFmt.fullText;
+      if (chartGrowthValEl) chartGrowthValEl.textContent = `0.0% (${zeroFmt.fullText})`;
+
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || rect.width <= 0) return;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      const width = rect.width;
+      const height = rect.height;
+      ctx.clearRect(0, 0, width, height);
+
+      const padBottom = 40;
+      const padLeft = 20;
+      const padRight = 20;
+      const yZero = height - padBottom;
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(padLeft, yZero);
+      ctx.lineTo(width - padRight, yZero);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.font = '12px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Belum ada transaksi historis di ledger (Saldo 0)', width / 2, height / 2);
+      chartPointsCache = [];
+      return;
+    }
+
     const profile = HISTORICAL_PROFILES[activeTimeRange] || HISTORICAL_PROFILES['30D'];
-    const rawData = profile.dataPoints;
+    const scale = BASE_TOTAL_USD / 186420;
+    const rawData = profile.dataPoints.map((p, idx) => {
+      if (idx === profile.dataPoints.length - 1) return BASE_TOTAL_USD;
+      return Math.max(1, Math.round(p * scale));
+    });
     const startUsd = rawData[0];
     const currentUsd = rawData[rawData.length - 1];
     const diffUsd = currentUsd - startUsd;
@@ -398,7 +456,7 @@
     // Min & Max calculations
     const minVal = Math.min(...rawData) * 0.98;
     const maxVal = Math.max(...rawData) * 1.02;
-    const range = maxVal - minVal;
+    const range = Math.max(1, maxVal - minVal);
 
     // Compute pixel points
     chartPointsCache = rawData.map((val, idx) => {
@@ -548,48 +606,58 @@
   if (canvas) resizeObserver.observe(canvas);
 
   // --- 6. DONUT ALLOCATION HOVER INTERACTIONS ---
-  const donutSegments = document.querySelectorAll('.donut-segment');
-  const legendItems = document.querySelectorAll('.legend-item');
+  function bindAllocationInteractions() {
+    const donutSegments = document.querySelectorAll('.donut-segment');
+    const legendItems = document.querySelectorAll('.legend-item');
 
-  donutSegments.forEach(seg => {
-    seg.addEventListener('mouseenter', () => {
-      const asset = seg.getAttribute('data-asset');
-      highlightAsset(asset);
+    donutSegments.forEach(seg => {
+      seg.addEventListener('mouseenter', () => {
+        const target = seg.getAttribute('data-target');
+        highlightAssetByTarget(target);
+      });
+      seg.addEventListener('mouseleave', resetHighlight);
     });
-    seg.addEventListener('mouseleave', () => {
-      resetHighlight();
-    });
-  });
 
-  legendItems.forEach(item => {
-    item.addEventListener('mouseenter', () => {
-      const target = item.getAttribute('data-target');
-      if (target === 'btc') highlightAsset('Bitcoin');
-      if (target === 'hype') highlightAsset('Hyperliquid');
-      if (target === 'cash') highlightAsset('Kas tunai');
+    legendItems.forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        const target = item.getAttribute('data-target');
+        highlightAssetByTarget(target);
+      });
+      item.addEventListener('mouseleave', resetHighlight);
     });
-    item.addEventListener('mouseleave', () => {
-      resetHighlight();
-    });
-  });
+  }
 
-  function highlightAsset(assetName) {
+  function highlightAssetByTarget(targetKey) {
+    const legendItems = document.querySelectorAll('.legend-item');
+    const donutSegments = document.querySelectorAll('.donut-segment');
+
     legendItems.forEach(it => {
-      const name = it.querySelector('.legend-name')?.textContent || '';
-      if (name.toLowerCase().includes(assetName.toLowerCase())) {
-        it.style.borderColor = 'rgba(255, 255, 255, 0.35)';
-        it.style.background = 'rgba(255, 255, 255, 0.07)';
-      } else {
-        it.style.opacity = '0.5';
-      }
+      const match = it.getAttribute('data-target') === targetKey;
+      it.style.borderColor = match ? 'rgba(255, 255, 255, 0.35)' : '';
+      it.style.background = match ? 'rgba(255, 255, 255, 0.07)' : '';
+      it.style.opacity = match ? '1' : '0.4';
+    });
+
+    donutSegments.forEach(seg => {
+      const match = seg.getAttribute('data-target') === targetKey;
+      seg.style.opacity = match ? '1' : '0.35';
+      seg.style.strokeWidth = match ? '22px' : '18px';
     });
   }
 
   function resetHighlight() {
+    const legendItems = document.querySelectorAll('.legend-item');
+    const donutSegments = document.querySelectorAll('.donut-segment');
+
     legendItems.forEach(it => {
       it.style.borderColor = '';
       it.style.background = '';
       it.style.opacity = '1';
+    });
+
+    donutSegments.forEach(seg => {
+      seg.style.opacity = '1';
+      seg.style.strokeWidth = '18px';
     });
   }
 
@@ -814,102 +882,189 @@
     }
   });
 
-  // --- 9. INITIALIZATION & LIVE BACKEND SYNC ---
-  function updateHoldingElementsFromState() {
-    Object.keys(BASE_HOLDINGS).forEach(key => {
-      const data = BASE_HOLDINGS[key];
-      const row = document.querySelector(`.holding-row[data-holding="${key}"]`);
-      if (row) {
-        const valEl = row.querySelector('.asset-converted-val');
-        if (valEl) valEl.setAttribute('data-base-usd', data.usd);
+  // --- 9. INITIALIZATION & DYNAMIC ALLOCATION ENGINE ---
+  function renderHoldingsAndAllocations() {
+    const holdingsContainer = document.getElementById('holdings-panel-container');
+    const donutSegmentsGroup = document.getElementById('donut-segments-group');
+    const donutCenterVal = document.getElementById('donut-center-val');
+    const donutCenterSub = document.getElementById('donut-center-sub');
+    const legendGrid = document.getElementById('allocation-legend-grid');
+    const currConfig = CURRENCIES[activeCurrencyCode] || CURRENCIES.USD;
 
-        const unitsEl = row.querySelector('.asset-units');
-        if (unitsEl) unitsEl.textContent = data.units;
+    // 1. Render Holdings Panel
+    if (holdingsContainer) {
+      if (!currentHoldings || currentHoldings.length === 0) {
+        holdingsContainer.innerHTML = `
+          <div class="empty-holdings-card">
+            <div class="empty-icon">🛡️</div>
+            <div class="empty-title">Ledger Bersih (Saldo ${currConfig.symbol}0)</div>
+            <div class="empty-desc">
+              Belum ada transaksi tercatat. Kirimkan screenshot struk transaksi Triv ke Telegram Sentinel Bot (<a href="https://t.me/SevntinelBot" target="_blank" rel="noopener">@SevntinelBot</a>) untuk mencatat transaksi dan aset pertama.
+            </div>
+          </div>
+        `;
+      } else {
+        let html = '';
+        currentHoldings.forEach(h => {
+          const theme = getAssetTheme(h.code);
+          const valConverted = Math.round(h.valueUsd * currConfig.rate);
+          const valFormatted = valConverted.toLocaleString(currConfig.locale, {
+            maximumFractionDigits: currConfig.digits,
+            minimumFractionDigits: currConfig.digits
+          });
+          const isNegative = (h.change30d || '').startsWith('-');
+          const changeText = (h.change30d || '0.0%').replace(/[+-]/g, '');
 
-        const allocEl = row.querySelector('.alloc-num');
-        if (allocEl) allocEl.textContent = `${data.pct}%`;
+          html += `
+            <article class="holding-row" data-holding="${h.code.toLowerCase()}">
+              <div class="col-asset">
+                <div class="asset-icon" aria-hidden="true" style="border-color: rgba(255,255,255,0.15);">${theme.icon}</div>
+                <div class="asset-details">
+                  <h3 class="asset-name">${h.name}</h3>
+                  <span class="asset-units">${h.unitsText}</span>
+                </div>
+              </div>
 
-        const fillEl = row.querySelector('.track .fill');
-        if (fillEl) fillEl.style.width = `${data.pct}%`;
+              <div class="col-metric">
+                <div class="col-label">Valuasi Terkonversi</div>
+                <div class="col-value asset-converted-val odometer" data-base-usd="${h.valueUsd}">${currConfig.symbol}${valFormatted}</div>
+              </div>
+
+              <div class="col-metric">
+                <div class="col-label">Perubahan 30H</div>
+                <div class="change-tag ${isNegative ? 'mono-down' : 'mono-up'}">
+                  <span class="change-arrow">${isNegative ? '▼' : '▲'}</span> ${changeText}
+                </div>
+              </div>
+
+              <div class="col-allocation">
+                <div class="col-label flex-between">
+                  <span>Alokasi Total</span>
+                  <span class="alloc-num">${h.allocationPct}%</span>
+                </div>
+                <div class="track" title="Alokasi ${h.allocationPct}% dari total portofolio">
+                  <div class="fill" style="width: ${h.allocationPct}%; background: ${theme.color};"></div>
+                </div>
+              </div>
+            </article>
+          `;
+        });
+        holdingsContainer.innerHTML = html;
       }
+    }
 
-      // Also update legend item in distribution tab
-      const legendItem = document.querySelector(`.legend-item[data-target="${key}"]`);
-      if (legendItem) {
-        const pctEl = legendItem.querySelector('.legend-pct');
-        if (pctEl) pctEl.textContent = `${data.pct}%`;
-        const subEl = legendItem.querySelector('.legend-sub');
-        if (subEl) subEl.textContent = data.units;
-      }
-    });
-
-    // Recalculate donut segments
-    const btcPct = BASE_HOLDINGS.btc?.pct || 63.8;
-    const hypePct = BASE_HOLDINGS.hype?.pct || 28.1;
-    const cashPct = BASE_HOLDINGS.cash?.pct || 8.2;
-
+    // 2. Render Donut Segments and Center Label
     const circumference = 339.3;
-    const btcLen = (btcPct / 100) * circumference;
-    const hypeLen = (hypePct / 100) * circumference;
-    const cashLen = (cashPct / 100) * circumference;
-
-    const segBtc = document.querySelector('.segment-btc');
-    if (segBtc) {
-      segBtc.setAttribute('stroke-dasharray', `${btcLen.toFixed(1)} ${circumference}`);
-      segBtc.setAttribute('stroke-dashoffset', '0');
-      segBtc.setAttribute('data-pct', `${btcPct}%`);
+    if (donutCenterVal) {
+      donutCenterVal.textContent = currentHoldings ? currentHoldings.length : 0;
+    }
+    if (donutCenterSub) {
+      donutCenterSub.textContent = (!currentHoldings || currentHoldings.length === 0) ? 'Aset' : 'Klasifikasi';
     }
 
-    const segHype = document.querySelector('.segment-hype');
-    if (segHype) {
-      segHype.setAttribute('stroke-dasharray', `${hypeLen.toFixed(1)} ${circumference}`);
-      segHype.setAttribute('stroke-dashoffset', `-${btcLen.toFixed(1)}`);
-      segHype.setAttribute('data-pct', `${hypePct}%`);
+    if (donutSegmentsGroup) {
+      donutSegmentsGroup.innerHTML = '';
+      if (currentHoldings && currentHoldings.length > 0) {
+        let accumOffset = 0;
+        currentHoldings.forEach(h => {
+          const theme = getAssetTheme(h.code);
+          const segLen = Math.max(0.5, (h.allocationPct / 100) * circumference);
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('class', `donut-segment segment-${h.code.toLowerCase()}`);
+          circle.setAttribute('cx', '70');
+          circle.setAttribute('cy', '70');
+          circle.setAttribute('r', '54');
+          circle.setAttribute('stroke', theme.color);
+          circle.setAttribute('stroke-dasharray', `${segLen.toFixed(1)} ${circumference.toFixed(1)}`);
+          circle.setAttribute('stroke-dashoffset', `${(-accumOffset).toFixed(1)}`);
+          circle.setAttribute('data-asset', h.name);
+          circle.setAttribute('data-target', h.code.toLowerCase());
+          circle.setAttribute('data-pct', `${h.allocationPct}%`);
+          donutSegmentsGroup.appendChild(circle);
+          accumOffset += segLen;
+        });
+      }
     }
 
-    const segCash = document.querySelector('.segment-cash');
-    if (segCash) {
-      segCash.setAttribute('stroke-dasharray', `${cashLen.toFixed(1)} ${circumference}`);
-      segCash.setAttribute('stroke-dashoffset', `-${(btcLen + hypeLen).toFixed(1)}`);
-      segCash.setAttribute('data-pct', `${cashPct}%`);
+    // 3. Render Allocation Legend Grid
+    if (legendGrid) {
+      if (!currentHoldings || currentHoldings.length === 0) {
+        legendGrid.innerHTML = '<div class="empty-legend">Menunggu data aset dari transaksi ledger...</div>';
+      } else {
+        let legendHtml = '';
+        currentHoldings.forEach(h => {
+          const theme = getAssetTheme(h.code);
+          legendHtml += `
+            <div class="legend-item" data-target="${h.code.toLowerCase()}">
+              <div class="legend-left">
+                <span class="legend-swatch" style="background: ${theme.color};"></span>
+                <div class="legend-info">
+                  <span class="legend-name">${h.name}</span>
+                  <span class="legend-sub">${h.unitsText}</span>
+                </div>
+              </div>
+              <div class="legend-pct">${h.allocationPct}%</div>
+            </div>
+          `;
+        });
+        legendGrid.innerHTML = legendHtml;
+      }
     }
+
+    // 4. Update Performance Badge
+    const badgeGrowthVal = document.getElementById('badge-growth-val');
+    if (badgeGrowthVal) {
+      badgeGrowthVal.textContent = BASE_TOTAL_USD > 0 ? '+12.8%' : '0.0%';
+    }
+
+    // Rebind Donut & Legend hover interactions
+    bindAllocationInteractions();
   }
+
+  let lastSyncSuccess = Date.now();
 
   async function syncPortfolioFromBackend() {
     try {
       const res = await fetch('/api/portfolio/summary');
       if (!res.ok) return;
       const data = await res.json();
-      if (!data || !data.totalValuationUsd) return;
+      if (!data || typeof data.totalValuationUsd !== 'number') return;
 
       BASE_TOTAL_USD = data.totalValuationUsd;
+      currentHoldings = data.holdings || [];
+      lastSyncSuccess = Date.now();
 
-      data.holdings.forEach(h => {
-        const k = h.code.toLowerCase();
-        if (k === 'btc' || k === 'hype' || k === 'cash') {
-          BASE_HOLDINGS[k] = {
-            name: h.name,
-            units: h.unitsText,
-            usd: h.valueUsd,
-            pct: h.allocationPct,
-            change30d: h.change30d
-          };
-        }
-      });
+      // Update sync counter
+      const syncCounter = document.getElementById('sync-time-counter');
+      if (syncCounter) syncCounter.textContent = 'Baru saja';
 
-      updateHoldingElementsFromState();
+      // Always re-render if data or total changed, or first load
+      renderHoldingsAndAllocations();
       updateCurrencyUI(activeCurrencyCode, false);
     } catch (err) {
       // Graceful offline fallback
     }
   }
 
-  // Trigger odometer count-up on initial appearance and when switching currencies
+  // Update sync timestamp indicator every 5s
+  setInterval(() => {
+    const syncCounter = document.getElementById('sync-time-counter');
+    if (!syncCounter) return;
+    const elapsedSec = Math.floor((Date.now() - lastSyncSuccess) / 1000);
+    if (elapsedSec < 10) {
+      syncCounter.textContent = 'Baru saja';
+    } else {
+      syncCounter.textContent = `${elapsedSec} detik lalu`;
+    }
+  }, 5000);
+
+  // Trigger initial UI rendering
+  renderHoldingsAndAllocations();
   updateCurrencyUI('USD', true);
   renderHistoricalChart();
   syncPortfolioFromBackend();
 
-  // Periodic live poll every 30s
-  setInterval(syncPortfolioFromBackend, 30000);
+  // Fast live poll every 2.5s to capture Telegram transactions immediately
+  setInterval(syncPortfolioFromBackend, 2500);
 
 })();

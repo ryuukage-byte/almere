@@ -74,11 +74,11 @@
             <h2 class="section-title">Aset yang sedang kami pegang.</h2>
             <div class="total-display">
               <span class="currency-symbol" id="main-curr-symbol">$</span>
-              <span class="total-value odometer" id="portfolio-total-val">186,420</span>
+              <span class="total-value odometer" id="portfolio-total-val">0</span>
             </div>
             <div class="sync-indicator">
               <span class="live-pulse" aria-hidden="true"></span>
-              <span class="sync-text">Live sync · <span id="sync-time-counter">5 detik lalu</span></span>
+              <span class="sync-text">Live sync · <span id="sync-time-counter">Baru saja</span></span>
               <span class="sync-divider">·</span>
               <span class="sync-status">Terverifikasi</span>
             </div>
@@ -88,9 +88,9 @@
             <div class="summary-note">
               Terbuka untuk siapa saja — jumlah dan perkembangannya, apa adanya tanpa klaim berlebih.
             </div>
-            <div class="performance-badge" title="Performa gabungan bulan ini">
+            <div class="performance-badge" id="performance-badge" title="Performa gabungan bulan ini">
               <span class="badge-arrow">▲</span>
-              <span class="badge-value">12.8%</span>
+              <span class="badge-value" id="badge-growth-val">0.0%</span>
               <span class="badge-period">bulan ini</span>
             </div>
           </div>
@@ -182,105 +182,15 @@
             </span>
           </div>
 
-          <div class="holdings-panel">
-            <!-- Row 1: Bitcoin -->
-            <article class="holding-row" data-holding="btc">
-              <div class="col-asset">
-                <div class="asset-icon" aria-hidden="true">₿</div>
-                <div class="asset-details">
-                  <h3 class="asset-name">Bitcoin</h3>
-                  <span class="asset-units">1.24 BTC · Custody Tier 1</span>
-                </div>
+          <div class="holdings-panel" id="holdings-panel-container">
+            <!-- Diisi secara dinamis oleh JavaScript berdasarkan ledger riil -->
+            <div class="empty-holdings-card">
+              <div class="empty-icon">🛡️</div>
+              <div class="empty-title">Ledger Bersih (Saldo $0)</div>
+              <div class="empty-desc">
+                Belum ada transaksi tercatat. Kirimkan screenshot struk transaksi Triv ke Telegram Sentinel Bot (<a href="https://t.me/SevntinelBot" target="_blank" rel="noopener">@SevntinelBot</a>) untuk mencatat transaksi dan aset pertama.
               </div>
-
-              <div class="col-metric">
-                <div class="col-label">Valuasi Terkonversi</div>
-                <div class="col-value asset-converted-val odometer" data-base-usd="118900">$118,900</div>
-              </div>
-
-              <div class="col-metric">
-                <div class="col-label">Perubahan 30H</div>
-                <div class="change-tag mono-up">
-                  <span class="change-arrow">▲</span> 9.4%
-                </div>
-              </div>
-
-              <div class="col-allocation">
-                <div class="col-label flex-between">
-                  <span>Alokasi Total</span>
-                  <span class="alloc-num">63.8%</span>
-                </div>
-                <div class="track" title="Alokasi 63.8% dari total portofolio">
-                  <div class="fill" style="width: 63.8%;"></div>
-                </div>
-              </div>
-            </article>
-
-            <!-- Row 2: Hyperliquid -->
-            <article class="holding-row" data-holding="hype">
-              <div class="col-asset">
-                <div class="asset-icon" aria-hidden="true">H</div>
-                <div class="asset-details">
-                  <h3 class="asset-name">Hyperliquid</h3>
-                  <span class="asset-units">2,150 HYPE · Vault Protocol</span>
-                </div>
-              </div>
-
-              <div class="col-metric">
-                <div class="col-label">Valuasi Terkonversi</div>
-                <div class="col-value asset-converted-val odometer" data-base-usd="52300">$52,300</div>
-              </div>
-
-              <div class="col-metric">
-                <div class="col-label">Perubahan 30H</div>
-                <div class="change-tag mono-up">
-                  <span class="change-arrow">▲</span> 21.6%
-                </div>
-              </div>
-
-              <div class="col-allocation">
-                <div class="col-label flex-between">
-                  <span>Alokasi Total</span>
-                  <span class="alloc-num">28.1%</span>
-                </div>
-                <div class="track" title="Alokasi 28.1% dari total portofolio">
-                  <div class="fill" style="width: 28.1%;"></div>
-                </div>
-              </div>
-            </article>
-
-            <!-- Row 3: Kas Tunai -->
-            <article class="holding-row" data-holding="cash">
-              <div class="col-asset">
-                <div class="asset-icon" aria-hidden="true">$</div>
-                <div class="asset-details">
-                  <h3 class="asset-name">Kas Tunai</h3>
-                  <span class="asset-units">USDC / USD · Cadangan Kas</span>
-                </div>
-              </div>
-
-              <div class="col-metric">
-                <div class="col-label">Valuasi Terkonversi</div>
-                <div class="col-value asset-converted-val odometer" data-base-usd="15220">$15,220</div>
-              </div>
-
-              <div class="col-metric">
-                <div class="col-label">Perubahan 30H</div>
-                <div class="change-tag mono-down">
-                  <span class="change-arrow">▼</span> 1.1%
-                </div>
-              </div>
-
-              <div class="col-allocation">
-                <div class="col-label flex-between">
-                  <span>Alokasi Total</span>
-                  <span class="alloc-num">8.2%</span>
-                </div>
-                <div class="track" title="Alokasi 8.2% dari total portofolio">
-                  <div class="fill" style="width: 8.2%;"></div>
-                </div>
-              </div>
-            </article>
+            </div>
           </div>
         </div>
 
@@ -297,57 +207,21 @@
 
             <div class="allocation-content">
               <div class="donut-container">
-                <svg class="donut-chart" viewBox="0 0 140 140" aria-label="Diagram Alokasi Portofolio">
+                <svg class="donut-chart" id="donut-chart-svg" viewBox="0 0 140 140" aria-label="Diagram Alokasi Portofolio">
                   <circle class="donut-bg" cx="70" cy="70" r="54" />
-                  <!-- Segment Bitcoin (63.78%) -->
-                  <circle class="donut-segment segment-btc" cx="70" cy="70" r="54" 
-                    stroke-dasharray="216.4 339.3" stroke-dashoffset="0" data-asset="Bitcoin" data-pct="63.8%" />
-                  <!-- Segment Hyperliquid (28.05%) -->
-                  <circle class="donut-segment segment-hype" cx="70" cy="70" r="54" 
-                    stroke-dasharray="95.2 339.3" stroke-dashoffset="-216.4" data-asset="Hyperliquid" data-pct="28.1%" />
-                  <!-- Segment Kas (8.16%) -->
-                  <circle class="donut-segment segment-cash" cx="70" cy="70" r="54" 
-                    stroke-dasharray="27.7 339.3" stroke-dashoffset="-311.6" data-asset="Kas tunai" data-pct="8.2%" />
+                  <g id="donut-segments-group">
+                    <!-- Segmen donut SVG di-generate dinamis oleh JS -->
+                  </g>
                 </svg>
                 <div class="donut-center-label">
-                  <span class="donut-center-val">3</span>
-                  <span class="donut-center-sub">Klasifikasi</span>
+                  <span class="donut-center-val" id="donut-center-val">0</span>
+                  <span class="donut-center-sub" id="donut-center-sub">Aset</span>
                 </div>
               </div>
 
-              <div class="allocation-legend-grid">
-                <div class="legend-item" data-target="btc">
-                  <div class="legend-left">
-                    <span class="legend-swatch swatch-btc"></span>
-                    <div class="legend-info">
-                      <span class="legend-name">Bitcoin</span>
-                      <span class="legend-sub">1.24 BTC · Core Reserve</span>
-                    </div>
-                  </div>
-                  <div class="legend-pct">63.8%</div>
-                </div>
-
-                <div class="legend-item" data-target="hype">
-                  <div class="legend-left">
-                    <span class="legend-swatch swatch-hype"></span>
-                    <div class="legend-info">
-                      <span class="legend-name">Hyperliquid</span>
-                      <span class="legend-sub">2,150 HYPE · DeFi Ecosystem</span>
-                    </div>
-                  </div>
-                  <div class="legend-pct">28.1%</div>
-                </div>
-
-                <div class="legend-item" data-target="cash">
-                  <div class="legend-left">
-                    <span class="legend-swatch swatch-cash"></span>
-                    <div class="legend-info">
-                      <span class="legend-name">Kas Tunai</span>
-                      <span class="legend-sub">Treasury · Likuiditas Stabil</span>
-                    </div>
-                  </div>
-                  <div class="legend-pct">8.2%</div>
-                </div>
+              <div class="allocation-legend-grid" id="allocation-legend-grid">
+                <!-- Legend item di-generate dinamis oleh JS -->
+                <div class="empty-legend">Menunggu data aset dari transaksi ledger...</div>
               </div>
             </div>
           </div>

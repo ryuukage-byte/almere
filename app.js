@@ -1041,6 +1041,14 @@
         } catch (e) {}
       }
 
+      // 2.5 Try raw GitHub repository data for instantaneous updates
+      if (!data || typeof data.totalValuationUsd !== 'number') {
+        try {
+          const resRaw = await fetch('https://raw.githubusercontent.com/ryuukage-byte/almere/main/data/portfolio.json?t=' + Date.now());
+          if (resRaw.ok) data = await resRaw.json();
+        } catch (e) {}
+      }
+
       // 3. Try local node server directly (http://127.0.0.1:4173) if opened via other host
       if (!data || typeof data.totalValuationUsd !== 'number') {
         try {

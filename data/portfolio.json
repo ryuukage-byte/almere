@@ -1,36 +1,50 @@
 {
-  "totalValuationUsd": 111,
-  "totalValuationIdr": 1796219,
-  "usdIdrRate": 16250,
+  "totalValuationUsd": 500,
+  "totalValuationIdr": 8906219,
+  "usdIdrRate": 17808,
   "holdings": [
+    {
+      "code": "CASH",
+      "name": "Kas Tunai",
+      "quantity": 399,
+      "unitsText": "Rp 7.110.000 · Cadangan Kas",
+      "currentPriceUsd": 1,
+      "currentPriceIdr": 17808,
+      "valueUsd": 399,
+      "valueIdr": 7110000,
+      "unrealizedPnlIdr": 0,
+      "unrealizedPnlPct": 0,
+      "change30d": "0.0%",
+      "allocationPct": 79.8
+    },
     {
       "code": "HYPE",
       "name": "Hyperliquid",
       "quantity": 1.277149,
       "unitsText": "1.277149 HYPE",
-      "currentPriceUsd": 86.55,
+      "currentPriceUsd": 78.98,
       "currentPriceIdr": 1406429,
-      "valueUsd": 111,
+      "valueUsd": 101,
       "valueIdr": 1796219,
       "unrealizedPnlIdr": -3781,
       "unrealizedPnlPct": -0.21,
       "change30d": "+0.0%",
-      "allocationPct": 100
+      "allocationPct": 20.2
     }
   ],
-  "cashBalanceIdr": 0,
-  "cashBalanceUsd": 0,
+  "cashBalanceIdr": 7110000,
+  "cashBalanceUsd": 399,
   "realizedPnlIdr": 0,
   "marketPrices": {
     "BTC": {
-      "usd": 118900,
-      "idr": 1932125000
+      "usd": 78787,
+      "idr": 1403038896
     },
     "HYPE": {
-      "usd": 42.5,
-      "idr": 690625
+      "usd": 91.45,
+      "idr": 1628541.6
     }
   },
-  "transactionCount": 1,
-  "lastUpdated": "2026-09-18T13:33:28.228Z"
+  "transactionCount": 2,
+  "lastUpdated": "2026-09-18T13:40:56.043Z"
 }

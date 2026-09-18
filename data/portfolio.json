@@ -1,0 +1,36 @@
+{
+  "totalValuationUsd": 111,
+  "totalValuationIdr": 1796219,
+  "usdIdrRate": 16250,
+  "holdings": [
+    {
+      "code": "HYPE",
+      "name": "Hyperliquid",
+      "quantity": 1.277149,
+      "unitsText": "1.277149 HYPE",
+      "currentPriceUsd": 86.55,
+      "currentPriceIdr": 1406429,
+      "valueUsd": 111,
+      "valueIdr": 1796219,
+      "unrealizedPnlIdr": -3781,
+      "unrealizedPnlPct": -0.21,
+      "change30d": "+0.0%",
+      "allocationPct": 100
+    }
+  ],
+  "cashBalanceIdr": 0,
+  "cashBalanceUsd": 0,
+  "realizedPnlIdr": 0,
+  "marketPrices": {
+    "BTC": {
+      "usd": 118900,
+      "idr": 1932125000
+    },
+    "HYPE": {
+      "usd": 42.5,
+      "idr": 690625
+    }
+  },
+  "transactionCount": 1,
+  "lastUpdated": "2026-09-18T13:33:28.228Z"
+}

@@ -1025,9 +1025,30 @@
 
   async function syncPortfolioFromBackend() {
     try {
-      const res = await fetch('/api/portfolio/summary');
-      if (!res.ok) return;
-      const data = await res.json();
+      let data = null;
+
+      // 1. Try relative /api/portfolio/summary (works on local server or custom domain)
+      try {
+        const res = await fetch('/api/portfolio/summary');
+        if (res.ok) data = await res.json();
+      } catch (e) {}
+
+      // 2. Try ./data/portfolio.json (works on GitHub Pages static hosting)
+      if (!data || typeof data.totalValuationUsd !== 'number') {
+        try {
+          const resStatic = await fetch('./data/portfolio.json?t=' + Date.now());
+          if (resStatic.ok) data = await resStatic.json();
+        } catch (e) {}
+      }
+
+      // 3. Try local node server directly (http://127.0.0.1:4173) if opened via other host
+      if (!data || typeof data.totalValuationUsd !== 'number') {
+        try {
+          const resLocal = await fetch('http://127.0.0.1:4173/api/portfolio/summary');
+          if (resLocal.ok) data = await resLocal.json();
+        } catch (e) {}
+      }
+
       if (!data || typeof data.totalValuationUsd !== 'number') return;
 
       BASE_TOTAL_USD = data.totalValuationUsd;
@@ -1042,7 +1063,7 @@
       renderHoldingsAndAllocations();
       updateCurrencyUI(activeCurrencyCode, false);
     } catch (err) {
-      // Graceful offline fallback
+      console.warn('Portfolio sync warning:', err.message);
     }
   }
 

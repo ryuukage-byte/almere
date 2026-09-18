@@ -814,9 +814,102 @@
     }
   });
 
-  // --- 9. INITIALIZATION ---
+  // --- 9. INITIALIZATION & LIVE BACKEND SYNC ---
+  function updateHoldingElementsFromState() {
+    Object.keys(BASE_HOLDINGS).forEach(key => {
+      const data = BASE_HOLDINGS[key];
+      const row = document.querySelector(`.holding-row[data-holding="${key}"]`);
+      if (row) {
+        const valEl = row.querySelector('.asset-converted-val');
+        if (valEl) valEl.setAttribute('data-base-usd', data.usd);
+
+        const unitsEl = row.querySelector('.asset-units');
+        if (unitsEl) unitsEl.textContent = data.units;
+
+        const allocEl = row.querySelector('.alloc-num');
+        if (allocEl) allocEl.textContent = `${data.pct}%`;
+
+        const fillEl = row.querySelector('.track .fill');
+        if (fillEl) fillEl.style.width = `${data.pct}%`;
+      }
+
+      // Also update legend item in distribution tab
+      const legendItem = document.querySelector(`.legend-item[data-target="${key}"]`);
+      if (legendItem) {
+        const pctEl = legendItem.querySelector('.legend-pct');
+        if (pctEl) pctEl.textContent = `${data.pct}%`;
+        const subEl = legendItem.querySelector('.legend-sub');
+        if (subEl) subEl.textContent = data.units;
+      }
+    });
+
+    // Recalculate donut segments
+    const btcPct = BASE_HOLDINGS.btc?.pct || 63.8;
+    const hypePct = BASE_HOLDINGS.hype?.pct || 28.1;
+    const cashPct = BASE_HOLDINGS.cash?.pct || 8.2;
+
+    const circumference = 339.3;
+    const btcLen = (btcPct / 100) * circumference;
+    const hypeLen = (hypePct / 100) * circumference;
+    const cashLen = (cashPct / 100) * circumference;
+
+    const segBtc = document.querySelector('.segment-btc');
+    if (segBtc) {
+      segBtc.setAttribute('stroke-dasharray', `${btcLen.toFixed(1)} ${circumference}`);
+      segBtc.setAttribute('stroke-dashoffset', '0');
+      segBtc.setAttribute('data-pct', `${btcPct}%`);
+    }
+
+    const segHype = document.querySelector('.segment-hype');
+    if (segHype) {
+      segHype.setAttribute('stroke-dasharray', `${hypeLen.toFixed(1)} ${circumference}`);
+      segHype.setAttribute('stroke-dashoffset', `-${btcLen.toFixed(1)}`);
+      segHype.setAttribute('data-pct', `${hypePct}%`);
+    }
+
+    const segCash = document.querySelector('.segment-cash');
+    if (segCash) {
+      segCash.setAttribute('stroke-dasharray', `${cashLen.toFixed(1)} ${circumference}`);
+      segCash.setAttribute('stroke-dashoffset', `-${(btcLen + hypeLen).toFixed(1)}`);
+      segCash.setAttribute('data-pct', `${cashPct}%`);
+    }
+  }
+
+  async function syncPortfolioFromBackend() {
+    try {
+      const res = await fetch('/api/portfolio/summary');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || !data.totalValuationUsd) return;
+
+      BASE_TOTAL_USD = data.totalValuationUsd;
+
+      data.holdings.forEach(h => {
+        const k = h.code.toLowerCase();
+        if (k === 'btc' || k === 'hype' || k === 'cash') {
+          BASE_HOLDINGS[k] = {
+            name: h.name,
+            units: h.unitsText,
+            usd: h.valueUsd,
+            pct: h.allocationPct,
+            change30d: h.change30d
+          };
+        }
+      });
+
+      updateHoldingElementsFromState();
+      updateCurrencyUI(activeCurrencyCode, false);
+    } catch (err) {
+      // Graceful offline fallback
+    }
+  }
+
   // Trigger odometer count-up on initial appearance and when switching currencies
   updateCurrencyUI('USD', true);
   renderHistoricalChart();
+  syncPortfolioFromBackend();
+
+  // Periodic live poll every 30s
+  setInterval(syncPortfolioFromBackend, 30000);
 
 })();

@@ -23,43 +23,26 @@
         </a>
 
         <div class="nav-links">
-          <!-- Aset Dropdown Menu (Navigasi Terintegrasi ke Tabs) -->
-          <div class="nav-item-dropdown" id="nav-asset-dropdown">
-            <a href="#aset" class="nav-link nav-link-trigger" id="nav-link-aset">
-              <span>Aset</span>
+          <!-- Sentinel Dropdown Menu -->
+          <div class="nav-item-dropdown" id="nav-sentinel-dropdown">
+            <button type="button" class="nav-link nav-link-trigger" id="nav-link-sentinel" aria-haspopup="true" aria-expanded="false" aria-label="Menu Sentinel">
+              <span>Sentinel</span>
               <svg class="nav-chevron" viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M4 6l4 4 4-4"/>
               </svg>
-            </a>
-            <div class="nav-sub-menu" role="menu" aria-label="Menu Aset">
-              <a href="#aset" class="nav-sub-item" data-switch-tab="holdings" role="menuitem">
-                <span class="sub-icon">☰</span>
-                <span class="sub-text">
-                  <span class="sub-title">Daftar Aset</span>
-                  <span class="sub-desc">Komposisi &amp; valuasi holdings</span>
+            </button>
+            <div class="nav-sub-menu" id="sentinel-sub-menu" role="menu" aria-label="Menu Sentinel">
+              <button type="button" class="nav-sub-item sentinel-install-item" id="open-sentinel-install-btn" role="menuitem">
+                <span class="sub-icon">
+                  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M8 2v8m0 0l-3-3m3 3l3-3M2 13h12"/>
+                  </svg>
                 </span>
-              </a>
-              <a href="#aset" class="nav-sub-item" data-switch-tab="distribution" role="menuitem">
-                <span class="sub-icon">◔</span>
                 <span class="sub-text">
-                  <span class="sub-title">Distribusi</span>
-                  <span class="sub-desc">Diagram breakdown alokasi</span>
+                  <span class="sub-title">Install</span>
+                  <span class="sub-desc">Sentinel Telemetry &amp; Node CLI</span>
                 </span>
-              </a>
-              <a href="#aset" class="nav-sub-item" data-switch-tab="history" role="menuitem">
-                <span class="sub-icon">📈</span>
-                <span class="sub-text">
-                  <span class="sub-title">Grafik Historis</span>
-                  <span class="sub-desc">Valuasi dari waktu ke waktu</span>
-                </span>
-              </a>
-              <a href="#aset" class="nav-sub-item" data-switch-tab="verification" role="menuitem">
-                <span class="sub-icon">🛡️</span>
-                <span class="sub-text">
-                  <span class="sub-title">Bukti Verifikasi</span>
-                  <span class="sub-desc">Attestation &amp; signed message</span>
-                </span>
-              </a>
+              </button>
             </div>
           </div>
 
@@ -559,7 +542,8 @@
 
       <div class="footer-bottom">
         <div class="footer-copy">
-          &copy; 2026 Almere &amp; Co. Seluruh hak cipta dilindungi. Murni display/read-only.
+          &copy; 2026 Almere &amp; Co. Seluruh hak cipta dilindungi. Murni display/read-only.<br>
+          <span class="legal-disclaimer">Bukan nasihat investasi atau ajakan investasi, hanya informasi kepemilikan aset.</span>
         </div>
         <div class="footer-telemetry">
           <span class="telemetry-item"><span class="pulse-tiny"></span> Node: Connected</span>
@@ -641,6 +625,58 @@ Comment: Almere & Co Key ID 0x98EF241A
 mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
 [VERIFIED KEY FINGERPRINT: 4B82 91A0 EF23 77CD 91C0]
 -----END PGP PUBLIC KEY BLOCK-----</pre>
+      </div>
+    </div>
+  <!-- Modal: Install Sentinel -->
+  <div class="modal-backdrop" id="sentinel-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="sentinel-modal-title">
+    <div class="modal-card modal-terminal-card">
+      <button type="button" class="modal-close-btn" id="close-sentinel-btn" aria-label="Tutup instalasi">&times;</button>
+      <div class="modal-header">
+        <div class="panel-eyebrow">Almere Suite · Daemon</div>
+        <h2 id="sentinel-modal-title" class="modal-title">Install Sentinel</h2>
+        <p class="modal-subtitle">
+          Daemon monitoring portofolio &amp; node sinkronisasi on-chain real-time Almere &amp; Co.
+        </p>
+      </div>
+
+      <div class="terminal-container">
+        <div class="terminal-bar">
+          <div class="terminal-dots">
+            <span class="t-dot"></span>
+            <span class="t-dot"></span>
+            <span class="t-dot"></span>
+          </div>
+          <span class="terminal-title">bash — sentinel-install</span>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-line">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-cmd" id="sentinel-install-cmd-text">curl -fsSL https://sentinel.almere.co/install.sh | bash</span>
+            <button type="button" class="copy-cmd-btn" id="copy-sentinel-cmd" aria-label="Salin perintah">
+              <span id="copy-sentinel-cmd-text">Salin</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sentinel-features-list">
+        <div class="feat-item">
+          <span class="feat-dot"></span>
+          <span>Zero-Knowledge &amp; Read-Only Telemetry (Tanpa akses private key)</span>
+        </div>
+        <div class="feat-item">
+          <span class="feat-dot"></span>
+          <span>Kompatibel dengan Linux, macOS, dan Windows (WSL2 / PowerShell)</span>
+        </div>
+        <div class="feat-item">
+          <span class="feat-dot"></span>
+          <span>Heartbeat terenkripsi langsung ke verifier Almere &amp; Co</span>
+        </div>
+      </div>
+
+      <div class="modal-actions modal-actions-between">
+        <span class="version-tag font-mono">v1.4.2 · Stable</span>
+        <button type="button" class="btn-submit" id="done-sentinel-btn">Selesai</button>
       </div>
     </div>
   </div>

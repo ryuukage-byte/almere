@@ -629,29 +629,87 @@
     });
   });
 
-  // Handle sub-menu items from navbar Aset dropdown
-  document.querySelectorAll('.nav-sub-item[data-switch-tab]').forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      const tabKey = item.getAttribute('data-switch-tab');
-      if (tabKey) {
-        switchAssetTab(tabKey);
-      }
-      const targetEl = document.getElementById('aset');
-      if (targetEl) {
-        targetEl.scrollIntoView({ behavior: 'smooth' });
+  // --- SENTINEL DROPDOWN & INSTALL MODAL ---
+  const sentinelDropdown = document.getElementById('nav-sentinel-dropdown');
+  const sentinelTrigger = document.getElementById('nav-link-sentinel');
+  const openSentinelInstallBtn = document.getElementById('open-sentinel-install-btn');
+  const sentinelModal = document.getElementById('sentinel-modal');
+  const closeSentinelBtn = document.getElementById('close-sentinel-btn');
+  const doneSentinelBtn = document.getElementById('done-sentinel-btn');
+  const copySentinelCmdBtn = document.getElementById('copy-sentinel-cmd');
+  const copySentinelCmdText = document.getElementById('copy-sentinel-cmd-text');
+  const sentinelCmdText = document.getElementById('sentinel-install-cmd-text');
+
+  if (sentinelTrigger && sentinelDropdown) {
+    sentinelTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = sentinelDropdown.classList.contains('open');
+      if (isOpen) {
+        sentinelDropdown.classList.remove('open');
+        sentinelTrigger.setAttribute('aria-expanded', 'false');
+      } else {
+        sentinelDropdown.classList.add('open');
+        sentinelTrigger.setAttribute('aria-expanded', 'true');
       }
     });
+  }
+
+  // Close Sentinel dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (sentinelDropdown && !sentinelDropdown.contains(e.target)) {
+      sentinelDropdown.classList.remove('open');
+      if (sentinelTrigger) sentinelTrigger.setAttribute('aria-expanded', 'false');
+    }
   });
 
-  // Handle direct header nav link for #aset
-  const navLinkAset = document.getElementById('nav-link-aset');
-  if (navLinkAset) {
-    navLinkAset.addEventListener('click', (e) => {
+  if (openSentinelInstallBtn) {
+    openSentinelInstallBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const targetEl = document.getElementById('aset');
-      if (targetEl) {
-        targetEl.scrollIntoView({ behavior: 'smooth' });
+      if (sentinelDropdown) sentinelDropdown.classList.remove('open');
+      if (sentinelTrigger) sentinelTrigger.setAttribute('aria-expanded', 'false');
+      openModal(sentinelModal);
+    });
+  }
+
+  if (closeSentinelBtn) closeSentinelBtn.addEventListener('click', () => closeModal(sentinelModal));
+  if (doneSentinelBtn) doneSentinelBtn.addEventListener('click', () => closeModal(sentinelModal));
+
+  if (copySentinelCmdBtn && sentinelCmdText) {
+    function showCopySuccess() {
+      if (copySentinelCmdText) {
+        copySentinelCmdText.textContent = 'Tersalin ✓';
+        setTimeout(() => {
+          copySentinelCmdText.textContent = 'Salin';
+        }, 2000);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showCopySuccess();
+      } catch (err) {
+        // do nothing
+      }
+      document.body.removeChild(textarea);
+    }
+
+    copySentinelCmdBtn.addEventListener('click', () => {
+      const textToCopy = sentinelCmdText.textContent || 'curl -fsSL https://sentinel.almere.co/install.sh | bash';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          showCopySuccess();
+        }).catch(() => {
+          fallbackCopy(textToCopy);
+        });
+      } else {
+        fallbackCopy(textToCopy);
       }
     });
   }
@@ -670,7 +728,7 @@
     }
   }, 1000);
 
-  // --- 8. MODAL CONTROLS (Join Community, Currencies, PGP) ---
+  // --- 8. MODAL CONTROLS (Join Community, Currencies, PGP, Sentinel) ---
   const communityModal = document.getElementById('community-modal');
   const openCommunityBtn = document.getElementById('open-community-btn');
   const closeCommunityBtn = document.getElementById('close-community-btn');
@@ -739,7 +797,7 @@
   if (closePgpBtn) closePgpBtn.addEventListener('click', () => closeModal(pgpModal));
 
   // Global Backdrop Click and Escape Key Handling
-  [communityModal, pgpModal].forEach(modal => {
+  [communityModal, pgpModal, sentinelModal].forEach(modal => {
     if (!modal) return;
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeModal(modal);
@@ -750,7 +808,9 @@
     if (e.key === 'Escape') {
       closeModal(communityModal);
       closeModal(pgpModal);
+      closeModal(sentinelModal);
       closeCurrencyDropdown();
+      if (sentinelDropdown) sentinelDropdown.classList.remove('open');
     }
   });
 

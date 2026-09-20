@@ -50,6 +50,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-black);
+  overflow-x: hidden;
 }
 
 body {
@@ -363,6 +364,9 @@ body {
   background: linear-gradient(180deg, #161616 0%, #111111 100%);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
   flex-wrap: wrap;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .summary-left {
@@ -2144,16 +2148,21 @@ body {
    24/7 LIVE CRYPTO MARKET TICKER
    ========================================================================== */
 .market-ticker-bar {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 12px 20px;
-  margin-top: 20px;
-  background: rgba(255, 255, 255, 0.025);
+  padding: 12px 18px;
+  margin-top: 24px;
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
   backdrop-filter: blur(8px);
+  overflow: hidden;
 }
 
 .ticker-left {
@@ -2178,13 +2187,18 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .ticker-items-scroll {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  min-width: 0;
+  max-width: 100%;
+  flex: 1;
   scrollbar-width: none;
 }
 .ticker-items-scroll::-webkit-scrollbar {
@@ -2192,10 +2206,11 @@ body {
 }
 
 .ticker-chip {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 12px;
+  padding: 6px 12px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-subtle);
   border-radius: 20px;
@@ -2527,8 +2542,9 @@ body {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
-  z-index: 1000;
+  height: 100%;
+  height: 100dvh;
+  z-index: 9999;
   display: none;
 }
 
@@ -2537,30 +2553,36 @@ body {
 }
 
 .mobile-nav-backdrop {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .mobile-nav-panel {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
-  width: 82%;
-  max-width: 320px;
+  width: 84%;
+  max-width: 340px;
   height: 100%;
-  background: var(--bg-surface);
+  height: 100dvh;
+  background: #111111;
   border-left: 1px solid var(--border-medium);
-  padding: 24px;
+  padding: max(24px, env(safe-area-inset-top, 24px)) 20px max(24px, env(safe-area-inset-bottom, 24px));
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  gap: 20px;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.8);
   animation: slideDrawer 0.25s var(--ease-out);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+  z-index: 10000;
 }
 
 @keyframes slideDrawer {
@@ -2690,78 +2712,167 @@ body {
 }
 
 @media (max-width: 768px) {
+  .wrap {
+    padding: 0 16px 80px;
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: calc(100% + 32px);
+    margin: 0 -16px 24px -16px;
+    padding: max(14px, env(safe-area-inset-top, 14px)) 16px 14px;
+    background: rgba(8, 8, 8, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 100;
+    box-sizing: border-box;
+  }
+
+  .nav-container {
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
   .nav-links {
     display: none;
   }
+
   .desktop-only {
     display: none;
   }
+
   .mobile-menu-toggle {
     display: flex;
   }
+
+  .hero {
+    padding: 16px 0 28px;
+  }
+
   .hero-headline {
     font-size: 36px;
   }
+
   .summary-card {
-    padding: 24px 20px;
+    padding: 24px 18px;
     gap: 20px;
-  }
-  .market-ticker-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 16px;
-  }
-  .ticker-items-scroll {
+    overflow: hidden;
     width: 100%;
-    padding-bottom: 4px;
+    box-sizing: border-box;
   }
-  .total-display {
-    font-size: 42px;
-  }
-  .currency-symbol {
-    font-size: 28px;
-  }
+
   .summary-right {
     align-items: flex-start;
     text-align: left;
+    width: 100%;
   }
+
+  .summary-note {
+    max-width: 100%;
+  }
+
+  .market-ticker-bar {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .ticker-items-scroll {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .ticker-items-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ticker-badge {
+    font-size: 10.5px;
+    opacity: 0.6;
+    margin-top: 2px;
+    align-self: flex-start;
+  }
+
+  .total-display {
+    font-size: 42px;
+  }
+
+  .currency-symbol {
+    font-size: 28px;
+  }
+
   .chart-container-card,
   .transactions-panel {
     padding: 20px 16px;
   }
+
   .canvas-wrapper {
     height: 260px;
   }
+
   .section-controls-group {
     width: 100%;
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
   }
+
   .currency-dropdown-wrap {
     width: 100%;
   }
+
   .currency-dropdown-trigger {
     width: 100%;
     justify-content: space-between;
   }
+
   .currency-dropdown-popover {
     width: 100%;
     right: 0;
     left: 0;
   }
+
   .asset-view-tabs {
     width: 100%;
     display: flex;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     padding-bottom: 4px;
   }
+
   .asset-view-tab {
     flex-shrink: 0;
     padding: 8px 12px;
     font-size: 12px;
   }
+
   .holding-row {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
@@ -2771,6 +2882,7 @@ body {
     row-gap: 16px;
     padding: 18px 16px;
   }
+
   .col-asset { grid-area: asset; }
   .holding-row > div:nth-child(2) { grid-area: value; }
   .holding-row > div:nth-child(3) { grid-area: change; }
@@ -2780,18 +2892,22 @@ body {
   .tx-table-container {
     display: none;
   }
+
   .tx-mobile-cards {
     display: flex;
   }
+
   .tx-stats-summary-bar {
     grid-template-columns: 1fr;
     gap: 10px;
   }
+
   .transactions-embedded-header {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
   }
+
   .tx-filter-group {
     overflow-x: auto;
     width: 100%;
@@ -2800,24 +2916,36 @@ body {
 
 @media (max-width: 480px) {
   .wrap {
-    padding: 16px 14px 80px;
+    padding: 0 14px 80px;
   }
+
+  .header {
+    width: calc(100% + 28px);
+    margin: 0 -14px 20px -14px;
+    padding: max(12px, env(safe-area-inset-top, 12px)) 14px 12px;
+  }
+
   .hero-headline {
     font-size: 30px;
   }
+
   .total-display {
     font-size: 34px;
   }
+
   .currency-symbol {
     font-size: 24px;
   }
+
   .asset-view-tab span:last-child {
     font-size: 11px;
   }
+
   .asset-view-tab {
     padding: 7px 10px;
     gap: 5px;
   }
+
   .modal-card {
     padding: 20px 16px;
   }

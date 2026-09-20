@@ -13,6 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const db = require('./db/index.js');
 const { calculatePortfolio } = require('./lib/portfolio_engine.js');
+const { getMarketPrices } = require('./lib/price_feed.js');
 const { startTelegramBot } = require('./lib/telegram_bot.js');
 
 const PORT = process.env.PORT || 4173;
@@ -66,6 +67,20 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify({ transactions: txRes.rows }));
     } catch (err) {
       console.error('Error fetching transactions:', err);
+      res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ error: err.message }));
+    }
+    return;
+  }
+
+  // --- API ROUTE: /api/prices/live ---
+  if (reqPath === '/api/prices/live') {
+    try {
+      const prices = await getMarketPrices();
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify(prices));
+    } catch (err) {
+      console.error('Error fetching live prices:', err);
       res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ error: err.message }));
     }

@@ -199,6 +199,11 @@
 
     // Refresh chart figures with current currency
     renderHistoricalChart();
+
+    // Refresh transaction history figures with current currency
+    if (typeof renderTransactions === 'function') {
+      renderTransactions(activeTxFilter);
+    }
   }
 
   // Populate Vertical Currency List (Nge-baris ke bawah & Searchable)
@@ -661,7 +666,7 @@
     });
   }
 
-  // --- 7. ASSET VIEW TABS (Holdings, Distribution, History) ---
+  // --- 7. ASSET VIEW TABS (Holdings, Distribution, Transactions, History) ---
   const assetTabs = document.querySelectorAll('.asset-view-tab');
   const assetPanes = document.querySelectorAll('.asset-tab-pane');
 
@@ -682,11 +687,12 @@
       }
     });
 
-    // If switching to history tab, recalculate and re-render canvas immediately
     if (tabKey === 'history') {
       window.requestAnimationFrame(() => {
         renderHistoricalChart();
       });
+    } else if (tabKey === 'transactions') {
+      renderTransactions(activeTxFilter);
     }
   }
 
@@ -697,16 +703,24 @@
     });
   });
 
-  // --- SENTINEL DROPDOWN & INSTALL MODAL ---
+  // Quick navigation link in top navbar
+  const navLinkHistoryQuick = document.getElementById('nav-link-history-quick');
+  if (navLinkHistoryQuick) {
+    navLinkHistoryQuick.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchAssetTab('transactions');
+      const asetSection = document.getElementById('aset');
+      if (asetSection) asetSection.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  // --- SENTINEL COMING SOON & DROPDOWN ---
   const sentinelDropdown = document.getElementById('nav-sentinel-dropdown');
   const sentinelTrigger = document.getElementById('nav-link-sentinel');
   const openSentinelInstallBtn = document.getElementById('open-sentinel-install-btn');
   const sentinelModal = document.getElementById('sentinel-modal');
   const closeSentinelBtn = document.getElementById('close-sentinel-btn');
   const doneSentinelBtn = document.getElementById('done-sentinel-btn');
-  const copySentinelCmdBtn = document.getElementById('copy-sentinel-cmd');
-  const copySentinelCmdText = document.getElementById('copy-sentinel-cmd-text');
-  const sentinelCmdText = document.getElementById('sentinel-install-cmd-text');
 
   if (sentinelTrigger && sentinelDropdown) {
     sentinelTrigger.addEventListener('click', (e) => {
@@ -742,45 +756,54 @@
   if (closeSentinelBtn) closeSentinelBtn.addEventListener('click', () => closeModal(sentinelModal));
   if (doneSentinelBtn) doneSentinelBtn.addEventListener('click', () => closeModal(sentinelModal));
 
-  if (copySentinelCmdBtn && sentinelCmdText) {
-    function showCopySuccess() {
-      if (copySentinelCmdText) {
-        copySentinelCmdText.textContent = 'Tersalin ✓';
-        setTimeout(() => {
-          copySentinelCmdText.textContent = 'Salin';
-        }, 2000);
-      }
-    }
+  // --- MOBILE NAVIGATION DRAWER ---
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileNavDrawer = document.getElementById('mobile-nav-drawer');
+  const mobileNavBackdrop = document.getElementById('mobile-nav-backdrop');
+  const mobileNavClose = document.getElementById('mobile-nav-close');
+  const mobileSentinelBtn = document.getElementById('mobile-sentinel-btn');
+  const mobileTxHistoryBtn = document.getElementById('mobile-tx-history-btn');
+  const mobileLinkAnchors = document.querySelectorAll('.mobile-nav-link-anchor');
 
-    function fallbackCopy(text) {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand('copy');
-        showCopySuccess();
-      } catch (err) {
-        // do nothing
-      }
-      document.body.removeChild(textarea);
-    }
+  function openMobileDrawer() {
+    if (!mobileNavDrawer) return;
+    mobileNavDrawer.classList.add('open');
+    mobileNavDrawer.setAttribute('aria-hidden', 'false');
+    if (mobileMenuToggle) mobileMenuToggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
 
-    copySentinelCmdBtn.addEventListener('click', () => {
-      const textToCopy = sentinelCmdText.textContent || 'curl -fsSL https://sentinel.almere.co/install.sh | bash';
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(textToCopy).then(() => {
-          showCopySuccess();
-        }).catch(() => {
-          fallbackCopy(textToCopy);
-        });
-      } else {
-        fallbackCopy(textToCopy);
-      }
+  function closeMobileDrawer() {
+    if (!mobileNavDrawer) return;
+    mobileNavDrawer.classList.remove('open');
+    mobileNavDrawer.setAttribute('aria-hidden', 'true');
+    if (mobileMenuToggle) mobileMenuToggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', openMobileDrawer);
+  if (mobileNavClose) mobileNavClose.addEventListener('click', closeMobileDrawer);
+  if (mobileNavBackdrop) mobileNavBackdrop.addEventListener('click', closeMobileDrawer);
+
+  if (mobileSentinelBtn) {
+    mobileSentinelBtn.addEventListener('click', () => {
+      closeMobileDrawer();
+      setTimeout(() => openModal(sentinelModal), 150);
     });
   }
+
+  if (mobileTxHistoryBtn) {
+    mobileTxHistoryBtn.addEventListener('click', () => {
+      closeMobileDrawer();
+      switchAssetTab('transactions');
+      const asetSection = document.getElementById('aset');
+      if (asetSection) asetSection.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  mobileLinkAnchors.forEach(a => {
+    a.addEventListener('click', closeMobileDrawer);
+  });
 
   // --- 8. REAL-TIME PULSE & SYNC TICKER ---
   const syncTimeCounter = document.getElementById('sync-time-counter');
@@ -882,7 +905,209 @@
     }
   });
 
-  // --- 9. INITIALIZATION & DYNAMIC ALLOCATION ENGINE ---
+  // --- 9. TRANSACTION LEDGER & LIVE MARKET ENGINE ---
+  let currentTransactions = [];
+  let activeTxFilter = 'ALL';
+  let liveCryptoPrices = {
+    BTC: { usd: 80450 },
+    HYPE: { usd: 90.95 },
+    USD_IDR: 17800
+  };
+
+  // Filter Button Interactions
+  const txFilterBtns = document.querySelectorAll('.tx-filter-btn');
+  txFilterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      txFilterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTxFilter = btn.getAttribute('data-filter') || 'ALL';
+      renderTransactions(activeTxFilter);
+    });
+  });
+
+  /**
+   * Renders Transaction History table, mobile cards, and summary stats
+   */
+  function renderTransactions(filter = activeTxFilter) {
+    const tableBody = document.getElementById('tx-table-body');
+    const mobileCards = document.getElementById('tx-mobile-cards');
+    const currConfig = CURRENCIES[activeCurrencyCode] || CURRENCIES.USD;
+    const usdRate = liveCryptoPrices.USD_IDR || 17800;
+
+    // 1. Calculate Summary Stats
+    const totalCount = currentTransactions.length;
+    let totalDepositIdr = 0;
+    let totalBuyCostIdr = 0;
+    let totalRealizedPnlIdr = 0;
+
+    currentTransactions.forEach(t => {
+      const amt = parseFloat(t.amount_idr) || 0;
+      if (t.type === 'DEPOSIT') totalDepositIdr += amt;
+      if (t.type === 'BUY') totalBuyCostIdr += amt;
+      if (t.type === 'SELL') totalRealizedPnlIdr += (parseFloat(t.sale_pnl_idr) || 0);
+    });
+
+    const totalDepositConverted = Math.round((totalDepositIdr / usdRate) * currConfig.rate);
+    const totalBuyConverted = Math.round((totalBuyCostIdr / usdRate) * currConfig.rate);
+    const totalPnlConverted = Math.round((totalRealizedPnlIdr / usdRate) * currConfig.rate);
+
+    const statCountEl = document.getElementById('tx-stat-total-count');
+    const statDepEl = document.getElementById('tx-stat-total-deposit');
+    const statBuyEl = document.getElementById('tx-stat-total-buy');
+    const statPnlEl = document.getElementById('tx-stat-realized-pnl');
+
+    if (statCountEl) statCountEl.textContent = totalCount;
+    if (statDepEl) statDepEl.textContent = `${currConfig.symbol}${totalDepositConverted.toLocaleString(currConfig.locale)}`;
+    if (statBuyEl) statBuyEl.textContent = `${currConfig.symbol}${totalBuyConverted.toLocaleString(currConfig.locale)}`;
+    if (statPnlEl) {
+      const sign = totalRealizedPnlIdr >= 0 ? '+' : '';
+      statPnlEl.textContent = `${sign}${currConfig.symbol}${totalPnlConverted.toLocaleString(currConfig.locale)}`;
+      statPnlEl.className = `tx-stat-val font-mono badge-mono ${totalRealizedPnlIdr >= 0 ? 'mono-up' : 'mono-down'}`;
+    }
+
+    // 2. Filter Transactions
+    const filtered = filter === 'ALL'
+      ? currentTransactions
+      : currentTransactions.filter(t => t.type === filter);
+
+    // 3. Render Desktop Table
+    if (tableBody) {
+      if (filtered.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 40px; color: var(--text-muted);">
+              Belum ada riwayat transaksi (${filter}) yang tercatat.
+            </td>
+          </tr>
+        `;
+      } else {
+        let rowsHtml = '';
+        filtered.forEach(t => {
+          const dt = t.tx_timestamp ? new Date(t.tx_timestamp) : new Date();
+          const dateStr = dt.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+          const timeStr = dt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+
+          const isBuy = t.type === 'BUY';
+          const isSell = t.type === 'SELL';
+          const isDeposit = t.type === 'DEPOSIT';
+          const badgeClass = isBuy ? 'badge-tx-buy' : isSell ? 'badge-tx-sell' : isDeposit ? 'badge-tx-deposit' : 'badge-tx-withdraw';
+          const badgeText = isBuy ? 'Beli' : isSell ? 'Jual' : isDeposit ? 'Deposit' : t.type;
+
+          const rateUsd = (parseFloat(t.rate_idr) || 0) / usdRate;
+          const rateConverted = Math.round(rateUsd * currConfig.rate);
+
+          const amtUsd = (parseFloat(t.amount_idr) || 0) / usdRate;
+          const amtConverted = Math.round(amtUsd * currConfig.rate);
+
+          const feeUsd = (parseFloat(t.fee_idr) || 0) / usdRate;
+          const feeConverted = Math.round(feeUsd * currConfig.rate);
+
+          const units = parseFloat(t.quantity || 0).toLocaleString('en-US', { maximumFractionDigits: 6 });
+
+          let saleNoteHtml = '';
+          if (isSell && typeof t.sale_pnl_idr === 'number') {
+            const pnlConverted = Math.round(((t.sale_pnl_idr || 0) / usdRate) * currConfig.rate);
+            const isProfit = t.sale_pnl_idr >= 0;
+            saleNoteHtml = `<span class="tx-sale-note ${isProfit ? 'mono-up' : 'mono-down'}">Realisasi: ${isProfit ? '+' : ''}${currConfig.symbol}${pnlConverted.toLocaleString(currConfig.locale)}</span>`;
+          }
+
+          rowsHtml += `
+            <tr>
+              <td>
+                <div style="font-weight: 500;">${dateStr}</div>
+                <div style="font-size: 11px; color: var(--text-muted);">${timeStr}</div>
+              </td>
+              <td><span class="badge-tx ${badgeClass}">${badgeText}</span></td>
+              <td><strong>${t.asset}</strong></td>
+              <td class="font-mono">${units} ${t.asset}</td>
+              <td class="font-mono">${currConfig.symbol}${rateConverted.toLocaleString(currConfig.locale)}</td>
+              <td class="font-mono">
+                <strong>${currConfig.symbol}${amtConverted.toLocaleString(currConfig.locale)}</strong>
+                ${saleNoteHtml}
+              </td>
+              <td class="font-mono" style="color: var(--text-muted);">${feeConverted > 0 ? `${currConfig.symbol}${feeConverted.toLocaleString(currConfig.locale)}` : 'Gratis'}</td>
+              <td><span class="tx-ref-code" title="${t.reference_id}">${t.reference_id}</span></td>
+              <td><span class="sync-status" style="font-size: 10px;">${t.status || 'COMPLETED'}</span></td>
+            </tr>
+          `;
+        });
+        tableBody.innerHTML = rowsHtml;
+      }
+    }
+
+    // 4. Render Mobile Cards
+    if (mobileCards) {
+      if (filtered.length === 0) {
+        mobileCards.innerHTML = `
+          <div style="text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px;">
+            Belum ada transaksi tercatat.
+          </div>
+        `;
+      } else {
+        let cardsHtml = '';
+        filtered.forEach(t => {
+          const dt = t.tx_timestamp ? new Date(t.tx_timestamp) : new Date();
+          const dateStr = dt.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB';
+
+          const isBuy = t.type === 'BUY';
+          const isSell = t.type === 'SELL';
+          const isDeposit = t.type === 'DEPOSIT';
+          const badgeClass = isBuy ? 'badge-tx-buy' : isSell ? 'badge-tx-sell' : isDeposit ? 'badge-tx-deposit' : 'badge-tx-withdraw';
+          const badgeText = isBuy ? 'Beli' : isSell ? 'Jual' : isDeposit ? 'Deposit' : t.type;
+
+          const rateUsd = (parseFloat(t.rate_idr) || 0) / usdRate;
+          const rateConverted = Math.round(rateUsd * currConfig.rate);
+
+          const amtUsd = (parseFloat(t.amount_idr) || 0) / usdRate;
+          const amtConverted = Math.round(amtUsd * currConfig.rate);
+
+          const units = parseFloat(t.quantity || 0).toLocaleString('en-US', { maximumFractionDigits: 6 });
+
+          let saleNoteHtml = '';
+          if (isSell && typeof t.sale_pnl_idr === 'number') {
+            const pnlConverted = Math.round(((t.sale_pnl_idr || 0) / usdRate) * currConfig.rate);
+            const isProfit = t.sale_pnl_idr >= 0;
+            saleNoteHtml = `<div class="${isProfit ? 'mono-up' : 'mono-down'}" style="font-size: 11px; margin-top: 2px;">Realisasi: ${isProfit ? '+' : ''}${currConfig.symbol}${pnlConverted.toLocaleString(currConfig.locale)}</div>`;
+          }
+
+          cardsHtml += `
+            <div class="tx-card">
+              <div class="tx-card-header">
+                <span class="badge-tx ${badgeClass}">${badgeText} ${t.asset}</span>
+                <span class="tx-card-time">${dateStr}</span>
+              </div>
+              <div class="tx-card-body">
+                <div class="tx-card-field">
+                  <span class="tx-card-label">Jumlah Unit</span>
+                  <span class="tx-card-val font-mono">${units} ${t.asset}</span>
+                </div>
+                <div class="tx-card-field">
+                  <span class="tx-card-label">Total Nilai</span>
+                  <span class="tx-card-val font-mono">${currConfig.symbol}${amtConverted.toLocaleString(currConfig.locale)}</span>
+                  ${saleNoteHtml}
+                </div>
+                <div class="tx-card-field">
+                  <span class="tx-card-label">Harga / Kurs</span>
+                  <span class="tx-card-val font-mono">${currConfig.symbol}${rateConverted.toLocaleString(currConfig.locale)}</span>
+                </div>
+                <div class="tx-card-field">
+                  <span class="tx-card-label">Status</span>
+                  <span class="tx-card-val" style="color: #38ef7d; font-size: 11.5px;">✓ Terverifikasi</span>
+                </div>
+              </div>
+              <div class="tx-card-footer">
+                <span class="tx-ref-code">${t.reference_id}</span>
+                <span style="color: var(--text-muted); font-size: 10.5px;">Triv Exchange</span>
+              </div>
+            </div>
+          `;
+        });
+        mobileCards.innerHTML = cardsHtml;
+      }
+    }
+  }
+
+  // --- 10. INITIALIZATION & DYNAMIC ALLOCATION ENGINE ---
   function renderHoldingsAndAllocations() {
     const holdingsContainer = document.getElementById('holdings-panel-container');
     const donutSegmentsGroup = document.getElementById('donut-segments-group');
@@ -912,8 +1137,25 @@
             maximumFractionDigits: currConfig.digits,
             minimumFractionDigits: currConfig.digits
           });
-          const isNegative = (h.change30d || '').startsWith('-');
-          const changeText = (h.change30d || '0.0%').replace(/[+-]/g, '');
+
+          const isCrypto = h.code !== 'CASH';
+          const pnlPct = h.unrealizedPnlPct || 0;
+          const isProfit = pnlPct >= 0;
+          const pnlConverted = Math.round((h.unrealizedPnlUsd || 0) * currConfig.rate);
+
+          // Subtitles for units & prices
+          let unitsSubText = h.unitsText;
+          let metricSubText = '';
+          if (isCrypto && h.avgBuyPriceUsd > 0) {
+            const avgConverted = Math.round(h.avgBuyPriceUsd * currConfig.rate);
+            const liveConverted = Math.round((h.currentPriceUsd || 0) * currConfig.rate);
+            unitsSubText += ` · Beli: ${currConfig.symbol}${avgConverted.toLocaleString(currConfig.locale)}`;
+            metricSubText = `<div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Harga Live: ${currConfig.symbol}${liveConverted.toLocaleString(currConfig.locale)}</div>`;
+          }
+
+          const changeBadgeText = isCrypto
+            ? `${isProfit ? '▲ +' : '▼ '}${pnlPct.toFixed(1)}% (${currConfig.symbol}${Math.abs(pnlConverted).toLocaleString(currConfig.locale)})`
+            : 'Cadangan Kas (Stabil)';
 
           html += `
             <article class="holding-row" data-holding="${h.code.toLowerCase()}">
@@ -921,19 +1163,20 @@
                 <div class="asset-icon" aria-hidden="true" style="border-color: rgba(255,255,255,0.15);">${theme.icon}</div>
                 <div class="asset-details">
                   <h3 class="asset-name">${h.name}</h3>
-                  <span class="asset-units">${h.unitsText}</span>
+                  <span class="asset-units">${unitsSubText}</span>
                 </div>
               </div>
 
               <div class="col-metric">
                 <div class="col-label">Valuasi Terkonversi</div>
                 <div class="col-value asset-converted-val odometer" data-base-usd="${h.valueUsd}">${currConfig.symbol}${valFormatted}</div>
+                ${metricSubText}
               </div>
 
               <div class="col-metric">
-                <div class="col-label">Perubahan 30H</div>
-                <div class="change-tag ${isNegative ? 'mono-down' : 'mono-up'}">
-                  <span class="change-arrow">${isNegative ? '▼' : '▲'}</span> ${changeText}
+                <div class="col-label">${isCrypto ? 'Laba / Rugi (PnL)' : 'Status Cadangan'}</div>
+                <div class="change-tag ${isCrypto ? (isProfit ? 'mono-up' : 'mono-down') : ''}" style="${!isCrypto ? 'background: rgba(255,255,255,0.06); color: var(--text-secondary);' : ''}">
+                  ${changeBadgeText}
                 </div>
               </div>
 
@@ -1014,11 +1257,111 @@
     // 4. Update Performance Badge
     const badgeGrowthVal = document.getElementById('badge-growth-val');
     if (badgeGrowthVal) {
-      badgeGrowthVal.textContent = BASE_TOTAL_USD > 0 ? '+12.8%' : '0.0%';
+      // Find overall crypto profit
+      let totalCostUsd = 0;
+      let totalCryptoValUsd = 0;
+      currentHoldings.forEach(h => {
+        if (h.code !== 'CASH') {
+          totalCostUsd += (h.totalCostUsd || 0);
+          totalCryptoValUsd += (h.valueUsd || 0);
+        }
+      });
+      const growthPct = totalCostUsd > 0 ? ((totalCryptoValUsd - totalCostUsd) / totalCostUsd) * 100 : 0;
+      const sign = growthPct >= 0 ? '+' : '';
+      badgeGrowthVal.textContent = totalCostUsd > 0 ? `${sign}${growthPct.toFixed(1)}%` : '0.0%';
     }
 
     // Rebind Donut & Legend hover interactions
     bindAllocationInteractions();
+  }
+
+  // --- 11. 24/7 REALTIME LIVE CRYPTO MARKET POLLER ---
+  async function fetchLiveMarketPrices() {
+    try {
+      // 1. Fetch Hyperliquid official L1 API (Direct CORS-supported endpoint)
+      try {
+        const hlRes = await fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'allMids' })
+        });
+        if (hlRes.ok) {
+          const mids = await hlRes.json();
+          if (mids.HYPE) liveCryptoPrices.HYPE.usd = parseFloat(parseFloat(mids.HYPE).toFixed(2));
+          if (mids.BTC) liveCryptoPrices.BTC.usd = parseFloat(parseFloat(mids.BTC).toFixed(2));
+        }
+      } catch (e) {}
+
+      // 2. Fetch Binance ticker for BTC
+      try {
+        const bRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+        if (bRes.ok) {
+          const bData = await bRes.json();
+          if (bData.price) liveCryptoPrices.BTC.usd = parseFloat(parseFloat(bData.price).toFixed(2));
+        }
+      } catch (e) {}
+
+      // 3. Fallback to /api/prices/live if server is active
+      try {
+        const sRes = await fetch('/api/prices/live');
+        if (sRes.ok) {
+          const sPrices = await sRes.json();
+          if (sPrices.HYPE?.usd) liveCryptoPrices.HYPE.usd = sPrices.HYPE.usd;
+          if (sPrices.BTC?.usd) liveCryptoPrices.BTC.usd = sPrices.BTC.usd;
+          if (sPrices.USD_IDR) liveCryptoPrices.USD_IDR = sPrices.USD_IDR;
+        }
+      } catch (e) {}
+
+      // Update Ticker Chips in Header / Summary
+      const btcEl = document.getElementById('ticker-btc-val');
+      const hypeEl = document.getElementById('ticker-hype-val');
+      const usdidrEl = document.getElementById('ticker-usdidr-val');
+      if (btcEl && liveCryptoPrices.BTC.usd) btcEl.textContent = `$${liveCryptoPrices.BTC.usd.toLocaleString('en-US')}`;
+      if (hypeEl && liveCryptoPrices.HYPE.usd) hypeEl.textContent = `$${liveCryptoPrices.HYPE.usd.toFixed(2)}`;
+      if (usdidrEl && liveCryptoPrices.USD_IDR) usdidrEl.textContent = `Rp ${liveCryptoPrices.USD_IDR.toLocaleString('id-ID')}`;
+
+      // Recalculate Holdings and Portfolio Valuation Dynamically in Real-time
+      if (currentHoldings && currentHoldings.length > 0) {
+        const rate = liveCryptoPrices.USD_IDR || 17800;
+        let newTotalUsd = 0;
+
+        currentHoldings.forEach(h => {
+          if (h.code !== 'CASH') {
+            const livePriceUsd = (liveCryptoPrices[h.code] && liveCryptoPrices[h.code].usd)
+              ? liveCryptoPrices[h.code].usd
+              : (h.currentPriceUsd || 0);
+
+            if (livePriceUsd > 0) {
+              h.currentPriceUsd = livePriceUsd;
+              h.currentPriceIdr = Math.round(livePriceUsd * rate);
+              h.valueUsd = parseFloat((h.quantity * livePriceUsd).toFixed(2));
+              h.valueIdr = Math.round(h.quantity * h.currentPriceIdr);
+
+              const costIdr = h.totalCostIdr || 0;
+              const costUsd = h.totalCostUsd || (costIdr / rate) || 0;
+
+              h.unrealizedPnlIdr = h.valueIdr - costIdr;
+              h.unrealizedPnlUsd = parseFloat((h.valueUsd - costUsd).toFixed(2));
+              h.unrealizedPnlPct = costUsd > 0 ? parseFloat(((h.unrealizedPnlUsd / costUsd) * 100).toFixed(2)) : 0;
+              h.change30d = (h.unrealizedPnlPct >= 0 ? '+' : '') + h.unrealizedPnlPct.toFixed(1) + '%';
+            }
+          }
+          newTotalUsd += (h.valueUsd || 0);
+        });
+
+        BASE_TOTAL_USD = parseFloat(newTotalUsd.toFixed(2));
+        currentHoldings.forEach(h => {
+          h.allocationPct = BASE_TOTAL_USD > 0
+            ? parseFloat(((h.valueUsd / BASE_TOTAL_USD) * 100).toFixed(1))
+            : 0;
+        });
+
+        renderHoldingsAndAllocations();
+        updateCurrencyUI(activeCurrencyCode, false);
+      }
+    } catch (err) {
+      console.warn('Realtime price ticker warning:', err.message);
+    }
   }
 
   let lastSyncSuccess = Date.now();
@@ -1027,7 +1370,7 @@
     try {
       let data = null;
 
-      // 1. Try relative /api/portfolio/summary (works on local server or custom domain)
+      // 1. Try relative /api/portfolio/summary
       try {
         const res = await fetch('/api/portfolio/summary');
         if (res.ok) data = await res.json();
@@ -1049,7 +1392,7 @@
         } catch (e) {}
       }
 
-      // 3. Try local node server directly (http://127.0.0.1:4173) if opened via other host
+      // 3. Try local node server directly (http://127.0.0.1:4173)
       if (!data || typeof data.totalValuationUsd !== 'number') {
         try {
           const resLocal = await fetch('http://127.0.0.1:4173/api/portfolio/summary');
@@ -1061,14 +1404,22 @@
 
       BASE_TOTAL_USD = data.totalValuationUsd;
       currentHoldings = data.holdings || [];
+      if (Array.isArray(data.transactions)) {
+        currentTransactions = data.transactions;
+      }
+      if (data.marketPrices) {
+        if (data.marketPrices.BTC?.usd) liveCryptoPrices.BTC.usd = data.marketPrices.BTC.usd;
+        if (data.marketPrices.HYPE?.usd) liveCryptoPrices.HYPE.usd = data.marketPrices.HYPE.usd;
+        if (data.usdIdrRate) liveCryptoPrices.USD_IDR = data.usdIdrRate;
+      }
+
       lastSyncSuccess = Date.now();
 
-      // Update sync counter
       const syncCounter = document.getElementById('sync-time-counter');
       if (syncCounter) syncCounter.textContent = 'Baru saja';
 
-      // Always re-render if data or total changed, or first load
       renderHoldingsAndAllocations();
+      renderTransactions(activeTxFilter);
       updateCurrencyUI(activeCurrencyCode, false);
     } catch (err) {
       console.warn('Portfolio sync warning:', err.message);
@@ -1087,13 +1438,19 @@
     }
   }, 5000);
 
-  // Trigger initial UI rendering
+  // Trigger initial UI rendering & live price loops
   renderHoldingsAndAllocations();
   updateCurrencyUI('USD', true);
   renderHistoricalChart();
   syncPortfolioFromBackend();
+  fetchLiveMarketPrices();
 
-  // Fast live poll every 2.5s to capture Telegram transactions immediately
-  setInterval(syncPortfolioFromBackend, 2500);
+  // Polling intervals:
+  // 1. Live market price movements every 5s (updates prices and portfolio values dynamically)
+  setInterval(fetchLiveMarketPrices, 5000);
+
+  // 2. Ledger sync every 3s to capture newly confirmed Triv transactions
+  setInterval(syncPortfolioFromBackend, 3000);
 
 })();
+

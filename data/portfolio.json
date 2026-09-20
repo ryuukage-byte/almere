@@ -1,50 +1,100 @@
 {
-  "totalValuationUsd": 500,
-  "totalValuationIdr": 8906219,
-  "usdIdrRate": 17808,
+  "totalValuationUsd": 515.38,
+  "totalValuationIdr": 9179882,
+  "usdIdrRate": 17812,
   "holdings": [
     {
       "code": "CASH",
       "name": "Kas Tunai",
-      "quantity": 399,
+      "quantity": 7110000,
       "unitsText": "Rp 7.110.000 · Cadangan Kas",
+      "avgBuyPriceUsd": 1,
+      "avgBuyPriceIdr": 17812,
       "currentPriceUsd": 1,
-      "currentPriceIdr": 17808,
-      "valueUsd": 399,
+      "currentPriceIdr": 17812,
+      "totalCostIdr": 7110000,
+      "totalCostUsd": 399.17,
+      "valueUsd": 399.17,
       "valueIdr": 7110000,
       "unrealizedPnlIdr": 0,
+      "unrealizedPnlUsd": 0,
       "unrealizedPnlPct": 0,
       "change30d": "0.0%",
-      "allocationPct": 79.8
+      "allocationPct": 77.5
     },
     {
       "code": "HYPE",
       "name": "Hyperliquid",
       "quantity": 1.277149,
       "unitsText": "1.277149 HYPE",
-      "currentPriceUsd": 78.98,
-      "currentPriceIdr": 1406429,
-      "valueUsd": 101,
-      "valueIdr": 1796219,
-      "unrealizedPnlIdr": -3781,
-      "unrealizedPnlPct": -0.21,
-      "change30d": "+0.0%",
-      "allocationPct": 20.2
+      "avgBuyPriceUsd": 79.13,
+      "avgBuyPriceIdr": 1409389,
+      "currentPriceUsd": 90.99,
+      "currentPriceIdr": 1620705,
+      "totalCostIdr": 1800000,
+      "totalCostUsd": 101,
+      "valueUsd": 116.21,
+      "valueIdr": 2069882,
+      "unrealizedPnlIdr": 269882,
+      "unrealizedPnlUsd": 15.15,
+      "unrealizedPnlPct": 14.99,
+      "change30d": "+15.0%",
+      "allocationPct": 22.5
     }
   ],
   "cashBalanceIdr": 7110000,
   "cashBalanceUsd": 399,
   "realizedPnlIdr": 0,
+  "realizedPnlUsd": 0,
+  "documentedSales": [],
   "marketPrices": {
     "BTC": {
-      "usd": 78787,
-      "idr": 1403038896
+      "usd": 80472,
+      "idr": 1433367264
     },
     "HYPE": {
-      "usd": 91.45,
-      "idr": 1628541.6
+      "usd": 90.9895,
+      "idr": 1620705
     }
   },
+  "transactions": [
+    {
+      "id": 3,
+      "reference_id": "TRIV-19yri9y2ck3tn5gu",
+      "type": "BUY",
+      "asset": "HYPE",
+      "quantity": 1.277149,
+      "rate_idr": 1406429,
+      "rate_usd": 78.96,
+      "amount_idr": 1800000,
+      "amount_usd": 101.06,
+      "fee_idr": 3780,
+      "total_received": 1.277149,
+      "currency": "IDR",
+      "tx_timestamp": "2026-09-17T05:15:05.000Z",
+      "status": "COMPLETED",
+      "sale_pnl_idr": 0,
+      "sale_pnl_usd": 0
+    },
+    {
+      "id": 4,
+      "reference_id": "TRIV-19yri9y2cj8qa5uc",
+      "type": "DEPOSIT",
+      "asset": "IDR",
+      "quantity": 9000000,
+      "rate_idr": 1,
+      "rate_usd": 0,
+      "amount_idr": 9000000,
+      "amount_usd": 505.28,
+      "fee_idr": 90000,
+      "total_received": 9000000,
+      "currency": "IDR",
+      "tx_timestamp": "2026-09-15T07:47:54.000Z",
+      "status": "COMPLETED",
+      "sale_pnl_idr": 0,
+      "sale_pnl_usd": 0
+    }
+  ],
   "transactionCount": 2,
-  "lastUpdated": "2026-09-18T13:40:56.043Z"
+  "lastUpdated": "2026-09-20T11:40:36.355Z"
 }

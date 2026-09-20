@@ -39,23 +39,80 @@
                   </svg>
                 </span>
                 <span class="sub-text">
-                  <span class="sub-title">Install</span>
-                  <span class="sub-desc">Sentinel Telemetry &amp; Node CLI</span>
+                  <span class="sub-title">Sentinel Telemetry <span class="badge-coming-soon">Coming Soon</span></span>
+                  <span class="sub-desc">Node Monitoring &amp; On-chain Verifier</span>
                 </span>
               </button>
             </div>
           </div>
 
+          <a href="#ringkasan" class="nav-link">Portofolio</a>
+          <a href="#aset" class="nav-link" id="nav-link-history-quick">Riwayat</a>
           <a href="#tentang" class="nav-link">Tentang</a>
           <a href="#kontak" class="nav-link">Kontak</a>
         </div>
 
         <div class="nav-actions">
-          <button type="button" class="cta-pill" id="open-community-btn" aria-haspopup="dialog">
+          <button type="button" class="cta-pill desktop-only" id="open-community-btn" aria-haspopup="dialog">
             Gabung Komunitas
+          </button>
+          <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Buka navigasi mobile" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
           </button>
         </div>
       </nav>
+
+      <!-- Mobile Navigation Drawer -->
+      <div class="mobile-nav-drawer" id="mobile-nav-drawer" aria-hidden="true">
+        <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
+        <div class="mobile-nav-panel">
+          <div class="mobile-nav-header">
+            <div class="brand">
+              <span class="dot"></span>
+              <span class="brand-text">Almere &amp; Co</span>
+            </div>
+            <button type="button" class="mobile-nav-close" id="mobile-nav-close" aria-label="Tutup menu">&times;</button>
+          </div>
+          <div class="mobile-nav-links">
+            <button type="button" class="mobile-nav-item" id="mobile-sentinel-btn">
+              <span class="m-icon">🛡️</span>
+              <div class="m-text">
+                <div class="m-title-row">
+                  <span>Sentinel Telemetry</span>
+                  <span class="badge-coming-soon">Coming Soon</span>
+                </div>
+                <span class="m-desc">Daemon monitoring &amp; verifier</span>
+              </div>
+            </button>
+            <button type="button" class="mobile-nav-item" id="mobile-tx-history-btn">
+              <span class="m-icon">📜</span>
+              <div class="m-text">
+                <span class="m-title">Riwayat Transaksi</span>
+                <span class="m-desc">Ledger publik &amp; penjualan</span>
+              </div>
+            </button>
+            <a href="#ringkasan" class="mobile-nav-link-anchor">
+              <span class="m-icon">📊</span>
+              <span>Ringkasan Portofolio</span>
+            </a>
+            <a href="#tentang" class="mobile-nav-link-anchor">
+              <span class="m-icon">🏛️</span>
+              <span>Tentang Almere &amp; Co</span>
+            </a>
+            <a href="#kontak" class="mobile-nav-link-anchor">
+              <span class="m-icon">✉️</span>
+              <span>Kontak &amp; Kunci PGP</span>
+            </a>
+          </div>
+          <div class="mobile-nav-footer">
+            <button type="button" class="cta-pill w-full open-community-modal-trigger">
+              Gabung Komunitas
+            </button>
+          </div>
+        </div>
+      </div>
     </header>
 
     <main>
@@ -94,10 +151,35 @@
               <span class="badge-period">bulan ini</span>
             </div>
           </div>
+
+          <!-- 24/7 Live Realtime Crypto Market Ticker -->
+          <div class="market-ticker-bar" id="market-ticker-bar">
+            <div class="ticker-left">
+              <span class="ticker-pulse-dot"></span>
+              <span class="ticker-title">24/7 Live Market Feed:</span>
+            </div>
+            <div class="ticker-items-scroll">
+              <div class="ticker-chip" id="ticker-chip-btc">
+                <span class="chip-coin">BTC/USD</span>
+                <span class="chip-price font-mono" id="ticker-btc-val">$80,450</span>
+                <span class="chip-change mono-up" id="ticker-btc-chg">Live</span>
+              </div>
+              <div class="ticker-chip" id="ticker-chip-hype">
+                <span class="chip-coin">HYPE/USD</span>
+                <span class="chip-price font-mono" id="ticker-hype-val">$90.98</span>
+                <span class="chip-change mono-up" id="ticker-hype-chg">Live</span>
+              </div>
+              <div class="ticker-chip" id="ticker-chip-usdidr">
+                <span class="chip-coin">USD/IDR</span>
+                <span class="chip-price font-mono" id="ticker-usdidr-val">Rp 17,800</span>
+              </div>
+            </div>
+            <div class="ticker-badge font-mono">Hyperliquid L1 &middot; Binance</div>
+          </div>
         </div>
       </section>
 
-      <!-- Rincian Aset Terintegrasi (Holdings, Distribusi & Historis dengan Tab) -->
+      <!-- Rincian Aset Terintegrasi (Holdings, Distribusi, Riwayat Transaksi & Historis dengan Tab) -->
       <section class="holdings-section" id="aset" aria-label="Rincian Portofolio &amp; Aset">
         <!-- Target anchor untuk navigasi menu #grafik -->
         <div id="grafik" class="scroll-anchor" aria-hidden="true"></div>
@@ -122,6 +204,12 @@
                   <path d="M8 1a7 7 0 1 0 7 7A7 7 0 0 0 8 1zm0 2.5a4.5 4.5 0 0 1 4.47 4H8zm-1 0v5H2.53A4.5 4.5 0 0 1 7 3.5zm-4.47 6H7v4.47A4.5 4.5 0 0 1 2.53 9.5zm5.47 4.47V9.5h4.47A4.5 4.5 0 0 1 8 13.97z"/>
                 </svg>
                 <span>Distribusi Portofolio</span>
+              </button>
+              <button class="asset-view-tab" data-tab="transactions" role="tab" aria-selected="false" aria-controls="pane-transactions" id="tab-transactions">
+                <svg class="tab-icon-svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+                  <path d="M2 2.5h12v1.8H2zm0 4.6h12v1.8H2zm0 4.6h8v1.8H2z"/>
+                </svg>
+                <span>Riwayat Transaksi</span>
               </button>
               <button class="asset-view-tab" data-tab="history" role="tab" aria-selected="false" aria-controls="pane-history" id="tab-history">
                 <svg class="tab-icon-svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
@@ -227,7 +315,75 @@
           </div>
         </div>
 
-        <!-- TAB CONTENT 3: HISTORIS PERFORMA (GRAFIK VALUASI) -->
+        <!-- TAB CONTENT 3: RIWAYAT TRANSAKSI & LEDGER PUBLIK -->
+        <div class="asset-tab-pane" id="pane-transactions" role="tabpanel" aria-labelledby="tab-transactions" hidden>
+          <div class="transactions-panel tab-embedded">
+            <div class="transactions-embedded-header">
+              <div>
+                <div class="panel-eyebrow">Audit Trail &amp; Ledger Publik</div>
+                <h3 class="embedded-chart-h3">Riwayat Transaksi Terverifikasi</h3>
+                <p class="transactions-subtext">Semua transaksi pembelian (buy), penjualan (sell), deposit kas, dan penarikan tercatat secara objektif, lengkap dengan kurs eksekusi, nota biaya, dan dokumentasi realisasi laba/rugi.</p>
+              </div>
+
+              <!-- Filter Tipe Transaksi -->
+              <div class="tx-filter-group" role="group" aria-label="Filter Tipe Transaksi">
+                <button type="button" class="tx-filter-btn active" data-filter="ALL">Semua</button>
+                <button type="button" class="tx-filter-btn" data-filter="BUY">Beli (BUY)</button>
+                <button type="button" class="tx-filter-btn" data-filter="SELL">Jual (SELL)</button>
+                <button type="button" class="tx-filter-btn" data-filter="DEPOSIT">Deposit</button>
+              </div>
+            </div>
+
+            <!-- Transaction Stats Summary Bar -->
+            <div class="tx-stats-summary-bar">
+              <div class="tx-stat-box">
+                <span class="tx-stat-label">Total Transaksi</span>
+                <span class="tx-stat-val font-mono" id="tx-stat-total-count">0</span>
+              </div>
+              <div class="tx-stat-box">
+                <span class="tx-stat-label">Total Kas Masuk (Deposit)</span>
+                <span class="tx-stat-val font-mono" id="tx-stat-total-deposit">Rp 0</span>
+              </div>
+              <div class="tx-stat-box">
+                <span class="tx-stat-label">Total Modal Pembelian</span>
+                <span class="tx-stat-val font-mono" id="tx-stat-total-buy">Rp 0</span>
+              </div>
+              <div class="tx-stat-box">
+                <span class="tx-stat-label">Laba Terealisasi (Realized PnL)</span>
+                <span class="tx-stat-val font-mono badge-mono" id="tx-stat-realized-pnl">Rp 0</span>
+              </div>
+            </div>
+
+            <!-- Transactions Table for Desktop / Tablet -->
+            <div class="tx-table-container">
+              <table class="tx-table" id="tx-table">
+                <thead>
+                  <tr>
+                    <th>Waktu &amp; Tanggal</th>
+                    <th>Tipe</th>
+                    <th>Aset</th>
+                    <th>Jumlah Unit</th>
+                    <th>Harga / Kurs</th>
+                    <th>Total Nilai</th>
+                    <th>Biaya / Fee</th>
+                    <th>ID Referensi</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tx-table-body">
+                  <!-- Generated dynamically by app.js -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mobile Transaction Cards for Smartphones -->
+            <div class="tx-mobile-cards" id="tx-mobile-cards">
+              <!-- Generated dynamically by app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 4: HISTORIS PERFORMA (GRAFIK VALUASI) -->
         <div class="asset-tab-pane" id="pane-history" role="tabpanel" aria-labelledby="tab-history" hidden>
           <div class="chart-container-card tab-embedded">
             <div class="chart-embedded-header">
@@ -501,56 +657,51 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
 -----END PGP PUBLIC KEY BLOCK-----</pre>
       </div>
     </div>
-  <!-- Modal: Install Sentinel -->
+  </div>
+
+  <!-- Modal: Sentinel (Coming Soon) -->
   <div class="modal-backdrop" id="sentinel-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="sentinel-modal-title">
-    <div class="modal-card modal-terminal-card">
-      <button type="button" class="modal-close-btn" id="close-sentinel-btn" aria-label="Tutup instalasi">&times;</button>
+    <div class="modal-card modal-terminal-card sentinel-coming-soon-card">
+      <button type="button" class="modal-close-btn" id="close-sentinel-btn" aria-label="Tutup dialog">&times;</button>
       <div class="modal-header">
-        <div class="panel-eyebrow">Almere Suite · Daemon</div>
-        <h2 id="sentinel-modal-title" class="modal-title">Install Sentinel</h2>
+        <div class="panel-eyebrow">Almere Suite &middot; Node &amp; Telemetry</div>
+        <div class="title-with-badge">
+          <h2 id="sentinel-modal-title" class="modal-title">Sentinel Telemetry</h2>
+          <span class="badge-coming-soon-lg">Coming Soon</span>
+        </div>
         <p class="modal-subtitle">
-          Daemon monitoring portofolio &amp; node sinkronisasi on-chain real-time Almere &amp; Co.
+          Daemon monitoring portofolio mandiri &amp; node sinkronisasi on-chain real-time Almere &amp; Co sedang dalam tahap audit keamanan sebelum dirilis ke publik.
         </p>
       </div>
 
-      <div class="terminal-container">
-        <div class="terminal-bar">
-          <div class="terminal-dots">
-            <span class="t-dot"></span>
-            <span class="t-dot"></span>
-            <span class="t-dot"></span>
-          </div>
-          <span class="terminal-title">bash — sentinel-install</span>
+      <div class="coming-soon-preview-box">
+        <div class="cs-status-indicator">
+          <span class="cs-pulse-dot"></span>
+          <span class="cs-status-text">Status: Tahap Finalisasi Audit Keamanan On-Chain</span>
         </div>
-        <div class="terminal-body">
-          <div class="terminal-line">
-            <span class="terminal-prompt">$</span>
-            <span class="terminal-cmd" id="sentinel-install-cmd-text">curl -fsSL https://sentinel.almere.co/install.sh | bash</span>
-            <button type="button" class="copy-cmd-btn" id="copy-sentinel-cmd" aria-label="Salin perintah">
-              <span id="copy-sentinel-cmd-text">Salin</span>
-            </button>
-          </div>
-        </div>
+        <p class="cs-description">
+          Dengan Sentinel, publik dan anggota komunitas dapat mengawasi verifikasi cadangan aset 24/7 langsung dari terminal perangkat pribadi (Linux, macOS, Windows) secara independen tanpa ketergantungan pada backend terpusat.
+        </p>
       </div>
 
       <div class="sentinel-features-list">
         <div class="feat-item">
           <span class="feat-dot"></span>
-          <span>Zero-Knowledge &amp; Read-Only Telemetry (Tanpa akses private key)</span>
+          <span>Zero-Knowledge &amp; Read-Only Telemetry (100% aman tanpa pernah mengakses private key)</span>
         </div>
         <div class="feat-item">
           <span class="feat-dot"></span>
-          <span>Kompatibel dengan Linux, macOS, dan Windows (WSL2 / PowerShell)</span>
+          <span>Pelacakan harga pasar 24/7 langsung ke layer konsensus Hyperliquid L1 &amp; Bitcoin node</span>
         </div>
         <div class="feat-item">
           <span class="feat-dot"></span>
-          <span>Heartbeat terenkripsi langsung ke verifier Almere &amp; Co</span>
+          <span>Heartbeat kriptografis yang diverifikasi langsung oleh verifier publik Almere &amp; Co</span>
         </div>
       </div>
 
       <div class="modal-actions modal-actions-between">
-        <span class="version-tag font-mono">v1.4.2 · Stable</span>
-        <button type="button" class="btn-submit" id="done-sentinel-btn">Selesai</button>
+        <span class="version-tag font-mono">Peluncuran: Kuartal 4 2026 &middot; Segera Hadir</span>
+        <button type="button" class="btn-submit" id="done-sentinel-btn">Mengerti</button>
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 {
-  "totalValuationUsd": 515.75,
-  "totalValuationIdr": 9186593,
+  "totalValuationUsd": 515.74,
+  "totalValuationIdr": 9186320,
   "usdIdrRate": 17812,
   "holdings": [
     {
@@ -29,15 +29,15 @@
       "unitsText": "1.277149 HYPE",
       "avgBuyPriceUsd": 79.13,
       "avgBuyPriceIdr": 1409389,
-      "currentPriceUsd": 91.28,
-      "currentPriceIdr": 1625960,
+      "currentPriceUsd": 91.27,
+      "currentPriceIdr": 1625746,
       "totalCostIdr": 1800000,
       "totalCostUsd": 101,
-      "valueUsd": 116.58,
-      "valueIdr": 2076593,
-      "unrealizedPnlIdr": 276593,
-      "unrealizedPnlUsd": 15.53,
-      "unrealizedPnlPct": 15.37,
+      "valueUsd": 116.57,
+      "valueIdr": 2076320,
+      "unrealizedPnlIdr": 276320,
+      "unrealizedPnlUsd": 15.51,
+      "unrealizedPnlPct": 15.35,
       "change30d": "+15.4%",
       "allocationPct": 22.6
     }
@@ -49,12 +49,12 @@
   "documentedSales": [],
   "marketPrices": {
     "BTC": {
-      "usd": 80562.97,
-      "idr": 1434987622
+      "usd": 80586.75,
+      "idr": 1435411191
     },
     "HYPE": {
-      "usd": 91.2845,
-      "idr": 1625960
+      "usd": 91.2725,
+      "idr": 1625746
     }
   },
   "transactions": [
@@ -96,5 +96,5 @@
     }
   ],
   "transactionCount": 2,
-  "lastUpdated": "2026-09-20T13:05:01.464Z"
+  "lastUpdated": "2026-09-20T13:06:00.690Z"
 }

@@ -934,10 +934,15 @@
     const tableBody = document.getElementById('tx-table-body');
     const mobileCards = document.getElementById('tx-mobile-cards');
     const currConfig = CURRENCIES[activeCurrencyCode] || CURRENCIES.USD;
+    const usdRate = liveCryptoPrices.USD_IDR || 17812;
+
     // 1. Filter Transactions
     const filtered = filter === 'ALL'
       ? currentTransactions
       : currentTransactions.filter(t => t.type === filter);
+
+    const filterLabel = filter === 'ALL' ? '' : filter === 'BUY' ? 'pembelian (BUY)' : filter === 'SELL' ? 'penjualan (SELL)' : filter === 'DEPOSIT' ? 'deposit' : filter;
+    const emptyMsg = filterLabel ? `Belum ada riwayat transaksi ${filterLabel} yang tercatat.` : 'Belum ada riwayat transaksi yang tercatat di Ledger.';
 
     // 3. Render Desktop Table
     if (tableBody) {
@@ -945,7 +950,7 @@
         tableBody.innerHTML = `
           <tr>
             <td colspan="9" style="text-align: center; padding: 40px; color: var(--text-muted);">
-              Belum ada riwayat transaksi (${filter}) yang tercatat.
+              ${emptyMsg}
             </td>
           </tr>
         `;
@@ -1009,7 +1014,7 @@
       if (filtered.length === 0) {
         mobileCards.innerHTML = `
           <div style="text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px;">
-            Belum ada transaksi tercatat.
+            ${emptyMsg}
           </div>
         `;
       } else {

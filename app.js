@@ -977,7 +977,7 @@
           if (isSell && typeof t.sale_pnl_idr === 'number') {
             const pnlConverted = Math.round(((t.sale_pnl_idr || 0) / usdRate) * currConfig.rate);
             const isProfit = t.sale_pnl_idr >= 0;
-            saleNoteHtml = `<span class="tx-sale-note ${isProfit ? 'mono-up' : 'mono-down'}">Realisasi: ${isProfit ? '+' : ''}${currConfig.symbol}${pnlConverted.toLocaleString(currConfig.locale)}</span>`;
+            saleNoteHtml = `<span class="tx-sale-note ${isProfit ? 'mono-up' : 'mono-down'}">PNL: ${isProfit ? '+' : ''}${currConfig.symbol}${pnlConverted.toLocaleString(currConfig.locale)}</span>`;
           }
 
           rowsHtml += `
@@ -1036,7 +1036,7 @@
           if (isSell && typeof t.sale_pnl_idr === 'number') {
             const pnlConverted = Math.round(((t.sale_pnl_idr || 0) / usdRate) * currConfig.rate);
             const isProfit = t.sale_pnl_idr >= 0;
-            saleNoteHtml = `<div class="${isProfit ? 'mono-up' : 'mono-down'}" style="font-size: 11px; margin-top: 2px;">Realisasi: ${isProfit ? '+' : ''}${currConfig.symbol}${pnlConverted.toLocaleString(currConfig.locale)}</div>`;
+            saleNoteHtml = `<div class="${isProfit ? 'mono-up' : 'mono-down'}" style="font-size: 11px; margin-top: 2px;">PNL: ${isProfit ? '+' : ''}${currConfig.symbol}${pnlConverted.toLocaleString(currConfig.locale)}</div>`;
           }
 
           cardsHtml += `
@@ -1143,7 +1143,7 @@
               </div>
 
               <div class="col-metric">
-                <div class="col-label">${isCrypto ? 'Laba / Rugi (PnL)' : 'Status Cadangan'}</div>
+                <div class="col-label">${isCrypto ? 'PNL' : 'Status Cadangan'}</div>
                 <div class="change-tag ${isCrypto ? (isProfit ? 'mono-up' : 'mono-down') : ''}" style="${!isCrypto ? 'background: rgba(255,255,255,0.06); color: var(--text-secondary);' : ''}">
                   ${changeBadgeText}
                 </div>
@@ -1242,7 +1242,7 @@
         if (badgePeriod) badgePeriod.textContent = 'bulan ini';
       } else if (REALIZED_PNL_USD > 0) {
         badgeGrowthVal.textContent = `+$${REALIZED_PNL_USD.toLocaleString('en-US')}`;
-        if (badgePeriod) badgePeriod.textContent = 'laba terealisasi';
+        if (badgePeriod) badgePeriod.textContent = 'PNL terealisasi';
       } else {
         badgeGrowthVal.textContent = '100%';
         if (badgePeriod) badgePeriod.textContent = 'kas aman';

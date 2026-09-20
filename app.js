@@ -11,6 +11,8 @@
   let BASE_HOLDINGS = {};
   let currentHoldings = [];
   let BASE_TOTAL_USD = 0;
+  let REALIZED_PNL_USD = 0;
+  let REALIZED_PNL_IDR = 0;
 
   const ASSET_THEMES = {
     HYPE: { icon: 'H', color: '#38ef7d', name: 'Hyperliquid' },
@@ -1256,8 +1258,8 @@
 
     // 4. Update Performance Badge
     const badgeGrowthVal = document.getElementById('badge-growth-val');
+    const badgePeriod = document.querySelector('.badge-period');
     if (badgeGrowthVal) {
-      // Find overall crypto profit
       let totalCostUsd = 0;
       let totalCryptoValUsd = 0;
       currentHoldings.forEach(h => {
@@ -1266,13 +1268,95 @@
           totalCryptoValUsd += (h.valueUsd || 0);
         }
       });
-      const growthPct = totalCostUsd > 0 ? ((totalCryptoValUsd - totalCostUsd) / totalCostUsd) * 100 : 0;
-      const sign = growthPct >= 0 ? '+' : '';
-      badgeGrowthVal.textContent = totalCostUsd > 0 ? `${sign}${growthPct.toFixed(1)}%` : '0.0%';
+      if (totalCostUsd > 0) {
+        const growthPct = ((totalCryptoValUsd - totalCostUsd) / totalCostUsd) * 100;
+        const sign = growthPct >= 0 ? '+' : '';
+        badgeGrowthVal.textContent = `${sign}${growthPct.toFixed(1)}%`;
+        if (badgePeriod) badgePeriod.textContent = 'bulan ini';
+      } else if (REALIZED_PNL_USD > 0) {
+        badgeGrowthVal.textContent = `+$${REALIZED_PNL_USD.toLocaleString('en-US')}`;
+        if (badgePeriod) badgePeriod.textContent = 'laba terealisasi';
+      } else {
+        badgeGrowthVal.textContent = '100%';
+        if (badgePeriod) badgePeriod.textContent = 'kas aman';
+      }
     }
+
+    // 5. Update Dynamic Market Ticker Bar (Strictly reflects held assets)
+    renderMarketTicker();
 
     // Rebind Donut & Legend hover interactions
     bindAllocationInteractions();
+  }
+
+  // --- 11. DYNAMIC 24/7 LIVE CRYPTO MARKET TICKER ---
+  // Pastikan HANYA koin yang sedang dipegang yang ditampilkan di feed.
+  // Jika Hyperliquid dijual (0 HYPE tersisa), feed tidak lagi menampilkan HYPE sama sekali.
+  function renderMarketTicker() {
+    const scrollContainer = document.getElementById('ticker-items-scroll');
+    const badgeEl = document.getElementById('ticker-source-badge');
+    if (!scrollContainer) return;
+
+    // Filter aset kripto aktif yang memiliki saldo > 0
+    const activeCryptos = (currentHoldings || []).filter(h => h.code !== 'CASH' && h.quantity > 0.000001);
+    const usdIdrRate = liveCryptoPrices.USD_IDR || 17812;
+
+    let chipsHtml = '';
+    let sources = [];
+
+    if (activeCryptos.length === 0) {
+      // Jika TIDAK ADA kripto yang sedang dipegang (100% Kas Tunai setelah penjualan):
+      // Hilangkan seluruh indikasi HYPE/BTC agar publik tidak bingung.
+      chipsHtml = `
+        <div class="ticker-chip" id="ticker-chip-usdidr">
+          <span class="chip-coin">USD/IDR</span>
+          <span class="chip-price font-mono" id="ticker-usdidr-val">Rp ${usdIdrRate.toLocaleString('id-ID')}</span>
+        </div>
+        <div class="ticker-chip chip-cash-status">
+          <span class="chip-coin">KAS</span>
+          <span class="chip-price font-mono">100% Cadangan Tunai</span>
+          <span class="chip-change mono-neutral">Liquid</span>
+        </div>
+      `;
+      if (badgeEl) badgeEl.textContent = 'Bank Indonesia · FX Market';
+    } else {
+      // Render chip HANYA untuk koin kripto yang benar-benar aktif dipegang
+      activeCryptos.forEach(c => {
+        const code = c.code.toUpperCase();
+        const priceObj = liveCryptoPrices[code] || { usd: c.currentPriceUsd || 0 };
+        const priceVal = priceObj.usd || c.currentPriceUsd || 0;
+        const priceFormatted = priceVal >= 1000
+          ? `$${priceVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          : `$${priceVal.toFixed(2)}`;
+
+        chipsHtml += `
+          <div class="ticker-chip" id="ticker-chip-${code.toLowerCase()}">
+            <span class="chip-coin">${code}/USD</span>
+            <span class="chip-price font-mono" id="ticker-${code.toLowerCase()}-val">${priceFormatted}</span>
+            <span class="chip-change mono-up">Live</span>
+          </div>
+        `;
+
+        if (code === 'HYPE') sources.push('Hyperliquid L1');
+        else if (code === 'BTC') sources.push('Binance');
+        else sources.push(`${code} On-Chain`);
+      });
+
+      // Tambahkan chip konversi kurs USD/IDR
+      chipsHtml += `
+        <div class="ticker-chip" id="ticker-chip-usdidr">
+          <span class="chip-coin">USD/IDR</span>
+          <span class="chip-price font-mono" id="ticker-usdidr-val">Rp ${usdIdrRate.toLocaleString('id-ID')}</span>
+        </div>
+      `;
+
+      if (badgeEl) {
+        sources.push('FX Rate');
+        badgeEl.textContent = sources.join(' · ');
+      }
+    }
+
+    scrollContainer.innerHTML = chipsHtml;
   }
 
   // --- 11. 24/7 REALTIME LIVE CRYPTO MARKET POLLER ---
@@ -1312,13 +1396,8 @@
         }
       } catch (e) {}
 
-      // Update Ticker Chips in Header / Summary
-      const btcEl = document.getElementById('ticker-btc-val');
-      const hypeEl = document.getElementById('ticker-hype-val');
-      const usdidrEl = document.getElementById('ticker-usdidr-val');
-      if (btcEl && liveCryptoPrices.BTC.usd) btcEl.textContent = `$${liveCryptoPrices.BTC.usd.toLocaleString('en-US')}`;
-      if (hypeEl && liveCryptoPrices.HYPE.usd) hypeEl.textContent = `$${liveCryptoPrices.HYPE.usd.toFixed(2)}`;
-      if (usdidrEl && liveCryptoPrices.USD_IDR) usdidrEl.textContent = `Rp ${liveCryptoPrices.USD_IDR.toLocaleString('id-ID')}`;
+      // Update Ticker Chips dynamically
+      renderMarketTicker();
 
       // Recalculate Holdings and Portfolio Valuation Dynamically in Real-time
       if (currentHoldings && currentHoldings.length > 0) {
@@ -1404,6 +1483,8 @@
 
       BASE_TOTAL_USD = data.totalValuationUsd;
       currentHoldings = data.holdings || [];
+      if (typeof data.realizedPnlUsd === 'number') REALIZED_PNL_USD = data.realizedPnlUsd;
+      if (typeof data.realizedPnlIdr === 'number') REALIZED_PNL_IDR = data.realizedPnlIdr;
       if (Array.isArray(data.transactions)) {
         currentTransactions = data.transactions;
       }
@@ -1419,6 +1500,7 @@
       if (syncCounter) syncCounter.textContent = 'Baru saja';
 
       renderHoldingsAndAllocations();
+      renderMarketTicker();
       renderTransactions(activeTxFilter);
       updateCurrencyUI(activeCurrencyCode, false);
     } catch (err) {

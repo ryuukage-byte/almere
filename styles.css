@@ -2245,6 +2245,11 @@ body {
   background: rgba(255, 94, 98, 0.1);
 }
 
+.mono-neutral {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .ticker-badge {
   font-size: 10.5px;
   color: var(--text-muted);

@@ -934,40 +934,7 @@
     const tableBody = document.getElementById('tx-table-body');
     const mobileCards = document.getElementById('tx-mobile-cards');
     const currConfig = CURRENCIES[activeCurrencyCode] || CURRENCIES.USD;
-    const usdRate = liveCryptoPrices.USD_IDR || 17800;
-
-    // 1. Calculate Summary Stats
-    const totalCount = currentTransactions.length;
-    let totalDepositIdr = 0;
-    let totalBuyCostIdr = 0;
-    let totalRealizedPnlIdr = 0;
-
-    currentTransactions.forEach(t => {
-      const amt = parseFloat(t.amount_idr) || 0;
-      if (t.type === 'DEPOSIT') totalDepositIdr += amt;
-      if (t.type === 'BUY') totalBuyCostIdr += amt;
-      if (t.type === 'SELL') totalRealizedPnlIdr += (parseFloat(t.sale_pnl_idr) || 0);
-    });
-
-    const totalDepositConverted = Math.round((totalDepositIdr / usdRate) * currConfig.rate);
-    const totalBuyConverted = Math.round((totalBuyCostIdr / usdRate) * currConfig.rate);
-    const totalPnlConverted = Math.round((totalRealizedPnlIdr / usdRate) * currConfig.rate);
-
-    const statCountEl = document.getElementById('tx-stat-total-count');
-    const statDepEl = document.getElementById('tx-stat-total-deposit');
-    const statBuyEl = document.getElementById('tx-stat-total-buy');
-    const statPnlEl = document.getElementById('tx-stat-realized-pnl');
-
-    if (statCountEl) statCountEl.textContent = totalCount;
-    if (statDepEl) statDepEl.textContent = `${currConfig.symbol}${totalDepositConverted.toLocaleString(currConfig.locale)}`;
-    if (statBuyEl) statBuyEl.textContent = `${currConfig.symbol}${totalBuyConverted.toLocaleString(currConfig.locale)}`;
-    if (statPnlEl) {
-      const sign = totalRealizedPnlIdr >= 0 ? '+' : '';
-      statPnlEl.textContent = `${sign}${currConfig.symbol}${totalPnlConverted.toLocaleString(currConfig.locale)}`;
-      statPnlEl.className = `tx-stat-val font-mono badge-mono ${totalRealizedPnlIdr >= 0 ? 'mono-up' : 'mono-down'}`;
-    }
-
-    // 2. Filter Transactions
+    // 1. Filter Transactions
     const filtered = filter === 'ALL'
       ? currentTransactions
       : currentTransactions.filter(t => t.type === filter);

@@ -53,6 +53,61 @@ html {
   overflow-x: hidden;
 }
 
+/* Global Modern Sleek Scrollbar (Eliminates ugly Windows default scrollbars & arrow buttons) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 0px;
+}
+
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Completely remove all horizontal scrollbars across all browsers & containers */
+*::-webkit-scrollbar:horizontal,
+::-webkit-scrollbar:horizontal {
+  display: none !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+/* Hide scrollbars for all scrollable sections while retaining drag & touch swipe */
+.no-scrollbar,
+.tx-table-container,
+.asset-view-tabs,
+.ticker-items-scroll,
+.tx-filter-group,
+.pgp-box pre {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.no-scrollbar::-webkit-scrollbar,
+.tx-table-container::-webkit-scrollbar,
+.asset-view-tabs::-webkit-scrollbar,
+.ticker-items-scroll::-webkit-scrollbar,
+.tx-filter-group::-webkit-scrollbar,
+.pgp-box pre::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 body {
   min-height: 100vh;
   background-color: var(--bg-black);
@@ -2352,6 +2407,22 @@ body {
   overflow-x: auto;
   border: 1px solid var(--border-subtle);
   border-radius: 10px;
+  cursor: grab;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tx-table-container.is-dragging {
+  cursor: grabbing !important;
+  cursor: -webkit-grabbing !important;
+  user-select: none !important;
+}
+
+.tx-table-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .tx-table {

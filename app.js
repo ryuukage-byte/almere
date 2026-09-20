@@ -928,6 +928,68 @@
   });
 
   /**
+   * Drag-to-Scroll (Grab & Drag) Handler
+   * Allows users to drag scrollable containers with mouse smoothly without ugly system scrollbars
+   */
+  function enableDragScroll(container) {
+    if (!container) return;
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let hasDragged = false;
+
+    container.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      if (e.target.tagName === 'INPUT' || (e.target.classList && e.target.classList.contains('tx-ref-code'))) {
+        return;
+      }
+      isDown = true;
+      hasDragged = false;
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+      container.classList.add('is-dragging');
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isDown) return;
+      isDown = false;
+      container.classList.remove('is-dragging');
+    });
+
+    container.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      if (Math.abs(walk) > 4) {
+        hasDragged = true;
+      }
+      container.scrollLeft = scrollLeft - walk;
+    });
+
+    container.addEventListener('click', (e) => {
+      if (hasDragged) {
+        e.preventDefault();
+        e.stopPropagation();
+        hasDragged = false;
+      }
+    }, true);
+  }
+
+  // Initialize drag scroll for all horizontal scrollable containers
+  const txTableContainer = document.querySelector('.tx-table-container');
+  if (txTableContainer) enableDragScroll(txTableContainer);
+
+  const tickerScrollContainer = document.getElementById('ticker-items-scroll');
+  if (tickerScrollContainer) enableDragScroll(tickerScrollContainer);
+
+  const assetTabsContainer = document.querySelector('.asset-view-tabs');
+  if (assetTabsContainer) enableDragScroll(assetTabsContainer);
+
+  const txFilterGroup = document.querySelector('.tx-filter-group');
+  if (txFilterGroup) enableDragScroll(txFilterGroup);
+
+  /**
    * Renders Transaction History table, mobile cards, and summary stats
    */
   function renderTransactions(filter = activeTxFilter) {

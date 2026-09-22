@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Website portofolio investasi publik milik Almere & Co. Menghadirkan transparansi kepemilikan aset secara objektif, analitis, dan apa adanya tanpa mengekspos raw wallet address.",
   "scripts": {
-    "build": "echo 'Static assets ready'",
     "start": "node backend/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

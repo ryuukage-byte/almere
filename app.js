@@ -33,30 +33,10 @@
     };
   }
 
-  // Real-time exchange rates against USD
+  // Supported Currencies: Pure 1:1 Native Parity between USD and IDR
   const CURRENCIES = {
     USD: { symbol: '$', rate: 1.0, locale: 'en-US', digits: 0, name: 'Dolar AS' },
-    IDR: { symbol: 'Rp ', rate: 17800, locale: 'id-ID', digits: 0, name: 'Rupiah Indonesia' },
-    SGD: { symbol: 'S$', rate: 1.34, locale: 'en-SG', digits: 0, name: 'Dolar Singapura' },
-    EUR: { symbol: '€', rate: 0.92, locale: 'de-DE', digits: 0, name: 'Euro' },
-    GBP: { symbol: '£', rate: 0.78, locale: 'en-GB', digits: 0, name: 'Pound Sterling' },
-    JPY: { symbol: '¥', rate: 154.2, locale: 'ja-JP', digits: 0, name: 'Yen Jepang' },
-    AUD: { symbol: 'A$', rate: 1.52, locale: 'en-AU', digits: 0, name: 'Dolar Australia' },
-    CAD: { symbol: 'CA$', rate: 1.37, locale: 'en-CA', digits: 0, name: 'Dolar Kanada' },
-    CHF: { symbol: 'CHF ', rate: 0.89, locale: 'de-CH', digits: 0, name: 'Franc Swiss' },
-    CNY: { symbol: '¥', rate: 7.23, locale: 'zh-CN', digits: 0, name: 'Yuan Tiongkok' },
-    HKD: { symbol: 'HK$', rate: 7.81, locale: 'zh-HK', digits: 0, name: 'Dolar Hong Kong' },
-    KRW: { symbol: '₩', rate: 1375, locale: 'ko-KR', digits: 0, name: 'Won Korea Selatan' },
-    MYR: { symbol: 'RM ', rate: 4.71, locale: 'ms-MY', digits: 0, name: 'Ringgit Malaysia' },
-    THB: { symbol: '฿', rate: 36.6, locale: 'th-TH', digits: 0, name: 'Baht Thailand' },
-    VND: { symbol: '₫', rate: 25400, locale: 'vi-VN', digits: 0, name: 'Dong Vietnam' },
-    PHP: { symbol: '₱', rate: 58.2, locale: 'en-PH', digits: 0, name: 'Peso Filipina' },
-    TWD: { symbol: 'NT$', rate: 32.4, locale: 'zh-TW', digits: 0, name: 'Dolar Taiwan' },
-    INR: { symbol: '₹', rate: 83.5, locale: 'en-IN', digits: 0, name: 'Rupee India' },
-    AED: { symbol: 'AED ', rate: 3.67, locale: 'en-AE', digits: 0, name: 'Dirham UEA' },
-    SAR: { symbol: 'SAR ', rate: 3.75, locale: 'ar-SA', digits: 0, name: 'Riyal Arab Saudi' },
-    NZD: { symbol: 'NZ$', rate: 1.66, locale: 'en-NZ', digits: 0, name: 'Dolar Selandia Baru' },
-    BRL: { symbol: 'R$ ', rate: 5.45, locale: 'pt-BR', digits: 0, name: 'Real Brasil' }
+    IDR: { symbol: 'Rp ', rate: 17818, locale: 'id-ID', digits: 0, name: 'Rupiah Indonesia' }
   };
 
   let activeCurrencyCode = 'USD';
@@ -1478,6 +1458,50 @@
     scrollContainer.innerHTML = chipsHtml;
   }
 
+  // --- 10.5 REAL-TIME USD/IDR FOREX POLLER (1:1 PARITY) ---
+  async function fetchLiveForexRates() {
+    try {
+      let idrRate = null;
+
+      // 1. Primary: open.er-api.com (real-time USD/IDR exchange rate)
+      try {
+        const res = await fetch('https://open.er-api.com/v6/latest/USD');
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.rates?.IDR && data.rates.IDR > 10000) {
+            idrRate = Math.round(data.rates.IDR);
+          }
+        }
+      } catch (e) {}
+
+      // 2. Fallback: jsDelivr currency-api
+      if (!idrRate) {
+        try {
+          const res = await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.usd?.idr && data.usd.idr > 10000) {
+              idrRate = Math.round(data.usd.idr);
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (idrRate) {
+        liveCryptoPrices.USD_IDR = idrRate;
+        CURRENCIES.IDR.rate = idrRate;
+        renderMarketTicker();
+
+        if (activeCurrencyCode === 'IDR') {
+          updateCurrencyUI('IDR', false);
+          renderTransactions(activeTxFilter);
+        }
+      }
+    } catch (err) {
+      console.warn('Live USD/IDR forex poller warning:', err.message);
+    }
+  }
+
   // --- 11. 24/7 REALTIME LIVE CRYPTO MARKET POLLER ---
   async function fetchLiveMarketPrices() {
     try {
@@ -1515,6 +1539,28 @@
         }
       } catch (e) {}
 
+      // 2.5 CoinGecko fallback for BTC & HYPE if primary failed or blocked by ISP
+      if (!btcUsd || !hypeUsd) {
+        try {
+          const cgRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,hyperliquid&vs_currencies=usd,idr');
+          if (cgRes.ok) {
+            const cgData = await cgRes.json();
+            if (!btcUsd && cgData.bitcoin && cgData.bitcoin.usd) {
+              btcUsd = parseFloat(cgData.bitcoin.usd);
+            }
+            if (!hypeUsd && cgData.hyperliquid && cgData.hyperliquid.usd) {
+              hypeUsd = parseFloat(cgData.hyperliquid.usd);
+            }
+            if (!rawUsdtIdr && cgData.bitcoin && cgData.bitcoin.usd && cgData.bitcoin.idr) {
+              const impliedIdrRate = Math.round(cgData.bitcoin.idr / cgData.bitcoin.usd);
+              if (impliedIdrRate > 10000 && impliedIdrRate < 25000) {
+                rawUsdtIdr = impliedIdrRate;
+              }
+            }
+          }
+        } catch (e) {}
+      }
+
       // 3. Fetch Binance USDTIDR bookTicker for live stable crypto USD/IDR rate (Mid-Market Benchmark)
       try {
         const idrRes = await fetch('https://api.binance.com/api/v3/ticker/bookTicker?symbol=USDTIDR');
@@ -1540,15 +1586,15 @@
         } catch (e) {}
       }
 
-      // 4. Update in-memory live prices with smoothing/damping on forex rate to eliminate jitter
+      // 4. Update in-memory live prices with responsive forex rate
       if (btcUsd) liveCryptoPrices.BTC.usd = btcUsd;
       if (hypeUsd) liveCryptoPrices.HYPE.usd = hypeUsd;
-      if (rawUsdtIdr) {
-        const prevRate = liveCryptoPrices.USD_IDR || CURRENCIES.IDR.rate || 17758;
-        // Damped EMA filter: smooth out 80% micro-spread noise to keep IDR valuation stable
-        const smoothedRate = Math.round(prevRate * 0.8 + rawUsdtIdr * 0.2);
-        liveCryptoPrices.USD_IDR = smoothedRate;
-        CURRENCIES.IDR.rate = smoothedRate;
+      if (rawUsdtIdr && rawUsdtIdr > 10000 && rawUsdtIdr < 25000) {
+        const roundedRate = Math.round(rawUsdtIdr);
+        liveCryptoPrices.USD_IDR = roundedRate;
+        CURRENCIES.IDR.rate = roundedRate;
+      } else if (CURRENCIES.IDR.rate > 0) {
+        liveCryptoPrices.USD_IDR = Math.round(CURRENCIES.IDR.rate);
       }
 
       // Update Ticker Chips dynamically
@@ -1556,7 +1602,7 @@
 
       // Recalculate Holdings and Portfolio Valuation Dynamically in Real-time (1:1 Native Precision)
       if (currentHoldings && currentHoldings.length > 0) {
-        const rate = liveCryptoPrices.USD_IDR || CURRENCIES.IDR.rate || 17758;
+        const rate = liveCryptoPrices.USD_IDR || CURRENCIES.IDR.rate || 17840;
         CURRENCIES.IDR.rate = rate;
         let newTotalUsd = 0;
 
@@ -1660,6 +1706,14 @@
             if (data.marketPrices.BTC?.usd) liveCryptoPrices.BTC.usd = data.marketPrices.BTC.usd;
             if (data.marketPrices.HYPE?.usd) liveCryptoPrices.HYPE.usd = data.marketPrices.HYPE.usd;
           }
+          if (data.forexRates && typeof data.forexRates === 'object') {
+            Object.keys(CURRENCIES).forEach(code => {
+              if (code === 'USD') return;
+              if (typeof data.forexRates[code] === 'number') {
+                CURRENCIES[code].rate = data.forexRates[code];
+              }
+            });
+          }
           if (data.usdIdrRate) {
             liveCryptoPrices.USD_IDR = data.usdIdrRate;
             CURRENCIES.IDR.rate = data.usdIdrRate;
@@ -1669,6 +1723,14 @@
           renderTransactions(activeTxFilter);
           updateCurrencyUI(activeCurrencyCode, false);
         } else {
+          if (data.forexRates && typeof data.forexRates === 'object') {
+            Object.keys(CURRENCIES).forEach(code => {
+              if (code === 'USD') return;
+              if (typeof data.forexRates[code] === 'number') {
+                CURRENCIES[code].rate = data.forexRates[code];
+              }
+            });
+          }
           // Sync base quantities and costs without overwriting live market valuation
           (data.holdings || []).forEach(dh => {
             const match = currentHoldings.find(h => h.code === dh.code);
@@ -1712,11 +1774,15 @@
   updateCurrencyUI('USD', true);
   renderHistoricalChart();
   syncPortfolioFromBackend();
+  fetchLiveForexRates();
   fetchLiveMarketPrices();
 
   // Polling intervals:
-  // 1. Live market price movements every 15s (smooth, stable, non-volatile rate polling)
+  // 1. Live crypto market price movements every 15s (smooth, stable, non-volatile rate polling)
   setInterval(fetchLiveMarketPrices, 15000);
+
+  // 1.5 Real-time Forex USD/IDR exchange rate every 60s
+  setInterval(fetchLiveForexRates, 60000);
 
   // 2. Ledger sync every 20s to capture newly confirmed Triv transactions without race conditions
   setInterval(syncPortfolioFromBackend, 20000);

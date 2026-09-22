@@ -2,10 +2,10 @@
   "name": "almere-co-portfolio",
   "version": "1.0.0",
   "description": "Website portofolio investasi publik milik Almere & Co. Menghadirkan transparansi kepemilikan aset secara objektif, analitis, dan apa adanya tanpa mengekspos raw wallet address.",
-  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "build": "echo 'Static assets ready'",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

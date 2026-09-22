@@ -1,0 +1,13 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/portfolio/summary",
+      "destination": "/data/portfolio.json"
+    },
+    {
+      "source": "/api/portfolio/transactions",
+      "destination": "/data/portfolio.json"
+    }
+  ]
+}

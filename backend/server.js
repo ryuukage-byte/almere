@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 process.on('uncaughtException', (err) => {
   console.error('⚠️ [Uncaught Exception]:', err.message);
@@ -10,11 +11,10 @@ process.on('unhandledRejection', (reason) => {
 
 const http = require('http');
 const fs = require('fs');
-const path = require('path');
-const db = require('./db/index.js');
-const { calculatePortfolio } = require('./lib/portfolio_engine.js');
-const { getMarketPrices } = require('./lib/price_feed.js');
-const { startTelegramBot } = require('./lib/telegram_bot.js');
+const db = require('../db/index.js');
+const { calculatePortfolio } = require('../lib/portfolio_engine.js');
+const { getMarketPrices } = require('../lib/price_feed.js');
+const { startTelegramBot } = require('../lib/telegram_bot.js');
 
 const PORT = process.env.PORT || 4173;
 
@@ -96,7 +96,7 @@ const server = http.createServer(async (req, res) => {
 
   // --- STATIC FILE SERVING ---
   let filePathStr = reqPath === '/' ? '/index.html' : reqPath;
-  const filePath = path.join(__dirname, filePathStr);
+  const filePath = path.join(__dirname, '..', filePathStr);
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 

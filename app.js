@@ -36,7 +36,7 @@
   // Real-time exchange rates against USD
   const CURRENCIES = {
     USD: { symbol: '$', rate: 1.0, locale: 'en-US', digits: 0, name: 'Dolar AS' },
-    IDR: { symbol: 'Rp ', rate: 16250, locale: 'id-ID', digits: 0, name: 'Rupiah Indonesia' },
+    IDR: { symbol: 'Rp ', rate: 17800, locale: 'id-ID', digits: 0, name: 'Rupiah Indonesia' },
     SGD: { symbol: 'S$', rate: 1.34, locale: 'en-SG', digits: 0, name: 'Dolar Singapura' },
     EUR: { symbol: '€', rate: 0.92, locale: 'de-DE', digits: 0, name: 'Euro' },
     GBP: { symbol: '£', rate: 0.78, locale: 'en-GB', digits: 0, name: 'Pound Sterling' },
@@ -158,6 +158,9 @@
 
   // --- 4. CURRENCY SWITCHING LOGIC ---
   function updateCurrencyUI(newCode, isInitial = false) {
+    if (liveCryptoPrices && liveCryptoPrices.USD_IDR > 0) {
+      CURRENCIES.IDR.rate = liveCryptoPrices.USD_IDR;
+    }
     if (!CURRENCIES[newCode]) return;
     activeCurrencyCode = newCode;
     const config = CURRENCIES[newCode];
@@ -167,19 +170,44 @@
       currencyTriggerVal.textContent = `${newCode} (${config.symbol.trim()})`;
     }
 
-    // Update main total with odometer animation
-    const targetTotal = Math.round(BASE_TOTAL_USD * config.rate);
+    // Direct 1:1 total calculation without double-conversion rounding
+    let targetTotal = 0;
+    if (newCode === 'IDR') {
+      targetTotal = currentHoldings.reduce((sum, h) => sum + (h.valueIdr || 0), 0);
+      if (targetTotal === 0 && BASE_TOTAL_USD > 0) {
+        targetTotal = Math.round(BASE_TOTAL_USD * config.rate);
+      }
+    } else if (newCode === 'USD') {
+      targetTotal = currentHoldings.reduce((sum, h) => sum + (h.valueUsd || 0), 0);
+      if (targetTotal === 0 && BASE_TOTAL_USD > 0) {
+        targetTotal = BASE_TOTAL_USD;
+      }
+    } else {
+      targetTotal = Math.round(BASE_TOTAL_USD * config.rate);
+    }
+
     if (mainSymbolEl) mainSymbolEl.textContent = config.symbol;
     animateOdometer(totalValEl, targetTotal, config, {
       includeSymbol: false,
       duration: isInitial ? 1000 : 800
     });
 
-    // Update holding rows with odometer animation
+    // Update holding rows with direct native valuation (1:1 precision)
     const dynamicHoldingValEls = document.querySelectorAll('.asset-converted-val');
     dynamicHoldingValEls.forEach(el => {
-      const baseUsd = parseFloat(el.getAttribute('data-base-usd')) || 0;
-      const targetHolding = Math.round(baseUsd * config.rate);
+      const code = el.getAttribute('data-asset-code');
+      const holding = currentHoldings.find(h => h.code === code);
+      let targetHolding = 0;
+      if (newCode === 'IDR' && holding && typeof holding.valueIdr === 'number') {
+        targetHolding = holding.valueIdr;
+      } else if (newCode === 'USD' && holding && typeof holding.valueUsd === 'number') {
+        targetHolding = holding.valueUsd;
+      } else {
+        const baseUsd = (holding && typeof holding.valueUsd === 'number')
+          ? holding.valueUsd
+          : (parseFloat(el.getAttribute('data-base-usd')) || 0);
+        targetHolding = Math.round(baseUsd * config.rate);
+      }
       animateOdometer(el, targetHolding, config, {
         includeSymbol: true,
         duration: isInitial ? 1000 : 800
@@ -910,10 +938,11 @@
   // --- 9. TRANSACTION LEDGER & LIVE MARKET ENGINE ---
   let currentTransactions = [];
   let activeTxFilter = 'ALL';
+  let lastBackendUpdated = null;
   let liveCryptoPrices = {
-    BTC: { usd: 80450 },
-    HYPE: { usd: 90.95 },
-    USD_IDR: 17800
+    BTC: { usd: 85332 },
+    HYPE: { usd: 93.54 },
+    USD_IDR: 17758
   };
 
   // Filter Button Interactions
@@ -1029,20 +1058,36 @@
           const badgeClass = isBuy ? 'badge-tx-buy' : isSell ? 'badge-tx-sell' : isDeposit ? 'badge-tx-deposit' : 'badge-tx-withdraw';
           const badgeText = isBuy ? 'Beli' : isSell ? 'Jual' : isDeposit ? 'Deposit' : t.type;
 
-          const rateUsd = (parseFloat(t.rate_idr) || 0) / usdRate;
-          const rateConverted = Math.round(rateUsd * currConfig.rate);
+          let rateConverted, amtConverted, feeConverted, pnlConverted;
+          const isCurrentIdr = (activeCurrencyCode === 'IDR');
 
-          const amtUsd = (parseFloat(t.amount_idr) || 0) / usdRate;
-          const amtConverted = Math.round(amtUsd * currConfig.rate);
+          if (isCurrentIdr) {
+            rateConverted = Math.round(parseFloat(t.rate_idr) || 0);
+            amtConverted = Math.round(parseFloat(t.amount_idr) || 0);
+            feeConverted = Math.round(parseFloat(t.fee_idr) || 0);
+            if (isSell && typeof t.sale_pnl_idr === 'number') {
+              pnlConverted = Math.round(t.sale_pnl_idr || 0);
+            }
+          } else {
+            const effectiveUsdRate = usdRate || 17800;
+            const rateUsd = (parseFloat(t.rate_idr) || 0) / effectiveUsdRate;
+            rateConverted = Math.round(rateUsd * currConfig.rate);
 
-          const feeUsd = (parseFloat(t.fee_idr) || 0) / usdRate;
-          const feeConverted = Math.round(feeUsd * currConfig.rate);
+            const amtUsd = (parseFloat(t.amount_idr) || 0) / effectiveUsdRate;
+            amtConverted = Math.round(amtUsd * currConfig.rate);
+
+            const feeUsd = (parseFloat(t.fee_idr) || 0) / effectiveUsdRate;
+            feeConverted = Math.round(feeUsd * currConfig.rate);
+
+            if (isSell && typeof t.sale_pnl_idr === 'number') {
+              pnlConverted = Math.round(((t.sale_pnl_idr || 0) / effectiveUsdRate) * currConfig.rate);
+            }
+          }
 
           const units = parseFloat(t.quantity || 0).toLocaleString('en-US', { maximumFractionDigits: 6 });
 
           let saleNoteHtml = '';
           if (isSell && typeof t.sale_pnl_idr === 'number') {
-            const pnlConverted = Math.round(((t.sale_pnl_idr || 0) / usdRate) * currConfig.rate);
             const isProfit = t.sale_pnl_idr >= 0;
             saleNoteHtml = `<span class="tx-sale-note ${isProfit ? 'mono-up' : 'mono-down'}">PNL: ${isProfit ? '+' : ''}${currConfig.symbol}${pnlConverted.toLocaleString(currConfig.locale)}</span>`;
           }
@@ -1091,17 +1136,36 @@
           const badgeClass = isBuy ? 'badge-tx-buy' : isSell ? 'badge-tx-sell' : isDeposit ? 'badge-tx-deposit' : 'badge-tx-withdraw';
           const badgeText = isBuy ? 'Beli' : isSell ? 'Jual' : isDeposit ? 'Deposit' : t.type;
 
-          const rateUsd = (parseFloat(t.rate_idr) || 0) / usdRate;
-          const rateConverted = Math.round(rateUsd * currConfig.rate);
+          let rateConverted, amtConverted, feeConverted, pnlConverted;
+          const isCurrentIdr = (activeCurrencyCode === 'IDR');
 
-          const amtUsd = (parseFloat(t.amount_idr) || 0) / usdRate;
-          const amtConverted = Math.round(amtUsd * currConfig.rate);
+          if (isCurrentIdr) {
+            rateConverted = Math.round(parseFloat(t.rate_idr) || 0);
+            amtConverted = Math.round(parseFloat(t.amount_idr) || 0);
+            feeConverted = Math.round(parseFloat(t.fee_idr) || 0);
+            if (isSell && typeof t.sale_pnl_idr === 'number') {
+              pnlConverted = Math.round(t.sale_pnl_idr || 0);
+            }
+          } else {
+            const effectiveUsdRate = usdRate || 17800;
+            const rateUsd = (parseFloat(t.rate_idr) || 0) / effectiveUsdRate;
+            rateConverted = Math.round(rateUsd * currConfig.rate);
+
+            const amtUsd = (parseFloat(t.amount_idr) || 0) / effectiveUsdRate;
+            amtConverted = Math.round(amtUsd * currConfig.rate);
+
+            const feeUsd = (parseFloat(t.fee_idr) || 0) / effectiveUsdRate;
+            feeConverted = Math.round(feeUsd * currConfig.rate);
+
+            if (isSell && typeof t.sale_pnl_idr === 'number') {
+              pnlConverted = Math.round(((t.sale_pnl_idr || 0) / effectiveUsdRate) * currConfig.rate);
+            }
+          }
 
           const units = parseFloat(t.quantity || 0).toLocaleString('en-US', { maximumFractionDigits: 6 });
 
           let saleNoteHtml = '';
           if (isSell && typeof t.sale_pnl_idr === 'number') {
-            const pnlConverted = Math.round(((t.sale_pnl_idr || 0) / usdRate) * currConfig.rate);
             const isProfit = t.sale_pnl_idr >= 0;
             saleNoteHtml = `<div class="${isProfit ? 'mono-up' : 'mono-down'}" style="font-size: 11px; margin-top: 2px;">PNL: ${isProfit ? '+' : ''}${currConfig.symbol}${pnlConverted.toLocaleString(currConfig.locale)}</div>`;
           }
@@ -1128,7 +1192,7 @@
                 </div>
                 <div class="tx-card-field">
                   <span class="tx-card-label">Status</span>
-                  <span class="tx-card-val" style="color: #38ef7d; font-size: 11.5px;">✓ Terverifikasi</span>
+                  <span class="tx-card-val" style="color: #38ef7d; font-size: 11.5px;">✓ Selesai</span>
                 </div>
               </div>
               <div class="tx-card-footer">
@@ -1150,6 +1214,9 @@
     const donutCenterVal = document.getElementById('donut-center-val');
     const donutCenterSub = document.getElementById('donut-center-sub');
     const legendGrid = document.getElementById('allocation-legend-grid');
+    if (liveCryptoPrices && liveCryptoPrices.USD_IDR > 0) {
+      CURRENCIES.IDR.rate = liveCryptoPrices.USD_IDR;
+    }
     const currConfig = CURRENCIES[activeCurrencyCode] || CURRENCIES.USD;
 
     // 1. Render Holdings Panel
@@ -1168,29 +1235,47 @@
         let html = '';
         currentHoldings.forEach(h => {
           const theme = getAssetTheme(h.code);
-          const valConverted = Math.round(h.valueUsd * currConfig.rate);
-          const valFormatted = valConverted.toLocaleString(currConfig.locale, {
-            maximumFractionDigits: currConfig.digits,
-            minimumFractionDigits: currConfig.digits
-          });
-
           const isCrypto = h.code !== 'CASH';
-          const pnlPct = h.unrealizedPnlPct || 0;
+
+          let valConverted = 0;
+          let avgConverted = 0;
+          let liveConverted = 0;
+          let pnlConverted = 0;
+
+          if (activeCurrencyCode === 'IDR') {
+            valConverted = typeof h.valueIdr === 'number' ? h.valueIdr : Math.round((h.valueUsd || 0) * currConfig.rate);
+            avgConverted = typeof h.avgBuyPriceIdr === 'number' ? h.avgBuyPriceIdr : Math.round((h.avgBuyPriceUsd || 0) * currConfig.rate);
+            liveConverted = typeof h.currentPriceIdr === 'number' ? h.currentPriceIdr : Math.round((h.currentPriceUsd || 0) * currConfig.rate);
+            pnlConverted = typeof h.unrealizedPnlIdr === 'number' ? h.unrealizedPnlIdr : Math.round((h.unrealizedPnlUsd || 0) * currConfig.rate);
+          } else if (activeCurrencyCode === 'USD') {
+            valConverted = h.valueUsd || 0;
+            avgConverted = h.avgBuyPriceUsd || 0;
+            liveConverted = h.currentPriceUsd || 0;
+            pnlConverted = h.unrealizedPnlUsd || 0;
+          } else {
+            valConverted = Math.round((h.valueUsd || 0) * currConfig.rate);
+            avgConverted = Math.round((h.avgBuyPriceUsd || 0) * currConfig.rate);
+            liveConverted = Math.round((h.currentPriceUsd || 0) * currConfig.rate);
+            pnlConverted = Math.round((h.unrealizedPnlUsd || 0) * currConfig.rate);
+          }
+
+          const valFormatted = activeCurrencyCode === 'USD'
+            ? valConverted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            : Math.round(valConverted).toLocaleString(currConfig.locale);
+
+          const pnlPct = typeof h.unrealizedPnlPct === 'number' ? h.unrealizedPnlPct : 0;
           const isProfit = pnlPct >= 0;
-          const pnlConverted = Math.round((h.unrealizedPnlUsd || 0) * currConfig.rate);
 
           // Subtitles for units & prices
           let unitsSubText = h.unitsText;
           let metricSubText = '';
-          if (isCrypto && h.avgBuyPriceUsd > 0) {
-            const avgConverted = Math.round(h.avgBuyPriceUsd * currConfig.rate);
-            const liveConverted = Math.round((h.currentPriceUsd || 0) * currConfig.rate);
-            unitsSubText += ` · Beli: ${currConfig.symbol}${avgConverted.toLocaleString(currConfig.locale)}`;
-            metricSubText = `<div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Harga Live: ${currConfig.symbol}${liveConverted.toLocaleString(currConfig.locale)}</div>`;
+          if (isCrypto && avgConverted > 0) {
+            unitsSubText += ` · Beli: ${currConfig.symbol}${Math.round(avgConverted).toLocaleString(currConfig.locale)}`;
+            metricSubText = `<div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Harga Live: ${currConfig.symbol}${Math.round(liveConverted).toLocaleString(currConfig.locale)}</div>`;
           }
 
           const changeBadgeText = isCrypto
-            ? `${isProfit ? '▲ +' : '▼ '}${pnlPct.toFixed(1)}% (${currConfig.symbol}${Math.abs(pnlConverted).toLocaleString(currConfig.locale)})`
+            ? `${isProfit ? '▲ +' : '▼ '}${pnlPct.toFixed(1)}% (${currConfig.symbol}${Math.abs(Math.round(pnlConverted)).toLocaleString(currConfig.locale)})`
             : 'Cadangan Kas (Stabil)';
 
           html += `
@@ -1205,7 +1290,7 @@
 
               <div class="col-metric">
                 <div class="col-label">Valuasi Terkonversi</div>
-                <div class="col-value asset-converted-val odometer" data-base-usd="${h.valueUsd}">${currConfig.symbol}${valFormatted}</div>
+                <div class="col-value asset-converted-val odometer" data-asset-code="${h.code}" data-base-usd="${h.valueUsd}">${currConfig.symbol}${valFormatted}</div>
                 ${metricSubText}
               </div>
 
@@ -1396,7 +1481,21 @@
   // --- 11. 24/7 REALTIME LIVE CRYPTO MARKET POLLER ---
   async function fetchLiveMarketPrices() {
     try {
-      // 1. Fetch Hyperliquid official L1 API (Direct CORS-supported endpoint)
+      let btcUsd = null;
+      let hypeUsd = null;
+      let rawUsdtIdr = null;
+
+      // 1. Fetch Binance ticker for BTC (Primary Spot Gold Standard)
+      try {
+        const bRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+        if (bRes.ok) {
+          const bData = await bRes.json();
+          const p = parseFloat(bData.price);
+          if (p > 0) btcUsd = parseFloat(p.toFixed(2));
+        }
+      } catch (e) {}
+
+      // 2. Fetch Hyperliquid official L1 API (Primary for HYPE & fallback for BTC)
       try {
         const hlRes = await fetch('https://api.hyperliquid.xyz/info', {
           method: 'POST',
@@ -1405,37 +1504,60 @@
         });
         if (hlRes.ok) {
           const mids = await hlRes.json();
-          if (mids.HYPE) liveCryptoPrices.HYPE.usd = parseFloat(parseFloat(mids.HYPE).toFixed(2));
-          if (mids.BTC) liveCryptoPrices.BTC.usd = parseFloat(parseFloat(mids.BTC).toFixed(2));
+          if (mids.HYPE) {
+            const hp = parseFloat(mids.HYPE);
+            if (hp > 0) hypeUsd = parseFloat(hp.toFixed(2));
+          }
+          if (!btcUsd && mids.BTC) {
+            const bp = parseFloat(mids.BTC);
+            if (bp > 0) btcUsd = parseFloat(bp.toFixed(2));
+          }
         }
       } catch (e) {}
 
-      // 2. Fetch Binance ticker for BTC
+      // 3. Fetch Binance USDTIDR bookTicker for live stable crypto USD/IDR rate (Mid-Market Benchmark)
       try {
-        const bRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-        if (bRes.ok) {
-          const bData = await bRes.json();
-          if (bData.price) liveCryptoPrices.BTC.usd = parseFloat(parseFloat(bData.price).toFixed(2));
+        const idrRes = await fetch('https://api.binance.com/api/v3/ticker/bookTicker?symbol=USDTIDR');
+        if (idrRes.ok) {
+          const idrData = await idrRes.json();
+          const bid = parseFloat(idrData.bidPrice);
+          const ask = parseFloat(idrData.askPrice);
+          if (bid > 10000 && ask < 25000) {
+            rawUsdtIdr = (bid + ask) / 2;
+          }
         }
       } catch (e) {}
 
-      // 3. Fallback to /api/prices/live if server is active
-      try {
-        const sRes = await fetch('/api/prices/live');
-        if (sRes.ok) {
-          const sPrices = await sRes.json();
-          if (sPrices.HYPE?.usd) liveCryptoPrices.HYPE.usd = sPrices.HYPE.usd;
-          if (sPrices.BTC?.usd) liveCryptoPrices.BTC.usd = sPrices.BTC.usd;
-          if (sPrices.USD_IDR) liveCryptoPrices.USD_IDR = sPrices.USD_IDR;
-        }
-      } catch (e) {}
+      // Fallback single price ticker for USDTIDR
+      if (!rawUsdtIdr) {
+        try {
+          const idrSingle = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTIDR');
+          if (idrSingle.ok) {
+            const sData = await idrSingle.json();
+            const sp = parseFloat(sData.price);
+            if (sp > 10000 && sp < 25000) rawUsdtIdr = sp;
+          }
+        } catch (e) {}
+      }
+
+      // 4. Update in-memory live prices with smoothing/damping on forex rate to eliminate jitter
+      if (btcUsd) liveCryptoPrices.BTC.usd = btcUsd;
+      if (hypeUsd) liveCryptoPrices.HYPE.usd = hypeUsd;
+      if (rawUsdtIdr) {
+        const prevRate = liveCryptoPrices.USD_IDR || CURRENCIES.IDR.rate || 17758;
+        // Damped EMA filter: smooth out 80% micro-spread noise to keep IDR valuation stable
+        const smoothedRate = Math.round(prevRate * 0.8 + rawUsdtIdr * 0.2);
+        liveCryptoPrices.USD_IDR = smoothedRate;
+        CURRENCIES.IDR.rate = smoothedRate;
+      }
 
       // Update Ticker Chips dynamically
       renderMarketTicker();
 
-      // Recalculate Holdings and Portfolio Valuation Dynamically in Real-time
+      // Recalculate Holdings and Portfolio Valuation Dynamically in Real-time (1:1 Native Precision)
       if (currentHoldings && currentHoldings.length > 0) {
-        const rate = liveCryptoPrices.USD_IDR || 17800;
+        const rate = liveCryptoPrices.USD_IDR || CURRENCIES.IDR.rate || 17758;
+        CURRENCIES.IDR.rate = rate;
         let newTotalUsd = 0;
 
         currentHoldings.forEach(h => {
@@ -1462,6 +1584,8 @@
           newTotalUsd += (h.valueUsd || 0);
         });
 
+        // Sensitivity threshold check: only trigger odometer animation if total changed by >= $0.05
+        const priceChanged = Math.abs(BASE_TOTAL_USD - newTotalUsd) >= 0.05;
         BASE_TOTAL_USD = parseFloat(newTotalUsd.toFixed(2));
         currentHoldings.forEach(h => {
           h.allocationPct = BASE_TOTAL_USD > 0
@@ -1470,7 +1594,9 @@
         });
 
         renderHoldingsAndAllocations();
-        updateCurrencyUI(activeCurrencyCode, false);
+        if (priceChanged) {
+          updateCurrencyUI(activeCurrencyCode, false);
+        }
       }
     } catch (err) {
       console.warn('Realtime price ticker warning:', err.message);
@@ -1515,28 +1641,55 @@
 
       if (!data || typeof data.totalValuationUsd !== 'number') return;
 
-      BASE_TOTAL_USD = data.totalValuationUsd;
-      currentHoldings = data.holdings || [];
-      if (typeof data.realizedPnlUsd === 'number') REALIZED_PNL_USD = data.realizedPnlUsd;
-      if (typeof data.realizedPnlIdr === 'number') REALIZED_PNL_IDR = data.realizedPnlIdr;
-      if (Array.isArray(data.transactions)) {
-        currentTransactions = data.transactions;
-      }
-      if (data.marketPrices) {
-        if (data.marketPrices.BTC?.usd) liveCryptoPrices.BTC.usd = data.marketPrices.BTC.usd;
-        if (data.marketPrices.HYPE?.usd) liveCryptoPrices.HYPE.usd = data.marketPrices.HYPE.usd;
-        if (data.usdIdrRate) liveCryptoPrices.USD_IDR = data.usdIdrRate;
+      const txCount = Array.isArray(data.transactions) ? data.transactions.length : (data.transactionCount || 0);
+      const isNewData = !lastBackendUpdated || (data.lastUpdated && data.lastUpdated !== lastBackendUpdated) || (txCount !== currentTransactions.length);
+
+      if (isNewData) {
+        lastBackendUpdated = data.lastUpdated || Date.now().toString();
+        if (Array.isArray(data.transactions)) {
+          currentTransactions = data.transactions;
+        }
+        if (typeof data.realizedPnlUsd === 'number') REALIZED_PNL_USD = data.realizedPnlUsd;
+        if (typeof data.realizedPnlIdr === 'number') REALIZED_PNL_IDR = data.realizedPnlIdr;
+
+        // Only adopt backend holdings valuation if we don't have live market prices already active
+        if (!currentHoldings || currentHoldings.length === 0) {
+          BASE_TOTAL_USD = data.totalValuationUsd;
+          currentHoldings = data.holdings || [];
+          if (data.marketPrices) {
+            if (data.marketPrices.BTC?.usd) liveCryptoPrices.BTC.usd = data.marketPrices.BTC.usd;
+            if (data.marketPrices.HYPE?.usd) liveCryptoPrices.HYPE.usd = data.marketPrices.HYPE.usd;
+          }
+          if (data.usdIdrRate) {
+            liveCryptoPrices.USD_IDR = data.usdIdrRate;
+            CURRENCIES.IDR.rate = data.usdIdrRate;
+          }
+          renderHoldingsAndAllocations();
+          renderMarketTicker();
+          renderTransactions(activeTxFilter);
+          updateCurrencyUI(activeCurrencyCode, false);
+        } else {
+          // Sync base quantities and costs without overwriting live market valuation
+          (data.holdings || []).forEach(dh => {
+            const match = currentHoldings.find(h => h.code === dh.code);
+            if (match) {
+              match.quantity = dh.quantity;
+              match.unitsText = dh.unitsText;
+              match.totalCostIdr = dh.totalCostIdr;
+              match.totalCostUsd = dh.totalCostUsd;
+              match.avgBuyPriceIdr = dh.avgBuyPriceIdr;
+              match.avgBuyPriceUsd = dh.avgBuyPriceUsd;
+            } else {
+              currentHoldings.push(dh);
+            }
+          });
+          renderTransactions(activeTxFilter);
+        }
       }
 
       lastSyncSuccess = Date.now();
-
       const syncCounter = document.getElementById('sync-time-counter');
       if (syncCounter) syncCounter.textContent = 'Baru saja';
-
-      renderHoldingsAndAllocations();
-      renderMarketTicker();
-      renderTransactions(activeTxFilter);
-      updateCurrencyUI(activeCurrencyCode, false);
     } catch (err) {
       console.warn('Portfolio sync warning:', err.message);
     }
@@ -1562,11 +1715,11 @@
   fetchLiveMarketPrices();
 
   // Polling intervals:
-  // 1. Live market price movements every 5s (updates prices and portfolio values dynamically)
-  setInterval(fetchLiveMarketPrices, 5000);
+  // 1. Live market price movements every 15s (smooth, stable, non-volatile rate polling)
+  setInterval(fetchLiveMarketPrices, 15000);
 
-  // 2. Ledger sync every 3s to capture newly confirmed Triv transactions
-  setInterval(syncPortfolioFromBackend, 3000);
+  // 2. Ledger sync every 20s to capture newly confirmed Triv transactions without race conditions
+  setInterval(syncPortfolioFromBackend, 20000);
 
 })();
 

@@ -1,45 +1,45 @@
 {
-  "totalValuationUsd": 543.94,
-  "totalValuationIdr": 9688816,
-  "usdIdrRate": 17812,
+  "totalValuationUsd": 574.24,
+  "totalValuationIdr": 10216907,
+  "usdIdrRate": 17792,
   "holdings": [
     {
       "code": "BTC",
       "name": "Bitcoin",
       "quantity": 0.005318,
       "unitsText": "0.005318 BTC",
-      "avgBuyPriceUsd": 76010.13,
+      "avgBuyPriceUsd": 76095.57,
       "avgBuyPriceIdr": 1353892441,
-      "currentPriceUsd": 80452.01,
-      "currentPriceIdr": 1433011202,
+      "currentPriceUsd": 85459.54,
+      "currentPriceIdr": 1520496136,
       "totalCostIdr": 7200000,
-      "totalCostUsd": 404,
-      "valueUsd": 427.84,
-      "valueIdr": 7620754,
-      "unrealizedPnlIdr": 420754,
-      "unrealizedPnlUsd": 23.62,
-      "unrealizedPnlPct": 5.84,
-      "change30d": "+5.8%",
-      "allocationPct": 78.7
+      "totalCostUsd": 405,
+      "valueUsd": 454.47,
+      "valueIdr": 8085998,
+      "unrealizedPnlIdr": 885998,
+      "unrealizedPnlUsd": 49.8,
+      "unrealizedPnlPct": 12.31,
+      "change30d": "+12.3%",
+      "allocationPct": 79.1
     },
     {
       "code": "HYPE",
       "name": "Hyperliquid",
       "quantity": 1.277149,
       "unitsText": "1.277149 HYPE",
-      "avgBuyPriceUsd": 79.13,
+      "avgBuyPriceUsd": 79.21,
       "avgBuyPriceIdr": 1409389,
-      "currentPriceUsd": 90.91,
-      "currentPriceIdr": 1619280,
+      "currentPriceUsd": 93.78,
+      "currentPriceIdr": 1668489,
       "totalCostIdr": 1800000,
       "totalCostUsd": 101,
-      "valueUsd": 116.1,
-      "valueIdr": 2068062,
-      "unrealizedPnlIdr": 268062,
-      "unrealizedPnlUsd": 15.05,
-      "unrealizedPnlPct": 14.89,
-      "change30d": "+14.9%",
-      "allocationPct": 21.3
+      "valueUsd": 119.77,
+      "valueIdr": 2130909,
+      "unrealizedPnlIdr": 330909,
+      "unrealizedPnlUsd": 18.6,
+      "unrealizedPnlPct": 18.38,
+      "change30d": "+18.4%",
+      "allocationPct": 20.9
     }
   ],
   "cashBalanceIdr": 0,
@@ -49,12 +49,12 @@
   "documentedSales": [],
   "marketPrices": {
     "BTC": {
-      "usd": 80452.01,
-      "idr": 1433011202
+      "usd": 85459.54,
+      "idr": 1520496136
     },
     "HYPE": {
-      "usd": 90.9095,
-      "idr": 1619280
+      "usd": 93.7775,
+      "idr": 1668489
     }
   },
   "transactions": [
@@ -65,9 +65,9 @@
       "asset": "HYPE",
       "quantity": 1.277149,
       "rate_idr": 1406429,
-      "rate_usd": 78.96,
+      "rate_usd": 79.05,
       "amount_idr": 1800000,
-      "amount_usd": 101.06,
+      "amount_usd": 101.17,
       "fee_idr": 3780,
       "total_received": 1.277149,
       "currency": "IDR",
@@ -83,9 +83,9 @@
       "asset": "BTC",
       "quantity": 0.005318,
       "rate_idr": 1350931344,
-      "rate_usd": 75843.89,
+      "rate_usd": 75929.14,
       "amount_idr": 7200000,
-      "amount_usd": 404.22,
+      "amount_usd": 404.68,
       "fee_idr": 15120,
       "total_received": 0.005318,
       "currency": "IDR",
@@ -103,7 +103,7 @@
       "rate_idr": 1,
       "rate_usd": 0,
       "amount_idr": 9000000,
-      "amount_usd": 505.28,
+      "amount_usd": 505.85,
       "fee_idr": 90000,
       "total_received": 9000000,
       "currency": "IDR",
@@ -114,5 +114,5 @@
     }
   ],
   "transactionCount": 3,
-  "lastUpdated": "2026-09-20T13:34:12.254Z"
+  "lastUpdated": "2026-09-22T06:32:58.059Z"
 }

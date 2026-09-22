@@ -11,7 +11,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <link rel="stylesheet" href="styles.css?v=2.2.0">
+  <link rel="stylesheet" href="styles.css?v=2.3.0">
 </head>
 <body>
   <div class="background-mesh" aria-hidden="true"></div>
@@ -36,13 +36,8 @@
             </button>
             <div class="nav-sub-menu" id="sentinel-sub-menu" role="menu" aria-label="Menu Sentinel">
               <button type="button" class="nav-sub-item sentinel-install-item" id="open-sentinel-install-btn" role="menuitem">
-                <span class="sub-icon">
-                  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                    <path d="M8 2v8m0 0l-3-3m3 3l3-3M2 13h12"/>
-                  </svg>
-                </span>
                 <span class="sub-text">
-                  <span class="sub-title">Sentinel Telemetry <span class="badge-coming-soon">Coming Soon</span></span>
+                  <span class="sub-title">Sentinel AI <span class="badge-coming-soon">Coming Soon</span></span>
                   <span class="sub-desc">Node Monitoring &amp; On-chain Verifier</span>
                 </span>
               </button>
@@ -89,8 +84,6 @@
             <div class="sync-indicator">
               <span class="live-pulse" aria-hidden="true"></span>
               <span class="sync-text">Live sync · <span id="sync-time-counter">Baru saja</span></span>
-              <span class="sync-divider">·</span>
-              <span class="sync-status">Terverifikasi</span>
             </div>
           </div>
 
@@ -164,12 +157,6 @@
                   <path d="M1.5 13h13v1.5h-13zm1.2-4.5 3.3-3.3 2.5 2.5 4.2-4.7 1.1 1-5.3 5.9-2.5-2.5-2.2 2.2z"/>
                 </svg>
                 <span>Historis Performa</span>
-              </button>
-              <button class="asset-view-tab" data-tab="verification" role="tab" aria-selected="false" aria-controls="pane-verification" id="tab-verification">
-                <svg class="tab-icon-svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
-                  <path d="M8 1.2l5.5 2.1v4.2c0 3.6-2.3 6.9-5.5 8.1-3.2-1.2-5.5-4.5-5.5-8.1V3.3L8 1.2zm-.7 9.8l4-4-1.1-1.1-2.9 2.9-1.4-1.4-1.1 1.1 2.5 2.5z"/>
-                </svg>
-                <span>Bukti Verifikasi</span>
               </button>
             </div>
 
@@ -269,7 +256,7 @@
             <div class="transactions-embedded-header">
               <div>
                 <div class="panel-eyebrow">Audit Trail &amp; Ledger Publik</div>
-                <h3 class="embedded-chart-h3">Riwayat Transaksi Terverifikasi</h3>
+                <h3 class="embedded-chart-h3">Riwayat Transaksi Portofolio</h3>
                 <p class="transactions-subtext">Semua transaksi pembelian (buy), penjualan (sell), deposit kas, dan penarikan tercatat secara objektif, lengkap dengan kurs eksekusi, nota biaya, dan dokumentasi realisasi PNL.</p>
               </div>
 
@@ -353,98 +340,6 @@
             <div class="chart-footer-note">
               <span>Kurva dinamis dihitung berdasarkan saldo on-chain dan kurs historis harian.</span>
               <span class="chart-update-note">Arahkan kursor / sentuh untuk melihat detail tanggal.</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB CONTENT 4: BUKTI VERIFIKASI (INTEGRITAS DATA & ATTESTATION) -->
-        <div class="asset-tab-pane" id="pane-verification" role="tabpanel" aria-labelledby="tab-verification" hidden>
-          <div class="verification-panel tab-embedded">
-            <div class="verification-embedded-header">
-              <div>
-                <div class="panel-eyebrow">Integritas Data</div>
-                <h3 class="embedded-chart-h3">Bukti Kepemilikan &amp; Verifikasi</h3>
-              </div>
-              <div class="security-badge">
-                <span class="shield-dot" aria-hidden="true"></span>
-                <span>Zero Public Address Exposure</span>
-              </div>
-            </div>
-
-            <p class="verification-intro">
-              Untuk memitigasi risiko keamanan fisik, phishing terarah, dan pemerasan terhadap pemegang aset, 
-              kami tidak mempublikasikan raw wallet address secara terbuka. Kredibilitas dibangun melalui 
-              attestation pihak ketiga independen, verifikasi custodian institusional, dan signed cryptographic message.
-            </p>
-
-            <div class="attestation-grid">
-              <!-- Card 1: Custodian Attestation -->
-              <div class="attestation-card">
-                <div class="card-top">
-                  <div class="card-status-pill">
-                    <span class="status-marker"></span>
-                    <span>Terverifikasi</span>
-                  </div>
-                  <span class="card-date">Audit Q3 2026</span>
-                </div>
-                <h4 class="card-title">Institutional Custody Attestation</h4>
-                <p class="card-desc">
-                  Pernyataan saldo independen dari lembaga kustodian berlisensi yang mengonfirmasi kecukupan cadangan Bitcoin 1.24 BTC tanpa mengekspos public key ke web publik.
-                </p>
-                <div class="attestation-meta">
-                  <div class="meta-row">
-                    <span class="meta-key">Pihak Pemeriksa:</span>
-                    <span class="meta-val">Tier-1 Digital Custody Audit</span>
-                  </div>
-                  <div class="meta-row">
-                    <span class="meta-key">Attestation Hash:</span>
-                    <span class="meta-val font-mono">0x7f2a...88c9</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Card 2: ZK Merkle Proof -->
-              <div class="attestation-card">
-                <div class="card-top">
-                  <div class="card-status-pill">
-                    <span class="status-marker"></span>
-                    <span>Kriptografis</span>
-                  </div>
-                  <span class="card-date">Real-time Snapshot</span>
-                </div>
-                <h4 class="card-title">Zero-Knowledge Merkle Attestation</h4>
-                <p class="card-desc">
-                  Pembuktian matematis bahwa total saldo kas dan derivatif tercatat valid dalam pohon status (state root) protokol tanpa membuka jejak identitas on-chain.
-                </p>
-                <div class="attestation-meta">
-                  <div class="meta-row">
-                    <span class="meta-key">Protokol:</span>
-                    <span class="meta-val">zk-Proof of Solvency</span>
-                  </div>
-                  <div class="meta-row">
-                    <span class="meta-key">Root Digest:</span>
-                    <span class="meta-val font-mono">0x3b91...441e</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Card 3: Community Gated On-Chain Proof -->
-              <div class="attestation-card highlight-card">
-                <div class="card-top">
-                  <div class="card-status-pill">
-                    <span class="status-marker"></span>
-                    <span>Akses Khusus</span>
-                  </div>
-                  <span class="card-date">Community Portal</span>
-                </div>
-                <h4 class="card-title">Signed Message On-Chain</h4>
-                <p class="card-desc">
-                  Bagi anggota komunitas Almere &amp; Co yang membutuhkan validasi on-chain mendalam, signed cryptographic message dapat diinspeksi secara aman di balik portal komunitas.
-                </p>
-                <button type="button" class="btn-subtle open-community-modal-trigger">
-                  Minta Akses On-Chain →
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -592,9 +487,9 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
     <div class="modal-card modal-terminal-card sentinel-coming-soon-card">
       <button type="button" class="modal-close-btn" id="close-sentinel-btn" aria-label="Tutup dialog">&times;</button>
       <div class="modal-header">
-        <div class="panel-eyebrow">Almere Suite &middot; Node &amp; Telemetry</div>
+        <div class="panel-eyebrow">Almere Suite &middot; Autonomous AI</div>
         <div class="title-with-badge">
-          <h2 id="sentinel-modal-title" class="modal-title">Sentinel Telemetry</h2>
+          <h2 id="sentinel-modal-title" class="modal-title">Sentinel AI</h2>
           <span class="badge-coming-soon-lg">Coming Soon</span>
         </div>
         <p class="modal-subtitle">
@@ -647,32 +542,27 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
       </div>
       <div class="mobile-nav-links">
         <button type="button" class="mobile-nav-item" id="mobile-sentinel-btn">
-          <span class="m-icon">🛡️</span>
           <div class="m-text">
             <div class="m-title-row">
-              <span>Sentinel Telemetry</span>
+              <span>Sentinel AI</span>
               <span class="badge-coming-soon">Coming Soon</span>
             </div>
             <span class="m-desc">Daemon monitoring &amp; verifier</span>
           </div>
         </button>
         <button type="button" class="mobile-nav-item" id="mobile-tx-history-btn">
-          <span class="m-icon">📜</span>
           <div class="m-text">
             <span class="m-title">Riwayat Transaksi</span>
             <span class="m-desc">Ledger publik &amp; penjualan</span>
           </div>
         </button>
         <a href="#ringkasan" class="mobile-nav-link-anchor">
-          <span class="m-icon">📊</span>
           <span>Ringkasan Portofolio</span>
         </a>
         <a href="#tentang" class="mobile-nav-link-anchor">
-          <span class="m-icon">🏛️</span>
           <span>Tentang Almere &amp; Co</span>
         </a>
         <a href="#kontak" class="mobile-nav-link-anchor">
-          <span class="m-icon">✉️</span>
           <span>Kontak &amp; Kunci PGP</span>
         </a>
       </div>
@@ -684,6 +574,6 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
     </div>
   </div>
 
-  <script src="app.js?v=2.2.0"></script>
+  <script src="app.js?v=2.3.0"></script>
 </body>
 </html>

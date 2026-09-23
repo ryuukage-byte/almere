@@ -831,7 +831,6 @@
 
   // --- 8. MODAL CONTROLS (Join Community, Currencies, PGP, Sentinel) ---
   const communityModal = document.getElementById('community-modal');
-  const openCommunityBtn = document.getElementById('open-community-btn');
   const closeCommunityBtn = document.getElementById('close-community-btn');
   const cancelCommunityBtn = document.getElementById('cancel-community-btn');
   const communityTriggers = document.querySelectorAll('.open-community-modal-trigger');
@@ -853,13 +852,15 @@
   }
 
   // Community Modal Events
-  if (openCommunityBtn) {
-    openCommunityBtn.addEventListener('click', () => openModal(communityModal));
-  }
   communityTriggers.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      openModal(communityModal);
+      if (mobileNavDrawer && mobileNavDrawer.classList.contains('open')) {
+        closeMobileDrawer();
+        setTimeout(() => openModal(communityModal), 120);
+      } else {
+        openModal(communityModal);
+      }
     });
   });
 

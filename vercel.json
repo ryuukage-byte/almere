@@ -9,6 +9,14 @@
     {
       "source": "/api/portfolio/transactions",
       "destination": "/data/portfolio.json"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/tentang",
+      "destination": "/about.html"
     }
   ]
 }

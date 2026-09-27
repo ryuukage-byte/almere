@@ -20,12 +20,17 @@
     <!-- Navigation Header -->
     <header class="header">
       <nav class="nav-container" aria-label="Navigasi Utama">
-        <a href="#hero" class="brand">
+        <a href="#hero" class="brand" aria-label="Almere &amp; Co Beranda">
           <span class="dot"></span>
           <span class="brand-text">Almere &amp; Co</span>
         </a>
 
         <div class="nav-links">
+          <a href="#hero" class="nav-link active" id="nav-link-beranda">Beranda</a>
+          <a href="#tentang" class="nav-link" id="nav-link-tentang">Tentang Kami</a>
+          <a href="#aset" class="nav-link" id="nav-link-aset">Rincian Aset</a>
+          <a href="#grafik" class="nav-link" id="nav-link-grafik">Grafik Historis</a>
+
           <!-- Sentinel Dropdown Menu -->
           <div class="nav-item-dropdown" id="nav-sentinel-dropdown">
             <button type="button" class="nav-link nav-link-trigger" id="nav-link-sentinel" aria-haspopup="true" aria-expanded="false" aria-label="Menu Sentinel">
@@ -43,17 +48,14 @@
               </button>
             </div>
           </div>
-
-          <a href="#ringkasan" class="nav-link">Portofolio</a>
-          <a href="#aset" class="nav-link" id="nav-link-history-quick">Riwayat</a>
-          <a href="#tentang" class="nav-link">Tentang</a>
-          <a href="#kontak" class="nav-link">Kontak</a>
         </div>
 
         <div class="nav-actions">
-          <button type="button" class="cta-pill desktop-only open-community-modal-trigger" id="open-community-btn" aria-haspopup="dialog">
-            Gabung Komunitas
-          </button>
+          <div class="nav-quick-actions desktop-only">
+            <button type="button" class="nav-quick-btn open-community-modal-trigger" aria-label="Komunitas Discord">Discord</button>
+            <span class="nav-quick-sep" aria-hidden="true">|</span>
+            <button type="button" class="nav-quick-btn" id="nav-pgp-btn" aria-label="Kunci PGP Publik">PGP</button>
+          </div>
           <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Buka navigasi mobile" aria-expanded="false">
             <span class="hamburger-bar"></span>
             <span class="hamburger-bar"></span>
@@ -347,21 +349,68 @@
 
 
 
-      <!-- Tentang / Siapa di Balik Almere & Co (Spesifikasi Poin 3D) -->
+      <!-- Tentang / The People Behind Almere & Co (Founder & Co-Founder) -->
       <section class="about-section" id="tentang" aria-label="Tentang Kami">
-        <div class="about-card">
-          <div class="about-header">
-            <div class="panel-eyebrow">Konteks Tata Kelola</div>
-            <h2 class="about-heading">Tentang Almere &amp; Co</h2>
+        <div class="about-header-wrap">
+          <div class="about-eyebrow">The People Behind Almere &amp; Co</div>
+          <h2 class="about-main-heading">The people responsible<br>for Almere &amp; Co.</h2>
+        </div>
+
+        <div class="team-grid">
+          <!-- Founder Card: Farel Arya Priguna -->
+          <article class="founder-card" id="founder-farel">
+            <div class="founder-photo-wrap">
+              <img src="assets/farel-arya-priguna.png" alt="Farel Arya Priguna — Founder Almere &amp; Co" class="founder-photo" width="416" height="373" loading="lazy">
+            </div>
+            <div class="founder-info">
+              <span class="founder-role">Founder</span>
+              <h3 class="founder-name">Farel Arya Priguna</h3>
+              <p class="founder-bio">
+                Responsible for capital allocation, investment research, strategic direction and the development of Almere &amp; Co.
+              </p>
+              <div class="founder-divider" aria-hidden="true"></div>
+              <div class="founder-tags">
+                <span>Capital Allocation</span>
+                <span class="tag-bullet" aria-hidden="true">&middot;</span>
+                <span>Research</span>
+                <span class="tag-bullet" aria-hidden="true">&middot;</span>
+                <span>Strategy</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Co-Founder Card: Felicia Tanuwijayaa -->
+          <article class="founder-card" id="founder-felicia">
+            <div class="founder-photo-wrap">
+              <img src="assets/felicia-tanuwijayaa.png" alt="Felicia Tanuwijayaa — Co-Founder Almere &amp; Co" class="founder-photo" width="417" height="373" loading="lazy">
+            </div>
+            <div class="founder-info">
+              <span class="founder-role">Co-Founder</span>
+              <h3 class="founder-name">Felicia Tanuwijayaa</h3>
+              <p class="founder-bio">
+                Responsible for strategic development, research and the continued development of Almere &amp; Co.
+              </p>
+              <div class="founder-divider" aria-hidden="true"></div>
+              <div class="founder-tags">
+                <span>Research</span>
+                <span class="tag-bullet" aria-hidden="true">&middot;</span>
+                <span>Strategy</span>
+                <span class="tag-bullet" aria-hidden="true">&middot;</span>
+                <span>Development</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Tata Kelola & Komitmen Non-Anonimitas -->
+        <div class="about-governance-card">
+          <div class="gov-badge font-mono">
+            <span class="pulse-tiny" aria-hidden="true"></span>
+            <span>Non-Anonymous &middot; Verified Personal Equity</span>
           </div>
-          <div class="about-body">
-            <p class="about-text">
-              Portofolio ini mencerminkan <em>kekayaan pribadi yang dikelola secara mandiri</em> oleh Almere &amp; Co. Kami tidak menerima dana dari pihak luar, tidak beroperasi sebagai hedge fund, dan tidak menjalankan skema investasi bersama (bukan pooled investment fund).
-            </p>
-            <p class="about-subtext">
-              Halaman ini hadir semata-mata untuk membangun rekam jejak transparansi data yang dapat dipertanggungjawabkan dari waktu ke waktu.
-            </p>
-          </div>
+          <p class="gov-text">
+            Almere &amp; Co didirikan dan dijalankan secara terbuka oleh <strong>Farel Arya Priguna</strong> dan <strong>Felicia Tanuwijayaa</strong> tanpa anonimitas. Portofolio ini mencerminkan <em>kekayaan pribadi yang dikelola secara mandiri</em> oleh Almere &amp; Co. Kami tidak menerima dana dari pihak luar, tidak beroperasi sebagai hedge fund, dan tidak menjalankan skema investasi bersama (bukan pooled investment fund). Seluruh data kepemilikan aset dipublikasikan apa adanya demi membangun rekam jejak transparansi data yang objektif dan terverifikasi.
+          </p>
         </div>
       </section>
     </main>
@@ -380,6 +429,7 @@
           <div class="footer-col">
             <div class="footer-col-title">Navigasi</div>
             <a href="#hero">Beranda</a>
+            <a href="#tentang">Tentang Kami</a>
             <a href="#aset">Rincian Aset</a>
             <a href="#grafik">Grafik Historis</a>
           </div>
@@ -762,6 +812,30 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
         <button type="button" class="mobile-nav-close" id="mobile-nav-close" aria-label="Tutup menu">&times;</button>
       </div>
       <div class="mobile-nav-links">
+        <a href="#hero" class="mobile-nav-item mobile-nav-link-anchor" id="m-nav-hero">
+          <div class="m-text">
+            <span class="m-title">Beranda</span>
+            <span class="m-desc">Ringkasan valuasi dan portofolio</span>
+          </div>
+        </a>
+        <a href="#tentang" class="mobile-nav-item mobile-nav-link-anchor" id="m-nav-tentang">
+          <div class="m-text">
+            <span class="m-title">Tentang Kami</span>
+            <span class="m-desc">Founder &amp; Co-Founder Almere &amp; Co</span>
+          </div>
+        </a>
+        <a href="#aset" class="mobile-nav-item mobile-nav-link-anchor" id="m-nav-aset">
+          <div class="m-text">
+            <span class="m-title">Rincian Aset</span>
+            <span class="m-desc">Holdings &amp; distribusi portofolio</span>
+          </div>
+        </a>
+        <a href="#grafik" class="mobile-nav-item mobile-nav-link-anchor" id="m-nav-grafik">
+          <div class="m-text">
+            <span class="m-title">Grafik Historis</span>
+            <span class="m-desc">Performa valuasi dari waktu ke waktu</span>
+          </div>
+        </a>
         <button type="button" class="mobile-nav-item" id="mobile-sentinel-btn">
           <div class="m-text">
             <div class="m-title-row">
@@ -775,6 +849,12 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
           <div class="m-text">
             <span class="m-title">Riwayat Transaksi</span>
             <span class="m-desc">Ledger publik &amp; penjualan</span>
+          </div>
+        </button>
+        <button type="button" class="mobile-nav-item" id="mobile-pgp-btn">
+          <div class="m-text">
+            <span class="m-title">Kunci PGP Publik</span>
+            <span class="m-desc">Verifikasi kriptografi &amp; enkripsi</span>
           </div>
         </button>
       </div>

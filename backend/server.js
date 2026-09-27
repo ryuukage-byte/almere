@@ -25,6 +25,8 @@ const MIME_TYPES = {
   '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
   '.svg': 'image/svg+xml'
 };
 
@@ -96,6 +98,9 @@ const server = http.createServer(async (req, res) => {
 
   // --- STATIC FILE SERVING ---
   let filePathStr = reqPath === '/' ? '/index.html' : reqPath;
+  if (reqPath === '/about' || reqPath === '/tentang') {
+    filePathStr = '/about.html';
+  }
   const filePath = path.join(__dirname, '..', filePathStr);
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';

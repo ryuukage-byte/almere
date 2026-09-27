@@ -198,11 +198,13 @@ body {
 .nav-link {
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 500;
-  padding: 7px 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 14px;
   border-radius: 999px;
-  transition: all var(--trans-fast);
+  transition: color var(--trans-fast), background var(--trans-fast);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -210,11 +212,62 @@ body {
   background: transparent;
   border: none;
   font-family: inherit;
+  position: relative;
 }
 
 .nav-link:hover {
   color: var(--text-pure);
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link.active {
+  color: var(--text-pure);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 14px;
+  right: 14px;
+  height: 2px;
+  background: var(--text-pure);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.nav-quick-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav-quick-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 6px 4px;
+  transition: color var(--trans-fast);
+}
+
+.nav-quick-btn:hover {
+  color: var(--text-pure);
+}
+
+.nav-quick-sep {
+  color: var(--border-medium);
+  font-size: 12px;
+  user-select: none;
 }
 
 #sentinel-sub-menu {
@@ -1564,37 +1617,174 @@ body {
 }
 
 /* ==========================================================================
-   TENTANG / SIAPA DI BALIK ALMERE & CO (Spesifikasi Poin 3D)
+   TENTANG / THE PEOPLE BEHIND ALMERE & CO (Spesifikasi Poin 3D)
    ========================================================================== */
 .about-section {
-  margin-top: 80px;
+  margin-top: 100px;
+  scroll-margin-top: 100px;
 }
 
-.about-card {
+.about-header-wrap {
+  margin-bottom: 36px;
+}
+
+.about-eyebrow {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.about-main-heading {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(32px, 4.2vw, 44px);
+  line-height: 1.15;
+  color: var(--text-pure);
+  letter-spacing: -0.01em;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px;
+}
+
+.founder-card {
   border: 1px solid var(--border-medium);
-  border-radius: 24px;
+  border-radius: 16px;
   background: var(--panel);
-  padding: 40px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  transition: border-color var(--trans-medium), transform var(--trans-medium), box-shadow var(--trans-medium);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
 }
 
-.about-heading {
-  font-family: 'Fraunces', serif;
+.founder-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.founder-photo-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 416 / 373;
+  background: #060606;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.founder-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  filter: contrast(1.02) brightness(0.99);
+  transition: transform 0.6s var(--ease-out), filter 0.6s var(--ease-out);
+}
+
+.founder-card:hover .founder-photo {
+  transform: scale(1.025);
+  filter: contrast(1.06) brightness(1.02);
+}
+
+.founder-info {
+  padding: 30px 30px 26px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.founder-role {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.founder-name {
+  font-family: 'Fraunces', Georgia, serif;
   font-weight: 400;
-  font-size: 24px;
+  font-size: clamp(24px, 2.5vw, 28px);
   color: var(--text-pure);
+  margin-bottom: 14px;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
 }
 
-.about-text {
-  font-size: 16.5px;
+.founder-bio {
+  font-size: 14px;
   line-height: 1.65;
-  color: var(--text-primary);
-  max-width: 820px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  flex-grow: 1;
+  min-height: 68px;
 }
 
-.about-text em {
+.founder-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.founder-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.founder-tags .tag-bullet {
+  color: var(--text-faint);
+  font-weight: normal;
+}
+
+.about-governance-card {
+  margin-top: 32px;
+  padding: 24px 28px;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gov-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.gov-text {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.gov-text strong {
+  color: var(--text-pure);
+  font-weight: 500;
+}
+
+.gov-text em {
   font-style: normal;
   color: var(--text-pure);
   font-weight: 500;
@@ -1602,11 +1792,27 @@ body {
   padding-bottom: 1px;
 }
 
-.about-subtext {
-  font-size: 14px;
-  color: var(--text-muted);
-  max-width: 700px;
-  margin-top: 8px;
+@media (max-width: 860px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .founder-photo-wrap {
+    aspect-ratio: 16 / 12;
+  }
+
+  .founder-info {
+    padding: 24px 20px;
+  }
+
+  .founder-name {
+    font-size: 23px;
+  }
+
+  .founder-bio {
+    min-height: auto;
+  }
 }
 
 /* ==========================================================================

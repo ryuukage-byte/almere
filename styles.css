@@ -1789,7 +1789,190 @@ body {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--border-medium);
   border-radius: 999px;
-  padding: 3px 10px;
+  padding: 4px 11px;
+}
+
+.badge-corp.badge-clickable {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+  transition: all var(--trans-fast);
+}
+
+.badge-corp.badge-clickable:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--border-strong);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.15);
+}
+
+.badge-verify-icon {
+  opacity: 0.7;
+  transition: transform var(--trans-fast), opacity var(--trans-fast);
+}
+
+.badge-corp.badge-clickable:hover .badge-verify-icon {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* ==========================================================================
+   J.P. MORGAN VERIFICATION MODAL
+   ========================================================================== */
+.modal-proof-card {
+  max-width: 860px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px 36px;
+  background: #111111;
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+}
+
+.proof-modal-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 28px;
+  margin-top: 24px;
+}
+
+.proof-doc-frame {
+  position: relative;
+  background: #000;
+  border: 1px solid var(--border-medium);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.proof-doc-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.proof-doc-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0) 100%);
+  padding: 20px 12px 10px;
+  text-align: center;
+}
+
+.proof-zoom-hint {
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.proof-data-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.proof-data-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 12px;
+}
+
+.proof-bank-name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-pure);
+  letter-spacing: 0.02em;
+}
+
+.proof-verified-pill {
+  font-size: 10px;
+  font-weight: 600;
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.1em;
+}
+
+.proof-fields-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.proof-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}
+
+.proof-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.proof-value {
+  color: var(--text-pure);
+  font-weight: 500;
+}
+
+.proof-statement-quote {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid var(--text-pure);
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 4px;
+}
+
+.quote-label {
+  display: block;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.quote-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.proof-footnote {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+@media (max-width: 720px) {
+  .proof-modal-body {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .modal-proof-card {
+    padding: 24px 20px;
+  }
 }
 
 .founder-name {

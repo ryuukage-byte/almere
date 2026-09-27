@@ -988,8 +988,23 @@
   }
   if (closePgpBtn) closePgpBtn.addEventListener('click', () => closeModal(pgpModal));
 
+  // J.P. Morgan Proof Modal Events
+  const jpmModal = document.getElementById('jpm-modal');
+  const openJpmProofBtn = document.getElementById('open-jpm-proof-btn');
+  const closeJpmBtn = document.getElementById('close-jpm-btn');
+  const doneJpmBtn = document.getElementById('done-jpm-btn');
+
+  if (openJpmProofBtn && jpmModal) {
+    openJpmProofBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal(jpmModal);
+    });
+  }
+  if (closeJpmBtn && jpmModal) closeJpmBtn.addEventListener('click', () => closeModal(jpmModal));
+  if (doneJpmBtn && jpmModal) doneJpmBtn.addEventListener('click', () => closeModal(jpmModal));
+
   // Global Backdrop Click and Escape Key Handling
-  [communityModal, pgpModal, sentinelModal].forEach(modal => {
+  [communityModal, pgpModal, sentinelModal, jpmModal].forEach(modal => {
     if (!modal) return;
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeModal(modal);
@@ -1001,6 +1016,7 @@
       closeModal(communityModal);
       closeModal(pgpModal);
       closeModal(sentinelModal);
+      if (jpmModal) closeModal(jpmModal);
       closeCurrencyDropdown();
       if (sentinelDropdown) sentinelDropdown.classList.remove('open');
     }

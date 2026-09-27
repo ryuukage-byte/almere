@@ -85,7 +85,12 @@
             <div class="founder-info">
               <div class="founder-role-row">
                 <span class="founder-role">Founder Almere &amp; Co</span>
-                <span class="badge-corp">Ex J.P. Morgan</span>
+                <button type="button" class="badge-corp badge-clickable" id="open-jpm-proof-btn" aria-haspopup="dialog" aria-expanded="false" title="Klik untuk verifikasi surat resmi J.P. Morgan">
+                  <span>Ex J.P. Morgan</span>
+                  <svg class="badge-verify-icon" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                    <path d="M6 12l4-4-4-4"/>
+                  </svg>
+                </button>
               </div>
               <h2 class="founder-name">Farel Arya Priguna</h2>
               <div class="founder-meta-badge">
@@ -295,6 +300,91 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
       <div class="modal-actions modal-actions-between">
         <span class="version-tag font-mono">Peluncuran: Kuartal 4 2026 &middot; Segera Hadir</span>
         <button type="button" class="btn-submit" id="done-sentinel-btn">Mengerti</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Verifikasi Bukti Resmi J.P. Morgan -->
+  <div class="modal-backdrop" id="jpm-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="jpm-modal-title">
+    <div class="modal-card modal-proof-card">
+      <button type="button" class="modal-close-btn" id="close-jpm-btn" aria-label="Tutup bukti verifikasi">&times;</button>
+      
+      <div class="modal-header">
+        <div class="panel-eyebrow">
+          <span class="pulse-tiny" aria-hidden="true"></span>
+          <span>Institutional Verification &middot; Official Records</span>
+        </div>
+        <h2 id="jpm-modal-title" class="modal-title" style="font-family: 'Fraunces', Georgia, serif; font-size: 26px; font-weight: 400; line-height: 1.25; margin-top: 6px;">
+          Verifikasi Pengalaman Institusional
+        </h2>
+        <p class="modal-subtitle" style="margin-top: 6px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.5;">
+          Dokumen resmi surat keterangan kerja / internship Farel Arya Priguna di PT J.P. Morgan Securities Indonesia.
+        </p>
+      </div>
+
+      <div class="proof-modal-body">
+        <!-- Kolom Dokumen Asli -->
+        <div class="proof-document-column">
+          <div class="proof-doc-frame">
+            <img src="assets/jpmorgan-verification.jpg" alt="Surat Keterangan Resmi J.P. Morgan Securities Indonesia — Farel Arya Priguna" class="proof-doc-image" id="proof-doc-img" loading="eager">
+            <div class="proof-doc-overlay">
+              <span class="proof-zoom-hint font-mono">Dokumen Asli &middot; J.P. Morgan Securities Indonesia</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Data & Transkrip Verifikasi -->
+        <div class="proof-details-column">
+          <div class="proof-data-box">
+            <div class="proof-data-header">
+              <span class="proof-bank-name">J.P. Morgan</span>
+              <span class="proof-verified-pill font-mono">VERIFIED</span>
+            </div>
+
+            <div class="proof-fields-list">
+              <div class="proof-field">
+                <span class="proof-label">Nama Lengkap</span>
+                <span class="proof-value">Farel Arya Priguna</span>
+              </div>
+              <div class="proof-field">
+                <span class="proof-label">Institusi / Perusahaan</span>
+                <span class="proof-value">PT J.P. Morgan Securities Indonesia</span>
+              </div>
+              <div class="proof-field">
+                <span class="proof-label">Departemen</span>
+                <span class="proof-value">Macro Strategy &amp; Research Department</span>
+              </div>
+              <div class="proof-field">
+                <span class="proof-label">Posisi / Kapasitas</span>
+                <span class="proof-value">Macro Analyst (Internship)</span>
+              </div>
+              <div class="proof-field">
+                <span class="proof-label">Periode Masa Kerja</span>
+                <span class="proof-value font-mono">12 Juni 2023 &ndash; 01 Desember 2023</span>
+              </div>
+              <div class="proof-field">
+                <span class="proof-label">Tanggal Penerbitan Surat</span>
+                <span class="proof-value font-mono">01 Desember 2023</span>
+              </div>
+              <div class="proof-field">
+                <span class="proof-label">Pengesahan Dokumen</span>
+                <span class="proof-value">Authorized Signatory &middot; J.P. Morgan Securities Indonesia</span>
+              </div>
+            </div>
+
+            <div class="proof-statement-quote">
+              <span class="quote-label font-mono">Pernyataan Resmi Surat:</span>
+              <p class="quote-text">
+                &ldquo;This is to certify that Farel Arya Priguna was employed with the Company from June 12, 2023 to December 01, 2023. Farel Arya Priguna served in the capacity of a Macro Analyst in Macro Strategy &amp; Research Department.&rdquo;
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions modal-actions-between" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+        <span class="proof-footnote font-mono">Dokumen resmi arsip kepegawaian &middot; Almere &amp; Co Transparency</span>
+        <button type="button" class="btn-submit" id="done-jpm-btn">Tutup Dokumen</button>
       </div>
     </div>
   </div>

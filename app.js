@@ -728,8 +728,11 @@
     if (linkEl) linkEl.classList.add('active');
   }
 
+  const isAboutPage = window.location.pathname.endsWith('about.html') || window.location.pathname.endsWith('/about') || window.location.pathname.endsWith('/tentang');
+
   if (navLinkBeranda) {
     navLinkBeranda.addEventListener('click', (e) => {
+      if (isAboutPage) return; // Allow natural navigation to index.html#hero
       e.preventDefault();
       setActiveNavLink(navLinkBeranda);
       const hero = document.getElementById('hero');
@@ -739,15 +742,16 @@
 
   if (navLinkTentang) {
     navLinkTentang.addEventListener('click', (e) => {
-      e.preventDefault();
-      setActiveNavLink(navLinkTentang);
-      const tentang = document.getElementById('tentang');
-      if (tentang) tentang.scrollIntoView({ behavior: 'smooth' });
+      if (!isAboutPage) {
+        // Navigate directly to dedicated About Us page
+        window.location.href = 'about.html';
+      }
     });
   }
 
   if (navLinkAset) {
     navLinkAset.addEventListener('click', (e) => {
+      if (isAboutPage) return; // Allow natural navigation to index.html#aset
       e.preventDefault();
       setActiveNavLink(navLinkAset);
       switchAssetTab('holdings');
@@ -758,6 +762,7 @@
 
   if (navLinkGrafik) {
     navLinkGrafik.addEventListener('click', (e) => {
+      if (isAboutPage) return; // Allow natural navigation to index.html#grafik
       e.preventDefault();
       setActiveNavLink(navLinkGrafik);
       switchAssetTab('history');
@@ -784,15 +789,14 @@
 
   // ScrollSpy to highlight active link automatically
   function updateScrollSpy() {
-    const scrollPos = (window.scrollY || window.pageYOffset) + 220;
-
-    const tentangSection = document.getElementById('tentang');
-    const asetSection = document.getElementById('aset');
-
-    if (tentangSection && scrollPos >= tentangSection.offsetTop) {
+    if (isAboutPage) {
       setActiveNavLink(navLinkTentang);
       return;
     }
+
+    const scrollPos = (window.scrollY || window.pageYOffset) + 220;
+    const asetSection = document.getElementById('aset');
+
     if (asetSection && scrollPos >= asetSection.offsetTop) {
       const isHistoryTab = document.getElementById('pane-history')?.classList.contains('active');
       if (isHistoryTab && navLinkGrafik) {
@@ -806,6 +810,9 @@
   }
 
   window.addEventListener('scroll', updateScrollSpy, { passive: true });
+  if (isAboutPage) {
+    setActiveNavLink(navLinkTentang);
+  }
 
   // --- SENTINEL COMING SOON & DROPDOWN ---
   const sentinelDropdown = document.getElementById('nav-sentinel-dropdown');

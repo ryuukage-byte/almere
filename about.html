@@ -323,15 +323,59 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
       </div>
 
       <div class="proof-modal-body">
-        <!-- Kolom Dokumen Asli HD -->
+        <!-- Kolom Dokumen Protected Evidence -->
         <div class="proof-document-column">
-          <div class="proof-doc-frame">
-            <a href="assets/jpmorgan-verification.jpg" target="_blank" rel="noopener noreferrer" class="proof-doc-link" title="Klik untuk membuka dokumen ukuran penuh resolusi tinggi">
-              <img src="assets/jpmorgan-verification.jpg" alt="Surat Keterangan Resmi J.P. Morgan Services Indonesia — Farel Arya Priguna (SID: CAN0048721)" class="proof-doc-image" id="proof-doc-img" width="723" height="1024" loading="eager">
-              <div class="proof-doc-overlay">
-                <span class="proof-zoom-hint font-mono">Klik untuk Perbesar HD &nearr;</span>
+          <div class="protected-evidence-container" id="jpm-evidence-container" data-protected-evidence>
+            <div class="protected-evidence-frame">
+              <img 
+                src="assets/jpmorgan-verification-preview.jpg" 
+                alt="Dokumen Pengalaman Kerja Resmi J.P. Morgan Services Indonesia — Farel Arya Priguna" 
+                class="protected-evidence-image" 
+                id="proof-doc-img" 
+                width="640" 
+                height="906" 
+                loading="eager" 
+                draggable="false"
+                oncontextmenu="return false;"
+              >
+              
+              <!-- Layered shield & status pill -->
+              <div class="protected-evidence-shield" aria-hidden="true">
+                <div class="protected-evidence-status-pill">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 1l5 2.5v4c0 3.6-2.5 6.7-5 7.5C5.5 14.2 3 11.1 3 7.5v-4L8 1zm0 2.2L4.5 4.9v2.6c0 2.8 1.9 5.3 3.5 6 1.6-.7 3.5-3.2 3.5-6V4.9L8 3.2z"/>
+                    <path d="M7.2 9.8l-1.7-1.7.9-.9.8.8 2.3-2.3.9.9-3.2 3.2z"/>
+                  </svg>
+                  <span>Protected Evidence Preview</span>
+                </div>
               </div>
-            </a>
+
+              <!-- Focus & Visibility Protection Curtain -->
+              <div class="protected-evidence-curtain" aria-hidden="true">
+                <div class="curtain-content">
+                  <svg class="curtain-lock-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  <span class="curtain-title">Tampilan Dijeda</span>
+                  <span class="curtain-sub">Fokus kembali ke tab browser untuk melihat dokumen</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Evidence Label (Requirement 5) -->
+            <div class="evidence-caption-block">
+              <div class="evidence-badge font-mono">
+                <span class="evidence-badge-dot"></span>
+                <span class="evidence-badge-text">INTERNSHIP EVIDENCE</span>
+              </div>
+              <p class="evidence-caption-text">
+                Presented as portfolio evidence of my internship experience.
+              </p>
+              <div class="evidence-security-note font-mono">
+                Watermarked Preview &bull; Single-tenant attribution &bull; SID: CAN0048721
+              </div>
+            </div>
           </div>
         </div>
 
@@ -392,9 +436,13 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
       </div>
 
       <div class="modal-actions modal-actions-between" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
-        <a href="assets/jpmorgan-verification.jpg" target="_blank" rel="noopener noreferrer" class="btn-subtle" style="width: auto; padding: 9px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-          <span>Buka Resolusi Penuh HD &nearr;</span>
-        </a>
+        <div class="evidence-integrity-tag font-mono">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M8 1l5 2.5v4c0 3.6-2.5 6.7-5 7.5C5.5 14.2 3 11.1 3 7.5v-4L8 1z"/>
+            <path d="M6 8l1.5 1.5L11 6"/>
+          </svg>
+          <span>Verified Institutional Record &bull; 06 Des 2023</span>
+        </div>
         <button type="button" class="btn-submit" id="done-jpm-btn">Tutup Dokumen</button>
       </div>
     </div>

@@ -97,6 +97,20 @@ const server = http.createServer(async (req, res) => {
   }
 
   // --- STATIC FILE SERVING ---
+  const normalizedPath = path.normalize(reqPath).replace(/^[\\\/]+/, '');
+  if (
+    normalizedPath.startsWith('private') ||
+    normalizedPath.startsWith('.env') ||
+    normalizedPath.startsWith('.git') ||
+    normalizedPath.startsWith('db') ||
+    normalizedPath.startsWith('backend') ||
+    normalizedPath.includes('..')
+  ) {
+    res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('403 Forbidden');
+    return;
+  }
+
   let filePathStr = reqPath === '/' ? '/index.html' : reqPath;
   if (reqPath === '/about' || reqPath === '/tentang') {
     filePathStr = '/about.html';

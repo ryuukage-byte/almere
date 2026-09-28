@@ -988,6 +988,120 @@
   }
   if (closePgpBtn) closePgpBtn.addEventListener('click', () => closeModal(pgpModal));
 
+  // --- PROTECTED EVIDENCE IMAGE ENGINE ---
+  /**
+   * Reusable component for protecting sensitive institutional evidence documents.
+   * Disables right-click, dragging, and selection, applies privacy blur when tab is inactive,
+   * without affecting other images or breaking page usability.
+   */
+  class ProtectedEvidenceImage {
+    constructor(target, options = {}) {
+      this.container = typeof target === 'string' ? document.querySelector(target) : target;
+      if (!this.container) return;
+
+      this.options = Object.assign({
+        blurOnInactive: true,
+        preventContextMenu: true,
+        preventDrag: true,
+        preventSelect: true
+      }, options);
+
+      this.image = this.container.querySelector('.protected-evidence-image') || this.container.querySelector('img');
+      this.statusPill = this.container.querySelector('.protected-evidence-status-pill');
+      this.isInactive = false;
+
+      this.init();
+    }
+
+    init() {
+      this.setupInteractions();
+      if (this.options.blurOnInactive) {
+        this.setupFocusProtection();
+      }
+    }
+
+    setupInteractions() {
+      const el = this.container;
+
+      // 1. Disable context menu on this specific evidence container
+      if (this.options.preventContextMenu) {
+        el.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.pulsePill();
+          return false;
+        });
+      }
+
+      // 2. Disable dragging on this evidence image
+      if (this.options.preventDrag) {
+        el.addEventListener('dragstart', (e) => {
+          e.preventDefault();
+          return false;
+        });
+      }
+
+      // 3. Disable text/image selection within container
+      if (this.options.preventSelect) {
+        el.addEventListener('selectstart', (e) => {
+          e.preventDefault();
+        });
+        el.addEventListener('copy', (e) => {
+          e.preventDefault();
+        });
+      }
+
+      if (this.image) {
+        this.image.setAttribute('draggable', 'false');
+      }
+    }
+
+    setupFocusProtection() {
+      // Blur when browser tab is inactive / minimized
+      document.addEventListener('visibilitychange', () => {
+        this.setInactiveState(document.hidden);
+      });
+
+      // Blur when window loses focus (e.g. switching apps or clicking outside)
+      window.addEventListener('blur', () => {
+        setTimeout(() => {
+          if (!document.hasFocus()) {
+            this.setInactiveState(true);
+          }
+        }, 80);
+      });
+
+      window.addEventListener('focus', () => {
+        this.setInactiveState(false);
+      });
+    }
+
+    setInactiveState(inactive) {
+      if (this.isInactive === inactive) return;
+      this.isInactive = inactive;
+      if (inactive) {
+        this.container.classList.add('is-protected-blurred');
+      } else {
+        this.container.classList.remove('is-protected-blurred');
+      }
+    }
+
+    pulsePill() {
+      if (!this.statusPill) return;
+      this.statusPill.classList.remove('pill-pulse');
+      void this.statusPill.offsetWidth;
+      this.statusPill.classList.add('pill-pulse');
+    }
+  }
+
+  // Expose globally for modularity
+  window.ProtectedEvidenceImage = ProtectedEvidenceImage;
+
+  // Initialize protected evidence elements on page load
+  document.querySelectorAll('[data-protected-evidence], .protected-evidence-container').forEach(el => {
+    new ProtectedEvidenceImage(el);
+  });
+
   // J.P. Morgan Proof Modal Events
   const jpmModal = document.getElementById('jpm-modal');
   const openJpmProofBtn = document.getElementById('open-jpm-proof-btn');

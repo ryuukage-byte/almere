@@ -127,14 +127,8 @@
   const chartGrowthValEl = document.getElementById('chart-growth-val');
   const timeTabs = document.querySelectorAll('.time-tab');
 
-  // Currency Dropdown DOM Elements
-  const currencyDropdownWrap = document.getElementById('currency-dropdown-wrap');
-  const currencyDropdownTrigger = document.getElementById('currency-dropdown-trigger');
-  const currencyTriggerVal = document.getElementById('currency-trigger-val');
-  const currencyDropdownPopover = document.getElementById('currency-dropdown-popover');
-  const currencySearchInputField = document.getElementById('currency-search-input-field');
-  const clearCurrencySearchBtn = document.getElementById('clear-currency-search');
-  const currencyListVertical = document.getElementById('currency-list-vertical');
+  // Currency Switch DOM Elements
+  const currencySwitchBtns = document.querySelectorAll('.currency-switch-btn');
 
   // --- 4. CURRENCY SWITCHING LOGIC ---
   function updateCurrencyUI(newCode, isInitial = false) {
@@ -145,10 +139,6 @@
     activeCurrencyCode = newCode;
     const config = CURRENCIES[newCode];
 
-    // Update dropdown trigger label
-    if (currencyTriggerVal) {
-      currencyTriggerVal.textContent = `${newCode} (${config.symbol.trim()})`;
-    }
 
     // Direct 1:1 total calculation without double-conversion rounding
     let targetTotal = 0;
@@ -199,13 +189,13 @@
       el.textContent = newCode;
     });
 
-    // Highlight selected item in vertical currency list
-    if (currencyListVertical) {
-      const allRows = currencyListVertical.querySelectorAll('.currency-item-row');
-      allRows.forEach(row => {
-        row.classList.toggle('selected', row.getAttribute('data-currency') === newCode);
-      });
-    }
+    // Update currency switch buttons
+    const currencySwitchBtns = document.querySelectorAll('.currency-switch-btn');
+    currencySwitchBtns.forEach(btn => {
+      const isSelected = btn.getAttribute('data-currency') === newCode;
+      btn.classList.toggle('active', isSelected);
+      btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+    });
 
     // Refresh chart figures with current currency
     renderHistoricalChart();
@@ -216,126 +206,27 @@
     }
   }
 
-  // Populate Vertical Currency List (Nge-baris ke bawah & Searchable)
-  function populateVerticalCurrencyList(filter = '') {
-    if (!currencyListVertical) return;
-    currencyListVertical.innerHTML = '';
-
-    const filterLower = filter.toLowerCase().trim();
-    const codes = Object.keys(CURRENCIES);
-    let matchCount = 0;
-
-    codes.forEach(code => {
-      const curr = CURRENCIES[code];
-      const matches = code.toLowerCase().includes(filterLower) ||
-                      curr.name.toLowerCase().includes(filterLower) ||
-                      curr.symbol.toLowerCase().includes(filterLower);
-
-      if (matches) {
-        matchCount++;
-        const item = document.createElement('div');
-        item.className = `currency-item-row ${code === activeCurrencyCode ? 'selected' : ''}`;
-        item.setAttribute('data-currency', code);
-        item.setAttribute('role', 'option');
-        item.setAttribute('aria-selected', code === activeCurrencyCode ? 'true' : 'false');
-        item.innerHTML = `
-          <div class="currency-item-left">
-            <span class="currency-item-code">${code}</span>
-            <span class="currency-item-name">${curr.name}</span>
-          </div>
-          <div class="currency-item-right">
-            <span class="currency-item-symbol">${curr.symbol.trim()}</span>
-            <span class="currency-item-check">✓</span>
-          </div>
-        `;
-
-        item.addEventListener('click', () => {
+  // --- CURRENCY SWITCH EVENT LISTENERS ---
+  if (currencySwitchBtns && currencySwitchBtns.length > 0) {
+    currencySwitchBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const code = btn.getAttribute('data-currency');
+        if (code && code !== activeCurrencyCode) {
           updateCurrencyUI(code);
-          closeCurrencyDropdown();
-        });
-
-        currencyListVertical.appendChild(item);
-      }
-    });
-
-    if (matchCount === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'currency-empty-state';
-      empty.textContent = `Mata uang "${filter}" tidak ditemukan`;
-      currencyListVertical.appendChild(empty);
-    }
-  }
-
-  function openCurrencyDropdown() {
-    if (!currencyDropdownPopover || !currencyDropdownTrigger) return;
-    currencyDropdownTrigger.classList.add('open');
-    currencyDropdownTrigger.setAttribute('aria-expanded', 'true');
-    currencyDropdownPopover.classList.add('show');
-    if (currencySearchInputField) {
-      currencySearchInputField.value = '';
-      if (clearCurrencySearchBtn) clearCurrencySearchBtn.style.display = 'none';
-      populateVerticalCurrencyList('');
-      setTimeout(() => currencySearchInputField.focus(), 60);
-    }
-  }
-
-  function closeCurrencyDropdown() {
-    if (!currencyDropdownPopover || !currencyDropdownTrigger) return;
-    currencyDropdownTrigger.classList.remove('open');
-    currencyDropdownTrigger.setAttribute('aria-expanded', 'false');
-    currencyDropdownPopover.classList.remove('show');
-  }
-
-  if (currencyDropdownTrigger) {
-    currencyDropdownTrigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (currencyDropdownPopover && currencyDropdownPopover.classList.contains('show')) {
-        closeCurrencyDropdown();
-      } else {
-        openCurrencyDropdown();
-      }
+        }
+      });
     });
   }
 
-  if (currencySearchInputField) {
-    currencySearchInputField.addEventListener('input', (e) => {
-      const query = e.target.value;
-      if (clearCurrencySearchBtn) {
-        clearCurrencySearchBtn.style.display = query ? 'block' : 'none';
-      }
-      populateVerticalCurrencyList(query);
-    });
-
-    currencySearchInputField.addEventListener('click', (e) => {
-      e.stopPropagation();
+  const currencySwitchContainer = document.getElementById('currency-switch');
+  if (currencySwitchContainer) {
+    currencySwitchContainer.addEventListener('click', (e) => {
+      if (e.target.closest('.currency-switch-btn')) return;
+      const nextCode = activeCurrencyCode === 'USD' ? 'IDR' : 'USD';
+      updateCurrencyUI(nextCode);
     });
   }
-
-  if (clearCurrencySearchBtn) {
-    clearCurrencySearchBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (currencySearchInputField) {
-        currencySearchInputField.value = '';
-        clearCurrencySearchBtn.style.display = 'none';
-        populateVerticalCurrencyList('');
-        currencySearchInputField.focus();
-      }
-    });
-  }
-
-  // Prevent clicks inside the dropdown popover from closing it prematurely
-  if (currencyDropdownPopover) {
-    currencyDropdownPopover.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
-  }
-
-  // Close dropdown on outside click
-  document.addEventListener('click', (e) => {
-    if (currencyDropdownWrap && !currencyDropdownWrap.contains(e.target)) {
-      closeCurrencyDropdown();
-    }
-  });
 
   // --- 5. HISTORICAL CHART GENERATION & RENDERING ---
   const canvas = document.getElementById('portfolioChart');
@@ -1138,7 +1029,7 @@
 
   // --- 9. TRANSACTION LEDGER & LIVE MARKET ENGINE ---
   let currentTransactions = [];
-  let activeTxFilter = 'ALL';
+  let activeTxFilter = 'BUY';
   let lastBackendUpdated = null;
   let liveCryptoPrices = {
     BTC: { usd: 85332 },
@@ -1152,7 +1043,7 @@
     btn.addEventListener('click', () => {
       txFilterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      activeTxFilter = btn.getAttribute('data-filter') || 'ALL';
+      activeTxFilter = btn.getAttribute('data-filter') || 'BUY';
       renderTransactions(activeTxFilter);
     });
   });

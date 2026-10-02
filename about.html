@@ -11,7 +11,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <link rel="stylesheet" href="styles.css?v=2.7.1">
+  <link rel="stylesheet" href="styles.css?v=2.7.6">
 </head>
 <body>
   <div class="background-mesh" aria-hidden="true"></div>
@@ -26,10 +26,8 @@
         </a>
 
         <div class="nav-links">
-          <a href="index.html#hero" class="nav-link" id="nav-link-beranda">Beranda</a>
           <a href="about.html" class="nav-link active" id="nav-link-tentang">Tentang Kami</a>
-          <a href="index.html#aset" class="nav-link" id="nav-link-aset">Rincian Aset</a>
-          <a href="index.html#grafik" class="nav-link" id="nav-link-grafik">Grafik Historis</a>
+          <a href="research.html" class="nav-link" id="nav-link-research">Research</a>
 
           <!-- Sentinel Dropdown Menu -->
           <div class="nav-item-dropdown" id="nav-sentinel-dropdown">
@@ -53,8 +51,6 @@
         <div class="nav-actions">
           <div class="nav-quick-actions desktop-only">
             <button type="button" class="nav-quick-btn open-community-modal-trigger" aria-label="Komunitas Discord">Discord</button>
-            <span class="nav-quick-sep" aria-hidden="true">|</span>
-            <button type="button" class="nav-quick-btn" id="nav-pgp-btn" aria-label="Kunci PGP Publik">PGP</button>
           </div>
           <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Buka navigasi mobile" aria-expanded="false">
             <span class="hamburger-bar"></span>
@@ -453,35 +449,23 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
     <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
     <div class="mobile-nav-panel">
       <div class="mobile-nav-header">
-        <div class="brand">
+        <a href="index.html#hero" class="brand" aria-label="Almere &amp; Co Beranda">
           <span class="dot"></span>
           <span class="brand-text">Almere &amp; Co</span>
-        </div>
+        </a>
         <button type="button" class="mobile-nav-close" id="mobile-nav-close" aria-label="Tutup menu">&times;</button>
       </div>
       <div class="mobile-nav-links">
-        <a href="index.html#hero" class="mobile-nav-item mobile-nav-link-anchor">
-          <div class="m-text">
-            <span class="m-title">Beranda</span>
-            <span class="m-desc">Ringkasan valuasi dan portofolio</span>
-          </div>
-        </a>
         <a href="about.html" class="mobile-nav-item mobile-nav-link-anchor">
           <div class="m-text">
             <span class="m-title">Tentang Kami</span>
             <span class="m-desc">Founder &amp; Co-Founder Almere &amp; Co</span>
           </div>
         </a>
-        <a href="index.html#aset" class="mobile-nav-item mobile-nav-link-anchor">
+        <a href="research.html" class="mobile-nav-item">
           <div class="m-text">
-            <span class="m-title">Rincian Aset</span>
-            <span class="m-desc">Holdings &amp; distribusi portofolio</span>
-          </div>
-        </a>
-        <a href="index.html#grafik" class="mobile-nav-item mobile-nav-link-anchor">
-          <div class="m-text">
-            <span class="m-title">Grafik Historis</span>
-            <span class="m-desc">Performa valuasi dari waktu ke waktu</span>
+            <span class="m-title">Research</span>
+            <span class="m-desc">Publikasi riset &amp; analisis pasar</span>
           </div>
         </a>
         <button type="button" class="mobile-nav-item" id="mobile-sentinel-btn">
@@ -493,12 +477,6 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
             <span class="m-desc">Daemon monitoring &amp; verifier</span>
           </div>
         </button>
-        <button type="button" class="mobile-nav-item" id="mobile-pgp-btn">
-          <div class="m-text">
-            <span class="m-title">Kunci PGP Publik</span>
-            <span class="m-desc">Verifikasi kriptografi &amp; enkripsi</span>
-          </div>
-        </button>
       </div>
       <div class="mobile-nav-footer">
         <button type="button" class="cta-pill w-full open-community-modal-trigger">
@@ -508,6 +486,6 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
     </div>
   </div>
 
-  <script src="app.js?v=2.7.1"></script>
+  <script src="app.js?v=2.7.6"></script>
 </body>
 </html>

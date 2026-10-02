@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Almere Research — Riset untuk Keputusan yang Lebih Baik</title>
+  <meta name="description" content="Publikasi riset, analisis, dan observasi pasar yang disusun oleh Almere & Co berdasarkan data dan metodologi yang dapat ditinjau.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="stylesheet" href="styles.css?v=2.7.6">
+</head>
+<body>
+  <div class="background-mesh" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <!-- Navigation Header -->
+    <header class="header">
+      <nav class="nav-container" aria-label="Navigasi Utama">
+        <a href="index.html#hero" class="brand" aria-label="Almere &amp; Co Beranda">
+          <span class="dot"></span>
+          <span class="brand-text">Almere &amp; Co</span>
+        </a>
+
+        <div class="nav-links">
+          <a href="index.html#hero" class="nav-link">Beranda</a>
+          <a href="about.html" class="nav-link">Tentang Kami</a>
+          <a href="index.html#aset" class="nav-link">Rincian Aset</a>
+          <a href="research.html" class="nav-link active">Research</a>
+          <a href="index.html#pane-history" class="nav-link">Grafik Historis</a>
+        </div>
+
+        <div class="nav-actions">
+          <div class="live-market-indicator desktop-only" aria-label="Status Pasar: Live Market">
+            <span class="live-market-dot" aria-hidden="true"></span>
+            <span>Live Market</span>
+          </div>
+
+          <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Buka navigasi mobile" aria-expanded="false">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="research-container">
+      <!-- VIEW 1: RESEARCH INDEX & PAPERS LIST (Mockup View) -->
+      <div id="research-index-container">
+        <!-- Hero Header -->
+        <div class="research-header-wrap">
+          <div class="research-eyebrow">Almere Research</div>
+          <h1 class="research-headline">Riset untuk<br>keputusan yang lebih baik.</h1>
+          <p class="research-sub">
+            Publikasi riset, analisis, dan observasi pasar yang disusun oleh Almere &amp; Co berdasarkan data dan metodologi yang dapat ditinjau.
+          </p>
+        </div>
+
+        <!-- Filter Category Pills (All, Macro, Digital Assets, Markets, Portfolio) -->
+        <div class="research-filter-group" role="tablist" aria-label="Kategori Riset">
+          <button type="button" class="research-filter-pill active" data-category="All" role="tab" aria-selected="true">All</button>
+          <button type="button" class="research-filter-pill" data-category="Macro" role="tab" aria-selected="false">Macro</button>
+          <button type="button" class="research-filter-pill" data-category="Digital Assets" role="tab" aria-selected="false">Digital Assets</button>
+          <button type="button" class="research-filter-pill" data-category="Markets" role="tab" aria-selected="false">Markets</button>
+          <button type="button" class="research-filter-pill" data-category="Portfolio" role="tab" aria-selected="false">Portfolio</button>
+        </div>
+
+        <!-- Latest Research Section -->
+        <section aria-label="Daftar Publikasi Riset Terbaru">
+          <div class="research-section-header">
+            <h2 class="research-section-title">Latest Research</h2>
+            <div class="research-header-actions">
+              <button type="button" class="btn-upload-paper-trigger" id="open-upload-modal-btn" aria-label="Unggah Riset Baru">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M8 2v12M2 8h12"/>
+                </svg>
+                <span>Upload Paper</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic List of Research Papers -->
+          <div class="research-list" id="research-list">
+            <!-- Initial static fallback list matching user mockup; replaced/hydrated dynamically by research.js -->
+            <div class="research-item" role="button" tabindex="0" data-id="bitcoin-global-liquidity">
+              <div class="research-item-left">
+                <h3 class="research-item-title">Bitcoin &amp; Global Liquidity</h3>
+                <div class="research-item-meta">
+                  <span class="meta-cat">Macro</span>
+                  <span class="meta-dot">&middot;</span>
+                  <span class="meta-date">30 Sep 2026</span>
+                </div>
+              </div>
+              <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
+            </div>
+
+            <div class="research-item" role="button" tabindex="0" data-id="hyperliquid-financial-infrastructure">
+              <div class="research-item-left">
+                <h3 class="research-item-title">Hyperliquid: From Exchange to Financial Infrastructure</h3>
+                <div class="research-item-meta">
+                  <span class="meta-cat">Digital Assets</span>
+                  <span class="meta-dot">&middot;</span>
+                  <span class="meta-date">16 Sep 2026</span>
+                </div>
+              </div>
+              <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
+            </div>
+
+            <div class="research-item" role="button" tabindex="0" data-id="role-of-cash-during-risk-off">
+              <div class="research-item-left">
+                <h3 class="research-item-title">The Role of Cash During Risk-Off Regimes</h3>
+                <div class="research-item-meta">
+                  <span class="meta-cat">Portfolio</span>
+                  <span class="meta-dot">&middot;</span>
+                  <span class="meta-date">28 Aug 2026</span>
+                </div>
+              </div>
+              <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
+            </div>
+
+            <div class="research-item" role="button" tabindex="0" data-id="24-7-markets-evolution-infrastructure">
+              <div class="research-item-left">
+                <h3 class="research-item-title">24/7 Markets &amp; The Evolution of Financial Infrastructure</h3>
+                <div class="research-item-meta">
+                  <span class="meta-cat">Markets</span>
+                  <span class="meta-dot">&middot;</span>
+                  <span class="meta-date">12 Aug 2026</span>
+                </div>
+              </div>
+              <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mockup Minimalist Footer -->
+        <footer class="research-footer">
+          <a href="index.html#hero" class="research-footer-brand">Almere &amp; Co</a>
+          <span class="research-footer-tag">Public Research &middot; Read Only</span>
+        </footer>
+      </div>
+
+      <!-- VIEW 2: DEDICATED PAPER READER (Active when a paper is clicked) -->
+      <article class="paper-reader-container" id="paper-reader-container" aria-label="Pembaca Riset Almere">
+        <!-- Reader Navigation Top Bar -->
+        <div class="reader-top-bar">
+          <button type="button" class="btn-reader-back" id="reader-back-btn" aria-label="Kembali ke daftar riset">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M10 3L5 8l5 5"/>
+            </svg>
+            <span>Kembali ke Semua Riset</span>
+          </button>
+
+          <div class="reader-actions-group">
+            <button type="button" class="btn-reader-action" id="reader-copy-link-btn" title="Salin tautan ke riset ini">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M6.5 9.5a3 3 0 0 0 4.24 0l2.5-2.5a3 3 0 0 0-4.24-4.24L7.5 4.26"/>
+                <path d="M9.5 6.5a3 3 0 0 0-4.24 0L2.76 9a3 3 0 0 0 4.24 4.24l1.5-1.5"/>
+              </svg>
+              <span>Salin Tautan</span>
+            </button>
+
+            <button type="button" class="btn-reader-action" id="reader-print-btn" title="Cetak atau simpan sebagai PDF">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M4 6V2h8v4M4 12H2V7h12v5h-2M4 10h8v4H4z"/>
+              </svg>
+              <span>Cetak / PDF</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Article Content -->
+        <div class="paper-article">
+          <!-- Metadata Tagging -->
+          <div class="paper-meta-header">
+            <span class="paper-category-pill" id="reader-category-pill">Macro</span>
+            <span class="paper-date-stamp" id="reader-date">30 Sep 2026</span>
+            <span class="meta-dot" style="opacity: 0.35;">&middot;</span>
+            <span class="paper-read-time" id="reader-read-time">8 min read</span>
+          </div>
+
+          <!-- Main Title & Subtitle -->
+          <h1 class="paper-main-title" id="reader-title">Bitcoin &amp; Global Liquidity</h1>
+          <p class="paper-lead-subtitle" id="reader-subtitle">Transmisi Siklus Moneter Bank Sentral Terhadap Dinamika Valuasi dan Rezim Volatilitas Aset Digital</p>
+
+          <!-- Byline Card -->
+          <div class="paper-byline-card">
+            <div class="byline-avatar" id="reader-author-avatar">F</div>
+            <div class="byline-details">
+              <div class="byline-author" id="reader-author">Farel Arya Priguna (Founder &amp; Ex J.P. Morgan) &amp; Tim Riset Almere</div>
+              <div class="byline-institution">Almere &amp; Co Institutional Research Department &middot; Peer Reviewed</div>
+            </div>
+          </div>
+
+          <!-- Abstract Box -->
+          <div class="paper-abstract-card">
+            <div class="abstract-eyebrow">Abstract &middot; Ringkasan Eksekutif</div>
+            <p class="abstract-text" id="reader-abstract"></p>
+          </div>
+
+          <!-- Key Takeaways Card -->
+          <div class="paper-takeaways-card" id="reader-takeaways-container">
+            <div class="takeaways-title">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 2.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm1 8.5H7V7h2v5z"/>
+              </svg>
+              <span>Poin Kunci &amp; Temuan Analisis</span>
+            </div>
+            <ul class="takeaways-list" id="reader-takeaways-list"></ul>
+          </div>
+
+          <!-- Full Body Sections -->
+          <div class="paper-body-content" id="reader-body-content"></div>
+
+          <!-- Methodology & Disclaimer Blocks -->
+          <div class="paper-footer-blocks">
+            <div class="paper-methodology-card">
+              <div class="paper-footer-card-title">Metodologi &amp; Sumber Data</div>
+              <p class="paper-footer-card-body" id="reader-methodology"></p>
+            </div>
+
+            <div class="paper-disclaimer-card">
+              <div class="paper-footer-card-title">Pernyataan Keterbukaan &amp; Tata Kelola</div>
+              <p class="paper-footer-card-body" id="reader-disclaimer"></p>
+            </div>
+          </div>
+
+          <!-- Bottom Reader Navigation -->
+          <div class="paper-bottom-nav">
+            <button type="button" class="btn-reader-back" id="reader-bottom-back-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M10 3L5 8l5 5"/>
+              </svg>
+              <span>Kembali ke Semua Riset</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Reader Footer -->
+        <footer class="research-footer">
+          <a href="index.html#hero" class="research-footer-brand">Almere &amp; Co</a>
+          <span class="research-footer-tag">Public Research &middot; Read Only</span>
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <!-- UPLOAD / TAMBAH RISET MODAL -->
+  <div class="modal-backdrop" id="upload-paper-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
+    <div class="modal-card modal-paper-upload-card">
+      <button type="button" class="modal-close-btn" id="close-upload-modal-btn" aria-label="Tutup form upload">&times;</button>
+      
+      <div class="modal-header">
+        <div class="panel-eyebrow">Almere Research Studio</div>
+        <h2 id="upload-modal-title" class="modal-title" style="font-family: 'Fraunces', serif; font-size: 26px; font-weight: 400;">
+          Publikasikan Research Paper
+        </h2>
+        <p class="modal-subtitle">
+          Unggah naskah analisis, studi makro, atau tesis portofolio baru agar dapat dibaca secara publik oleh semua pengunjung.
+        </p>
+      </div>
+
+      <form id="upload-paper-form">
+        <div class="paper-form-grid">
+          <div class="paper-form-field">
+            <label class="paper-form-label" for="paper-input-title">Judul Riset *</label>
+            <input type="text" id="paper-input-title" class="paper-form-input" placeholder="Contoh: Bitcoin &amp; Global Liquidity" required>
+          </div>
+
+          <div class="paper-form-row-2">
+            <div class="paper-form-field">
+              <label class="paper-form-label" for="paper-input-category">Kategori *</label>
+              <select id="paper-input-category" class="paper-form-select" required>
+                <option value="Macro">Macro</option>
+                <option value="Digital Assets">Digital Assets</option>
+                <option value="Markets">Markets</option>
+                <option value="Portfolio">Portfolio</option>
+              </select>
+            </div>
+
+            <div class="paper-form-field">
+              <label class="paper-form-label" for="paper-input-readtime">Estimasi Baca</label>
+              <input type="text" id="paper-input-readtime" class="paper-form-input" placeholder="Contoh: 8 min read" value="8 min read">
+            </div>
+          </div>
+
+          <div class="paper-form-field">
+            <label class="paper-form-label" for="paper-input-author">Penulis / Author</label>
+            <input type="text" id="paper-input-author" class="paper-form-input" value="Farel Arya Priguna (Founder &amp; Ex J.P. Morgan) &amp; Tim Riset Almere">
+          </div>
+
+          <div class="paper-form-field">
+            <label class="paper-form-label" for="paper-input-abstract">Ringkasan Eksekutif (Abstract) *</label>
+            <textarea id="paper-input-abstract" class="paper-form-textarea" style="min-height: 90px;" placeholder="Tuliskan ringkasan inti metodologi, latar belakang, dan kesimpulan riset..." required></textarea>
+          </div>
+
+          <div class="paper-form-field">
+            <label class="paper-form-label" for="paper-input-content">Isi Lengkap Riset (Mendukung Subheading # dan ##) *</label>
+            <textarea id="paper-input-content" class="paper-form-textarea" placeholder="Tulis atau paste isi lengkap research paper di sini...
+
+Contoh format:
+# 1. Pendahuluan
+Paragraf pembuka analisis...
+
+## 2. Temuan Kunci
+Paragraf analisis kedua..." required></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions modal-actions-between" style="border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+          <button type="button" class="btn-cancel" id="export-json-btn" title="Unduh file research_papers.json untuk di-commit ke repositori">
+            Unduh research_papers.json
+          </button>
+          <button type="submit" class="btn-submit">
+            Publikasikan Riset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer" aria-hidden="true">
+    <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
+    <div class="mobile-nav-panel">
+      <div class="mobile-nav-header">
+        <a href="index.html#hero" class="brand" aria-label="Almere &amp; Co Beranda">
+          <span class="dot"></span>
+          <span class="brand-text">Almere &amp; Co</span>
+        </a>
+        <button type="button" class="mobile-nav-close" id="mobile-nav-close" aria-label="Tutup menu">&times;</button>
+      </div>
+      <div class="mobile-nav-links">
+        <a href="index.html#hero" class="mobile-nav-item">
+          <div class="m-text">
+            <span class="m-title">Beranda</span>
+            <span class="m-desc">Valuasi portofolio &amp; ringkasan</span>
+          </div>
+        </a>
+        <a href="about.html" class="mobile-nav-item">
+          <div class="m-text">
+            <span class="m-title">Tentang Kami</span>
+            <span class="m-desc">Founder &amp; Co-Founder Almere &amp; Co</span>
+          </div>
+        </a>
+        <a href="research.html" class="mobile-nav-item active">
+          <div class="m-text">
+            <span class="m-title">Research</span>
+            <span class="m-desc">Publikasi riset &amp; analisis pasar</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="upload-success-toast" id="research-toast" role="status" aria-live="polite"></div>
+
+  <!-- Script logic -->
+  <script src="research.js?v=2.7.6"></script>
+  <script>
+    // Mobile Drawer Toggle
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const mobileDrawer = document.getElementById('mobile-nav-drawer');
+    const mobileClose = document.getElementById('mobile-nav-close');
+    const mobileBackdrop = document.getElementById('mobile-nav-backdrop');
+
+    function openMobileMenu() {
+      if (mobileDrawer) {
+        mobileDrawer.classList.add('open');
+        mobileDrawer.setAttribute('aria-hidden', 'false');
+        if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileMenu() {
+      if (mobileDrawer) {
+        mobileDrawer.classList.remove('open');
+        mobileDrawer.setAttribute('aria-hidden', 'true');
+        if (mobileToggle) mobileToggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+    }
+
+    if (mobileToggle) mobileToggle.addEventListener('click', openMobileMenu);
+    if (mobileClose) mobileClose.addEventListener('click', closeMobileMenu);
+    if (mobileBackdrop) mobileBackdrop.addEventListener('click', closeMobileMenu);
+  </script>
+</body>
+</html>

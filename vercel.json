@@ -17,6 +17,14 @@
     {
       "source": "/tentang",
       "destination": "/about.html"
+    },
+    {
+      "source": "/research",
+      "destination": "/research.html"
+    },
+    {
+      "source": "/riset",
+      "destination": "/research.html"
     }
   ]
 }

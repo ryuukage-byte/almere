@@ -11,7 +11,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <link rel="stylesheet" href="styles.css?v=2.7.0">
+  <link rel="stylesheet" href="styles.css?v=2.7.6">
 </head>
 <body>
   <div class="background-mesh" aria-hidden="true"></div>
@@ -26,10 +26,8 @@
         </a>
 
         <div class="nav-links">
-          <a href="#hero" class="nav-link active" id="nav-link-beranda">Beranda</a>
           <a href="about.html" class="nav-link" id="nav-link-tentang">Tentang Kami</a>
-          <a href="#aset" class="nav-link" id="nav-link-aset">Rincian Aset</a>
-          <a href="#grafik" class="nav-link" id="nav-link-grafik">Grafik Historis</a>
+          <a href="research.html" class="nav-link" id="nav-link-research">Research</a>
 
           <!-- Sentinel Dropdown Menu -->
           <div class="nav-item-dropdown" id="nav-sentinel-dropdown">
@@ -53,8 +51,6 @@
         <div class="nav-actions">
           <div class="nav-quick-actions desktop-only">
             <button type="button" class="nav-quick-btn open-community-modal-trigger" aria-label="Komunitas Discord">Discord</button>
-            <span class="nav-quick-sep" aria-hidden="true">|</span>
-            <button type="button" class="nav-quick-btn" id="nav-pgp-btn" aria-label="Kunci PGP Publik">PGP</button>
           </div>
           <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Buka navigasi mobile" aria-expanded="false">
             <span class="hamburger-bar"></span>
@@ -142,12 +138,6 @@
                 </svg>
                 <span>Daftar Aset</span>
               </button>
-              <button class="asset-view-tab" data-tab="distribution" role="tab" aria-selected="false" aria-controls="pane-distribution" id="tab-distribution">
-                <svg class="tab-icon-svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
-                  <path d="M8 1a7 7 0 1 0 7 7A7 7 0 0 0 8 1zm0 2.5a4.5 4.5 0 0 1 4.47 4H8zm-1 0v5H2.53A4.5 4.5 0 0 1 7 3.5zm-4.47 6H7v4.47A4.5 4.5 0 0 1 2.53 9.5zm5.47 4.47V9.5h4.47A4.5 4.5 0 0 1 8 13.97z"/>
-                </svg>
-                <span>Distribusi Portofolio</span>
-              </button>
               <button class="asset-view-tab" data-tab="transactions" role="tab" aria-selected="false" aria-controls="pane-transactions" id="tab-transactions">
                 <svg class="tab-icon-svg" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
                   <path d="M2 2.5h12v1.8H2zm0 4.6h12v1.8H2zm0 4.6h8v1.8H2z"/>
@@ -162,38 +152,15 @@
               </button>
             </div>
 
-            <!-- Searchable Currency Dropdown (Nge-baris ke bawah & Ada Fitur Search) -->
-            <div class="currency-dropdown-wrap" id="currency-dropdown-wrap">
-              <button type="button" class="currency-dropdown-trigger" id="currency-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Pilih mata uang portofolio">
-                <span class="currency-globe-icon" aria-hidden="true">
-                  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <circle cx="8" cy="8" r="6.5"/>
-                    <path d="M1.5 8h13M8 1.5c1.8 2.2 2.8 4.3 2.8 6.5s-1 4.3-2.8 6.5c-1.8-2.2-2.8-4.3-2.8-6.5S6.2 3.7 8 1.5z"/>
-                  </svg>
-                </span>
-                <span class="currency-trigger-text">
-                  <span class="currency-trigger-prefix">Mata Uang:</span>
-                  <span class="currency-trigger-current" id="currency-trigger-val">USD ($)</span>
-                </span>
-                <svg class="currency-chevron" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M4 6l4 4 4-4"/>
-                </svg>
-              </button>
-
-              <!-- Popover Menu List Vertikal -->
-              <div class="currency-dropdown-popover" id="currency-dropdown-popover" role="dialog" aria-label="Pilihan Mata Uang">
-                <div class="currency-dropdown-search-box">
-                  <svg class="search-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                    <circle cx="7" cy="7" r="4.5"/>
-                    <path d="M10.5 10.5L14 14"/>
-                  </svg>
-                  <input type="text" id="currency-search-input-field" placeholder="Pilih mata uang (USD / IDR)" autocomplete="off">
-                  <button type="button" id="clear-currency-search" class="clear-search-btn" aria-label="Hapus pencarian" style="display:none;">&times;</button>
-                </div>
-
-                <div class="currency-list-vertical" id="currency-list-vertical" role="listbox" aria-label="Pilihan Mata Uang (USD / IDR)">
-                  <!-- Diisi secara dinamis oleh JS -->
-                </div>
+            <!-- Instant Currency Switch Pill (USD / IDR) -->
+            <div class="currency-switch-wrap" id="currency-switch-wrap">
+              <div class="currency-switch" id="currency-switch" role="group" aria-label="Pilihan Mata Uang">
+                <button type="button" class="currency-switch-btn active" data-currency="USD" id="currency-btn-usd" aria-pressed="true">
+                  <span>USD ($)</span>
+                </button>
+                <button type="button" class="currency-switch-btn" data-currency="IDR" id="currency-btn-idr" aria-pressed="false">
+                  <span>IDR (Rp)</span>
+                </button>
               </div>
             </div>
           </div>
@@ -219,38 +186,6 @@
           </div>
         </div>
 
-        <!-- TAB CONTENT 2: DISTRIBUSI PORTOFOLIO (BREAKDOWN ALOKASI) -->
-        <div class="asset-tab-pane" id="pane-distribution" role="tabpanel" aria-labelledby="tab-distribution" hidden>
-          <div class="allocation-panel tab-embedded">
-            <div class="allocation-header">
-              <div>
-                <div class="panel-eyebrow">Breakdown Alokasi</div>
-                <h3 class="panel-heading">Distribusi Portofolio</h3>
-              </div>
-              <div class="allocation-total-note">Total 100% dari valuasi aktif</div>
-            </div>
-
-            <div class="allocation-content">
-              <div class="donut-container">
-                <svg class="donut-chart" id="donut-chart-svg" viewBox="0 0 140 140" aria-label="Diagram Alokasi Portofolio">
-                  <circle class="donut-bg" cx="70" cy="70" r="54" />
-                  <g id="donut-segments-group">
-                    <!-- Segmen donut SVG di-generate dinamis oleh JS -->
-                  </g>
-                </svg>
-                <div class="donut-center-label">
-                  <span class="donut-center-val" id="donut-center-val">0</span>
-                  <span class="donut-center-sub" id="donut-center-sub">Aset</span>
-                </div>
-              </div>
-
-              <div class="allocation-legend-grid" id="allocation-legend-grid">
-                <!-- Legend item di-generate dinamis oleh JS -->
-                <div class="empty-legend">Menunggu data aset dari transaksi ledger...</div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- TAB CONTENT 3: RIWAYAT TRANSAKSI & LEDGER PUBLIK -->
         <div class="asset-tab-pane" id="pane-transactions" role="tabpanel" aria-labelledby="tab-transactions" hidden>
@@ -264,8 +199,7 @@
 
               <!-- Filter Tipe Transaksi -->
               <div class="tx-filter-group" role="group" aria-label="Filter Tipe Transaksi">
-                <button type="button" class="tx-filter-btn active" data-filter="ALL">Semua</button>
-                <button type="button" class="tx-filter-btn" data-filter="BUY">Beli (BUY)</button>
+                <button type="button" class="tx-filter-btn active" data-filter="BUY">Beli (BUY)</button>
                 <button type="button" class="tx-filter-btn" data-filter="SELL">Jual (SELL)</button>
                 <button type="button" class="tx-filter-btn" data-filter="DEPOSIT">Deposit</button>
               </div>
@@ -349,28 +283,6 @@
 
 
 
-      <!-- Tentang / Konteks Tata Kelola Portofolio Mandiri & Non-Anonimitas -->
-      <section class="about-section" id="tentang" aria-label="Tentang Kami">
-        <div class="about-card">
-          <div class="about-header">
-            <div class="panel-eyebrow">Konteks Tata Kelola &middot; Non-Anonymous Founders</div>
-            <h2 class="about-heading">Tentang Almere &amp; Co</h2>
-          </div>
-          <div class="about-body">
-            <p class="about-text">
-              Portofolio ini mencerminkan <em>kekayaan pribadi yang dikelola secara mandiri</em> oleh Almere &amp; Co. Kami tidak menerima dana dari pihak luar, tidak beroperasi sebagai hedge fund, dan tidak menjalankan skema investasi bersama (bukan pooled investment fund).
-            </p>
-            <p class="about-subtext">
-              Didirikan dan dijalankan secara terbuka oleh <strong>Farel Arya Priguna</strong> (Ex J.P. Morgan) dan <strong>Felicia Tanuwijayaa</strong> demi membangun rekam jejak transparansi data yang objektif dan dapat dipertanggungjawabkan dari waktu ke waktu.
-            </p>
-            <div class="about-cta-row" style="margin-top: 14px;">
-              <a href="about.html" class="cta-pill about-link-btn">
-                <span>Lihat Profil Lengkap Founder &amp; Co-Founder &rarr;</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
 
     <!-- Footer (Spesifikasi Poin 3C, Poin 5: Disclaimer, Kontak, Real-time Sync) -->
@@ -763,35 +675,23 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
     <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
     <div class="mobile-nav-panel">
       <div class="mobile-nav-header">
-        <div class="brand">
+        <a href="#hero" class="brand" aria-label="Almere &amp; Co Beranda">
           <span class="dot"></span>
           <span class="brand-text">Almere &amp; Co</span>
-        </div>
+        </a>
         <button type="button" class="mobile-nav-close" id="mobile-nav-close" aria-label="Tutup menu">&times;</button>
       </div>
       <div class="mobile-nav-links">
-        <a href="#hero" class="mobile-nav-item mobile-nav-link-anchor" id="m-nav-hero">
-          <div class="m-text">
-            <span class="m-title">Beranda</span>
-            <span class="m-desc">Ringkasan valuasi dan portofolio</span>
-          </div>
-        </a>
         <a href="about.html" class="mobile-nav-item" id="m-nav-tentang">
           <div class="m-text">
             <span class="m-title">Tentang Kami</span>
             <span class="m-desc">Profil Founder &amp; Co-Founder Almere &amp; Co</span>
           </div>
         </a>
-        <a href="#aset" class="mobile-nav-item mobile-nav-link-anchor" id="m-nav-aset">
+        <a href="research.html" class="mobile-nav-item" id="m-nav-research">
           <div class="m-text">
-            <span class="m-title">Rincian Aset</span>
-            <span class="m-desc">Holdings &amp; distribusi portofolio</span>
-          </div>
-        </a>
-        <a href="#grafik" class="mobile-nav-item mobile-nav-link-anchor" id="m-nav-grafik">
-          <div class="m-text">
-            <span class="m-title">Grafik Historis</span>
-            <span class="m-desc">Performa valuasi dari waktu ke waktu</span>
+            <span class="m-title">Research</span>
+            <span class="m-desc">Publikasi riset &amp; analisis pasar</span>
           </div>
         </a>
         <button type="button" class="mobile-nav-item" id="mobile-sentinel-btn">
@@ -803,18 +703,6 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
             <span class="m-desc">Daemon monitoring &amp; verifier</span>
           </div>
         </button>
-        <button type="button" class="mobile-nav-item" id="mobile-tx-history-btn">
-          <div class="m-text">
-            <span class="m-title">Riwayat Transaksi</span>
-            <span class="m-desc">Ledger publik &amp; penjualan</span>
-          </div>
-        </button>
-        <button type="button" class="mobile-nav-item" id="mobile-pgp-btn">
-          <div class="m-text">
-            <span class="m-title">Kunci PGP Publik</span>
-            <span class="m-desc">Verifikasi kriptografi &amp; enkripsi</span>
-          </div>
-        </button>
       </div>
       <div class="mobile-nav-footer">
         <button type="button" class="cta-pill w-full open-community-modal-trigger" id="mobile-community-btn">
@@ -824,6 +712,6 @@ mQENBGYZ8eABCADWq3yK9uE2qGz0kLp5O+MvN7tZ8wXy9...
     </div>
   </div>
 
-  <script src="app.js?v=2.7.0"></script>
+  <script src="app.js?v=2.7.6"></script>
 </body>
 </html>

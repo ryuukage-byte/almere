@@ -1,0 +1,146 @@
+[
+  {
+    "id": "bitcoin-global-liquidity",
+    "slug": "bitcoin-global-liquidity",
+    "title": "Bitcoin & Global Liquidity",
+    "subtitle": "Transmisi Siklus Moneter Bank Sentral Terhadap Dinamika Valuasi dan Rezim Volatilitas Aset Digital",
+    "category": "Macro",
+    "date": "30 Sep 2026",
+    "timestamp": 1790784000000,
+    "readTime": "8 min read",
+    "author": "Farel Arya Priguna (Founder & Ex J.P. Morgan) & Tim Riset Makro Almere",
+    "status": "Published",
+    "abstract": "Riset ini menguji korelasi dinamis antara ekspansi likuiditas global M2 dari empat bank sentral utama dunia (Federal Reserve, European Central Bank, People's Bank of China, dan Bank of Japan) terhadap perilaku akumulasi dan valuasi pasar Bitcoin. Melalui pemodelan autoregresif periode 2020–2026, kami menemukan bahwa Bitcoin bertindak sebagai instrumen paling elastis terhadap perubahan agregat likuiditas global dengan koefisien sensitivitas 2.8x terhadap perubahan M2 net, mengungguli komoditas emas dan indeks S&P 500 dengan lag transmisi rata-rata 45 hingga 60 hari.",
+    "keyTakeaways": [
+      "Likuiditas global M2 merupakan prediktor makro primer dengan korelasi R² sebesar 0.74 terhadap tren harga Bitcoin jangka menengah.",
+      "Terdapat lag transmisi waktu selama 45–60 hari dari titik balik siklus ekspansi/kontraksi neraca bank sentral ke aksi harga on-chain.",
+      "Kombinasi suplai inelastis (pasca-halving) dan aliran modal institusional ETF memperkuat respon Bitcoin terhadap pelonggaran likuiditas moneter global."
+    ],
+    "sections": [
+      {
+        "heading": "1. Latar Belakang & Kerangka Likuiditas Makro",
+        "content": "<p>Dalam lanskap makroekonomi modern, pergerakan harga aset berisiko tidak lagi semata-mata ditentukan oleh kinerja fundamental mikro masing-masing instrumen, melainkan oleh pasang surut likuiditas fiat global. Sejak era pelonggaran kuantitatif pasca-2020 hingga siklus pengetatan moneter dan kembali ke pelonggaran global, jumlah uang beredar (M2) agregat menjadi determinan dominan arus modal institusional.</p><p>Bitcoin, yang dirancang secara matematis dengan batas pasokan absolut 21 juta koin dan jadwal emisi yang sepenuhnya bebas dari intervensi diskresi politik, menempati posisi unik dalam sistem moneter internasional. Tidak seperti saham korporasi yang memiliki arus kas diskonto (discounted cash flow) atau obligasi yang sensitif terhadap kurva suku bunga nominal, valuasi Bitcoin mencerminkan daya serap likuiditas relatif terhadap devaluasi moneter fiat secara global.</p>"
+      },
+      {
+        "heading": "2. Indeks Likuiditas M2 Terbobot & Metodologi Pengukuran",
+        "content": "<p>Untuk mengukur likuiditas fiat secara objektif, Almere Research mengonstruksi <strong>Global Liquidity Index (GLI)</strong> yang mengagregasikan neraca dan uang beredar M2 dari 4 bank sentral terbesar yang mencakup lebih dari 70% PDB dunia: Federal Reserve AS, People's Bank of China (PBOC), European Central Bank (ECB), dan Bank of Japan (BOJ), dikonversikan ke dalam denominasi USD secara harian.</p><p>Hasil regresi time-series menunjukkan bahwa perubahan laju pertumbuhan tahunan (YoY) pada GLI mendahului tren besar Bitcoin dengan jeda konsisten 6 hingga 8 minggu (45–60 hari). Ketika GLI berada dalam fase akselerasi positif, Bitcoin mengalami fase apresiasi rata-rata 3.2x lebih cepat dibanding indeks S&P 500.</p>"
+      },
+      {
+        "heading": "3. Peran ETF Institusional & Elastisitas Penawaran",
+        "content": "<p>Integrasi instrumen exchange-traded funds (ETF) spot sejak 2024 telah mengubah saluran transmisi likuiditas ini secara permanen. Jika pada siklus sebelumnya likuiditas makro memerlukan waktu lama untuk merembes ke bursa kripto ritel melalui stablecoin, kini likuiditas institusional langsung mengalir melalui akun pialang konvensional (brokerage accounts), manajer kekayaan (RIA), dan dana pensiun.</p><p>Dikombinasikan dengan pemotongan laju emisi blok baru (halving), ketidakseimbangan struktural antara permintaan likuiditas baru dan penawaran koin yang siap dijual di bursa (liquid inventory) menciptakan tekanan harga yang jauh lebih eksplosif pada setiap siklus pelonggaran moneter.</p>"
+      },
+      {
+        "heading": "4. Implikasi Alokasi Portofolio Almere & Co",
+        "content": "<p>Berdasarkan kerangka kerja di atas, portofolio Almere & Co tidak mendasarkan keputusan akumulasi Bitcoin pada sentimen media atau fluktuasi harian di bursa spot, melainkan pada pemantauan metrik likuiditas bank sentral secara berkelanjutan. Alokasi Bitcoin dipertahankan sebagai pilar inti (core holding) dengan tujuan melindungi daya beli jangka panjang modal terhadap devaluasi mata uang fiat yang struktural.</p>"
+      }
+    ],
+    "methodology": "Model ekonometrika VAR (Vector Autoregression) dengan data historis harian dari Federal Reserve FRED, PBOC statistical release, Bank of Japan Data Portal, dan Glassnode On-Chain Intelligence (periode Januari 2020 – September 2026).",
+    "disclaimer": "Riset ini diterbitkan oleh Almere & Co sebagai bagian dari transparansi intelektual dan dokumentasi tata kelola portofolio internal. Konten ini bukan merupakan saran investasi, rekomendasi finansial, atau ajakan untuk membeli maupun menjual aset apa pun."
+  },
+  {
+    "id": "hyperliquid-financial-infrastructure",
+    "slug": "hyperliquid-financial-infrastructure",
+    "title": "Hyperliquid: From Exchange to Financial Infrastructure",
+    "subtitle": "Telaah Arsitektur Layer-1 HyperBFT, Performa Order Book On-Chain, dan Transformasi HIP Menuju Fondasi Pasar Finansial Modern",
+    "category": "Digital Assets",
+    "date": "16 Sep 2026",
+    "timestamp": 1789574400000,
+    "readTime": "11 min read",
+    "author": "Farel Arya Priguna & Tim Engineering Almere Research",
+    "status": "Published",
+    "abstract": "Analisis mendalam mengenai evolusi Hyperliquid dari sekadar platform perdagangan perpetual desentralisasi menjadi jaringan Layer-1 berkinerja tinggi mandiri. Dibangun di atas mekanisme konsensus kustom HyperBFT dan state machine berbasis Rust, Hyperliquid membuktikan kemampuan eksekusi hingga 200.000 transaksi per detik dengan latensi submili-detik tanpa membebankan biaya gas untuk pembatalan order. Makalah ini menganalisis implikasi protokol HIP-1 dan HIP-2 serta efisiensi modal yang menjadikan platform ini fondasi baru bagi infrastruktur keuangan institusional terdesentralisasi.",
+    "keyTakeaways": [
+      "HyperBFT mencapai finalitas blok dalam rentang 0.2 detik tanpa mengorbankan sifat desentralisasi dan determinisme konsensus.",
+      "Zero gas fee untuk order placement/cancellation menghadirkan likuiditas order book sedalam exchange tersentralisasi (CEX) tier-1.",
+      "Standar native token HIP-1 dan liquidity bootstrapping HIP-2 mentransformasikan Hyperliquid menjadi ekosistem pasar modal on-chain berdaulat."
+    ],
+    "sections": [
+      {
+        "heading": "1. Pendahuluan: Kebuntuan Desain AMM & EVM untuk High-Frequency Trading",
+        "content": "<p>Selama bertahun-tahun, keuangan terdesentralisasi (DeFi) didominasi oleh model Automated Market Maker (AMM) seperti Uniswap. Meskipun elegan secara matematis, AMM memiliki kelemahan mendasar: slippage tinggi pada order berukuran besar, impermanent loss yang mengikis keuntungan penyedia likuiditas, dan inefisiensi modal yang signifikan jika dibandingkan dengan Central Limit Order Book (CLOB) tradisional di Wall Street.</p><p>Mencoba menjalankan CLOB penuh di atas Ethereum Virtual Machine (EVM) umum selalu terbentur batasan throughput (TPS rendah) dan biaya gas per transaksi. Hyperliquid memecahkan kebuntuan ini bukan dengan membuat Layer-2 rollup di atas rantai lain, melainkan dengan merancang Layer-1 purpose-built dari awal.</p>"
+      },
+      {
+        "heading": "2. Arsitektur HyperBFT & Mesin Eksekusi On-Chain",
+        "content": "<p>Di jantung Hyperliquid terdapat <strong>HyperBFT</strong>, varian konsensus Byzantine Fault Tolerant yang dioptimalkan secara mendalam menggunakan bahasa pemrograman Rust. Seluruh logika pencocokan pesanan (order matching engine), margin risk calculation, serta likuidasi dijalankan secara deterministik langsung di tingkat konsensus L1.</p><p>Hal ini memungkinkan pembatalan pesanan tanpa biaya gas (gas-free cancellations), sebuah prasyarat mutlak bagi pembuat pasar kuantitatif (market makers) profesional untuk menyediakan likuiditas dua arah (bid-ask spread) yang sangat ketat tanpa risiko tersendat oleh kemacetan jaringan.</p>"
+      },
+      {
+        "heading": "3. Transisi Melalui HIP-1 dan HIP-2: Terbukanya Ekosistem L1",
+        "content": "<p>Evolusi paling krusial terjadi saat peluncuran standar Hyperliquid Improvement Proposals (HIP-1 dan HIP-2). Melalui standar ini, Hyperliquid tidak lagi hanya memfasilitasi perdagangan kontrak berjangka (perps), melainkan membuka kemampuan penciptaan aset native spot (HIP-1) dan lelang likuiditas on-chain otomatis (HIP-2).</p><p>Hasilnya adalah terciptanya pasar modal vertikal lengkap di mana proyek-proyek inovatif dapat menerbitkan token, menghimpun likuiditas, dan memperdagangkannya secara instan dengan efisiensi modal yang belum pernah tercapai di ekosistem blockchain mana pun sebelumnya.</p>"
+      },
+      {
+        "heading": "4. Tesis Investasi Almere & Co pada Ekosistem Hyperliquid",
+        "content": "<p>Almere & Co memandang Hyperliquid sebagai salah satu inovasi teknologi finansial paling penting dalam dekade ini. Kombinasi transparansi ledger publik, self-custody keamanan dana pengguna, dan kecepatan eksekusi setara bursa Wall Street menjadikan Hyperliquid pilar alokasi kunci dalam portofolio kami.</p>"
+      }
+    ],
+    "methodology": "Analisis telemetri validator Hyperliquid Mainnet, pengujian benchmarking latensi WebSocket/API, audit dokumen arsitektur teknis HyperBFT, serta evaluasi data volume on-chain Artemis & DeFiLlama.",
+    "disclaimer": "Riset ini bersifat analitis dan edukatif untuk keterbukaan publik. Almere & Co memiliki eksposur kepemilikan aset pada ekosistem yang dibahas. Riset ini bukan merupakan rekomendasi finansial."
+  },
+  {
+    "id": "role-of-cash-during-risk-off",
+    "slug": "role-of-cash-during-risk-off",
+    "title": "The Role of Cash During Risk-Off Regimes",
+    "subtitle": "Instrumen Opsionalitas Strategis, Mitigasi Drawdown, dan Kerangka Rebalancing Asimetris di Tengah Volatilitas Ekstrem Pasar",
+    "category": "Portfolio",
+    "date": "28 Aug 2026",
+    "timestamp": 1787961600000,
+    "readTime": "6 min read",
+    "author": "Felicia Tanuwijayaa (Co-Founder & Pro Trader) & Farel Arya Priguna",
+    "status": "Published",
+    "abstract": "Studi komprehensif mengenai tata kelola alokasi kas tunai (USD & IDR) dalam manajemen portofolio independen. Sering kali kas disalahartikan sebagai aset 'terbuang' karena tergerus inflasi tahunan. Namun, dalam rezim pasar bergejolak (risk-off regimes), kepemilikan kas tunai berfungsi sebagai opsi beli (call option) gratis tanpa tanggal kedaluwarsa atas seluruh aset bernilai diskon di pasar, sekaligus pilar utama dalam meredam drawdowns portofolio secara drastis.",
+    "keyTakeaways": [
+      "Kas tunai memberikan 'opsionalitas murni' untuk memanfaatkan likuidasi paksa pelaku pasar yang menggunakan leverage berlebihan.",
+      "Menjaga rasio kas 15%–30% menurunkan volatilitas portofolio tahunan sebesar 38% tanpa mengorbankan return majemuk jangka panjang.",
+      "Proses rebalancing berbasis aturan tegas (rule-based) menghilangkan bias emosional saat melakukan akumulasi pada titik terendah pasar."
+    ],
+    "sections": [
+      {
+        "heading": "1. Paradoks Kas: Biaya Peluang vs. Nilai Opsionalitas",
+        "content": "<p>Dalam teori portofolio klasik, memegang kas sering dikritik karena imbal hasil riilnya yang negatif terhadap inflasi. Namun, teori tersebut mengasumsikan pasar selalu berada dalam kondisi efisien dan likuiditas selalu tersedia di setiap saat. Kenyataan di lapangan menunjukkan bahwa saat terjadi peristiwa krisis likuiditas (liquidity crunch), korelasi antar aset berisiko melonjak menuju 1.0 (semua aset jatuh bersamaan).</p><p>Pada momen tersebut, kas adalah satu-satunya aset yang memiliki daya beli absolut seketika. Memegang porsi kas bukan berarti bersikap pesimis terhadap masa depan, melainkan mempertahankan kemampuan taktis untuk bertindak agresif ketika orang lain terpaksa melikuidasi posisi mereka.</p>"
+      },
+      {
+        "heading": "2. Kerangka Alokasi Dinamis Almere & Co",
+        "content": "<p>Di Almere & Co, kami menerapkan batas cadangan kas tunai fleksibel antara 10% hingga 35% dari total nilai portofolio. Porsi kas dialokasikan dalam kombinasi kas bank primer (IDR/USD) dan stablecoin yang diaudit ketat (USDC). Ketika indikator pasar berada di wilayah euforia dan valuasi melampaui rata-rata historis, kami merealisasikan keuntungan (take profit) secara bertahap ke dalam bentuk kas.</p><p>Sebaliknya, ketika pasar mengalami kapitulasi massal (panik ekstrem), cadangan kas inilah yang dideploy secara sistematis untuk membeli aset-aset dengan fundamental terbaik pada harga diskon yang signifikan.</p>"
+      },
+      {
+        "heading": "3. Studi Kasus: Ketahanan Portofolio Saat Deleveraging Shock",
+        "content": "<p>Simulasi historis kami terhadap peristiwa volatilitas tinggi membuktikan bahwa portofolio dengan cadangan kas 20% memiliki drawdown maksimum yang jauh lebih dangkal (-14.2% vs. -34.8% pada portofolio 100% aset berisiko). Lebih penting lagi, waktu yang dibutuhkan portofolio untuk pulih kembali ke titik tertinggi (recovery time to ATH) terpangkas hingga lebih dari 60%.</p>"
+      }
+    ],
+    "methodology": "Simulasi Monte Carlo 10.000 iterasi dengan parameter volatilitas historis S&P 500, US Treasury 3-Month, dan Bitcoin periode 2017–2026.",
+    "disclaimer": "Diterbitkan untuk tujuan edukasi portofolio mandiri Almere & Co. Seluruh keputusan investasi memiliki risiko dan harus ditimbang secara independen."
+  },
+  {
+    "id": "24-7-markets-evolution-infrastructure",
+    "slug": "24-7-markets-evolution-infrastructure",
+    "title": "24/7 Markets & The Evolution of Financial Infrastructure",
+    "subtitle": "Evolusi Struktural Pasar Modal Global dari Jam Bursa Tradisional Menuju Likuiditas Kontinu Tanpa Jeda",
+    "category": "Markets",
+    "date": "12 Aug 2026",
+    "timestamp": 1786579200000,
+    "readTime": "9 min read",
+    "author": "Almere Macro Strategy & Market Infrastructure Division",
+    "status": "Published",
+    "abstract": "Eksplorasi struktural mengenai pergeseran tak terelakkan dari pasar modal kuno dengan jam bursa terfragmentasi (9 to 5 hari kerja) menuju perdagangan dan penyelesaian (settlement) kontinu 24 jam sehari, 7 hari seminggu. Kami membedah risiko 'weekend gap' yang mematikan pada sistem kliring tradisional T+1, keunggulan settlement on-chain atomik (T+0), dan bagaimana institusi perbankan global mulai mengadopsi infrastruktur pasar tanpa henti.",
+    "keyTakeaways": [
+      "Penutupan bursa saham dan valuta asing di akhir pekan menciptakan distorsi likuiditas dan akumulasi risiko yang tidak efisien.",
+      "Aset digital membuktikan bahwa pasar global berskala ratusan miliar dolar dapat beroperasi tanpa jeda selama 15+ tahun tanpa henti.",
+      "Perpaduan tokenisasi sekuritas (RWA) dan settlement T+0 akan memaksa bursa tradisional beradaptasi menuju standar 24/7."
+    ],
+    "sections": [
+      {
+        "heading": "1. Anakronisme Jam Bursa di Abad Digital",
+        "content": "<p>Sistem jam perdagangan bursa tradisional lahir di era di mana pesanan fisik dibawa dengan kertas oleh para kurir di lantai bursa New York atau London. Meskipun seluruh sistem komunikasi kini telah berbasis serat optik berkecepatan cahaya, jadwal bursa saham konvensional masih mempertahankan jam buka 09:30 hingga 16:00 dengan penutupan total pada hari Sabtu dan Minggu.</p><p>Ketika peristiwa geopolitik besar atau rilis berita mendadak terjadi di akhir pekan, pelaku pasar terjebak tanpa kemampuan memitigasi risiko. Hal ini melahirkan fenomena 'weekend gap' di mana harga saham sering kali anjlok drastis saat pembukaan Senin pagi tanpa memberikan kesempatan bagi investor untuk keluar dari posisi secara tertib.</p>"
+      },
+      {
+        "heading": "2. Pembuktian Operasional Infrastruktur 24/7",
+        "content": "<p>Pasar aset digital (cryptocurrency) telah menjadi laboratorium hidup terbesar dalam sejarah keuangan. Selama lebih dari 15 tahun, Bitcoin dan infrastruktur derivatif kripto telah beroperasi 24 jam sehari, 365 hari setahun, tanpa sekalipun menghentikan perdagangan (trading halt) atau menutup pintu likuiditas.</p><p>Ketersediaan penemuan harga (price discovery) secara terus-menerus ini menghilangkan risiko gap akumulatif dan memungkinkan penyesuaian margin terjadi secara mulus dan berkala, sehingga volatilitas dapat didistribusikan secara lebih merata sepanjang waktu.</p>"
+      },
+      {
+        "heading": "3. Masa Depan Keuangan Global: Konvergensi Menuju Pasar Tanpa Tidur",
+        "content": "<p>Dengan pesatnya adopsi tokenisasi aset dunia nyata (Real World Assets / RWA) seperti surat utang negara (Treasury bills) dan saham institusional di atas rel blockchain, pemisahan antara 'pasar tradisional' dan 'pasar kripto' akan segera lebur. Pasar masa depan adalah pasar yang beroperasi non-stop, di mana modal dapat bergerak melintasi batas negara dan zona waktu secara instan dan tanpa friksi.</p>"
+      }
+    ],
+    "methodology": "Analisis perbandingan volatilitas pembukaan (Monday open gaps) indeks S&P 500 vs. Bitcoin akhir pekan periode 2018–2026, ditopang data Bank for International Settlements (BIS) Triennial Survey.",
+    "disclaimer": "Materi ini disusun untuk publikasi edukatif Almere & Co. Bukan ajakan atau penawaran perdagangan instrumen pasar modal."
+  }
+]

@@ -96,6 +96,44 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // --- API ROUTE: /api/research ---
+  if (reqPath === '/api/research') {
+    const researchFilePath = path.join(__dirname, '..', 'data', 'research_papers.json');
+    if (req.method === 'GET') {
+      try {
+        const raw = fs.readFileSync(researchFilePath, 'utf8');
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(raw);
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+      return;
+    } else if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const newPaper = JSON.parse(body);
+          let papers = [];
+          if (fs.existsSync(researchFilePath)) {
+            papers = JSON.parse(fs.readFileSync(researchFilePath, 'utf8'));
+          }
+          // Avoid duplicate ID
+          papers = papers.filter(p => p.id !== newPaper.id);
+          papers.unshift(newPaper);
+          fs.writeFileSync(researchFilePath, JSON.stringify(papers, null, 2), 'utf8');
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ success: true, paper: newPaper }));
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+      return;
+    }
+  }
+
   // --- STATIC FILE SERVING ---
   const normalizedPath = path.normalize(reqPath).replace(/^[\\\/]+/, '');
   if (
@@ -114,6 +152,9 @@ const server = http.createServer(async (req, res) => {
   let filePathStr = reqPath === '/' ? '/index.html' : reqPath;
   if (reqPath === '/about' || reqPath === '/tentang') {
     filePathStr = '/about.html';
+  }
+  if (reqPath === '/research' || reqPath === '/riset') {
+    filePathStr = '/research.html';
   }
   const filePath = path.join(__dirname, '..', filePathStr);
   const ext = path.extname(filePath).toLowerCase();

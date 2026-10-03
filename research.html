@@ -60,27 +60,17 @@
           </p>
         </div>
 
-        <!-- Filter Category Pills (All, Macro, Digital Assets, Markets, Portfolio) -->
+        <!-- Filter Category Pills (Macro, Markets) -->
         <div class="research-filter-group" role="tablist" aria-label="Kategori Riset">
-          <button type="button" class="research-filter-pill active" data-category="All" role="tab" aria-selected="true">All</button>
-          <button type="button" class="research-filter-pill" data-category="Macro" role="tab" aria-selected="false">Macro</button>
-          <button type="button" class="research-filter-pill" data-category="Digital Assets" role="tab" aria-selected="false">Digital Assets</button>
+          <button type="button" class="research-filter-pill active" data-category="Macro" role="tab" aria-selected="true">Macro</button>
           <button type="button" class="research-filter-pill" data-category="Markets" role="tab" aria-selected="false">Markets</button>
-          <button type="button" class="research-filter-pill" data-category="Portfolio" role="tab" aria-selected="false">Portfolio</button>
         </div>
 
         <!-- Latest Research Section -->
         <section aria-label="Daftar Publikasi Riset Terbaru">
           <div class="research-section-header">
             <h2 class="research-section-title">Latest Research</h2>
-            <div class="research-header-actions">
-              <button type="button" class="btn-upload-paper-trigger" id="open-upload-modal-btn" aria-label="Unggah Riset Baru">
-                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M8 2v12M2 8h12"/>
-                </svg>
-                <span>Upload Paper</span>
-              </button>
-            </div>
+
           </div>
 
           <!-- Dynamic List of Research Papers -->
@@ -98,29 +88,7 @@
               <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
             </div>
 
-            <div class="research-item" role="button" tabindex="0" data-id="hyperliquid-financial-infrastructure">
-              <div class="research-item-left">
-                <h3 class="research-item-title">Hyperliquid: From Exchange to Financial Infrastructure</h3>
-                <div class="research-item-meta">
-                  <span class="meta-cat">Digital Assets</span>
-                  <span class="meta-dot">&middot;</span>
-                  <span class="meta-date">16 Sep 2026</span>
-                </div>
-              </div>
-              <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
-            </div>
 
-            <div class="research-item" role="button" tabindex="0" data-id="role-of-cash-during-risk-off">
-              <div class="research-item-left">
-                <h3 class="research-item-title">The Role of Cash During Risk-Off Regimes</h3>
-                <div class="research-item-meta">
-                  <span class="meta-cat">Portfolio</span>
-                  <span class="meta-dot">&middot;</span>
-                  <span class="meta-date">28 Aug 2026</span>
-                </div>
-              </div>
-              <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
-            </div>
 
             <div class="research-item" role="button" tabindex="0" data-id="24-7-markets-evolution-infrastructure">
               <div class="research-item-left">
@@ -248,79 +216,7 @@
     </main>
   </div>
 
-  <!-- UPLOAD / TAMBAH RISET MODAL -->
-  <div class="modal-backdrop" id="upload-paper-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
-    <div class="modal-card modal-paper-upload-card">
-      <button type="button" class="modal-close-btn" id="close-upload-modal-btn" aria-label="Tutup form upload">&times;</button>
-      
-      <div class="modal-header">
-        <div class="panel-eyebrow">Almere Research Studio</div>
-        <h2 id="upload-modal-title" class="modal-title" style="font-family: 'Fraunces', serif; font-size: 26px; font-weight: 400;">
-          Publikasikan Research Paper
-        </h2>
-        <p class="modal-subtitle">
-          Unggah naskah analisis, studi makro, atau tesis portofolio baru agar dapat dibaca secara publik oleh semua pengunjung.
-        </p>
-      </div>
 
-      <form id="upload-paper-form">
-        <div class="paper-form-grid">
-          <div class="paper-form-field">
-            <label class="paper-form-label" for="paper-input-title">Judul Riset *</label>
-            <input type="text" id="paper-input-title" class="paper-form-input" placeholder="Contoh: Bitcoin &amp; Global Liquidity" required>
-          </div>
-
-          <div class="paper-form-row-2">
-            <div class="paper-form-field">
-              <label class="paper-form-label" for="paper-input-category">Kategori *</label>
-              <select id="paper-input-category" class="paper-form-select" required>
-                <option value="Macro">Macro</option>
-                <option value="Digital Assets">Digital Assets</option>
-                <option value="Markets">Markets</option>
-                <option value="Portfolio">Portfolio</option>
-              </select>
-            </div>
-
-            <div class="paper-form-field">
-              <label class="paper-form-label" for="paper-input-readtime">Estimasi Baca</label>
-              <input type="text" id="paper-input-readtime" class="paper-form-input" placeholder="Contoh: 8 min read" value="8 min read">
-            </div>
-          </div>
-
-          <div class="paper-form-field">
-            <label class="paper-form-label" for="paper-input-author">Penulis / Author</label>
-            <input type="text" id="paper-input-author" class="paper-form-input" value="Farel Arya Priguna (Founder &amp; Ex J.P. Morgan) &amp; Tim Riset Almere">
-          </div>
-
-          <div class="paper-form-field">
-            <label class="paper-form-label" for="paper-input-abstract">Ringkasan Eksekutif (Abstract) *</label>
-            <textarea id="paper-input-abstract" class="paper-form-textarea" style="min-height: 90px;" placeholder="Tuliskan ringkasan inti metodologi, latar belakang, dan kesimpulan riset..." required></textarea>
-          </div>
-
-          <div class="paper-form-field">
-            <label class="paper-form-label" for="paper-input-content">Isi Lengkap Riset (Mendukung Subheading # dan ##) *</label>
-            <textarea id="paper-input-content" class="paper-form-textarea" placeholder="Tulis atau paste isi lengkap research paper di sini...
-
-Contoh format:
-# 1. Pendahuluan
-Paragraf pembuka analisis...
-
-## 2. Temuan Kunci
-Paragraf analisis kedua..." required></textarea>
-          </div>
-        </div>
-
-        <div class="modal-actions modal-actions-between" style="border-top: 1px solid var(--border-subtle); padding-top: 16px;">
-          <button type="button" class="btn-cancel" id="export-json-btn" title="Unduh file research_papers.json untuk di-commit ke repositori">
-            Unduh research_papers.json
-          </button>
-          <button type="submit" class="btn-submit">
-            Publikasikan Riset
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <!-- Mobile Navigation Drawer -->
   <div class="mobile-nav-drawer" id="mobile-nav-drawer" aria-hidden="true">

@@ -37,78 +37,7 @@
     "methodology": "Model ekonometrika VAR (Vector Autoregression) dengan data historis harian dari Federal Reserve FRED, PBOC statistical release, Bank of Japan Data Portal, dan Glassnode On-Chain Intelligence (periode Januari 2020 – September 2026).",
     "disclaimer": "Riset ini diterbitkan oleh Almere & Co sebagai bagian dari transparansi intelektual dan dokumentasi tata kelola portofolio internal. Konten ini bukan merupakan saran investasi, rekomendasi finansial, atau ajakan untuk membeli maupun menjual aset apa pun."
   },
-  {
-    "id": "hyperliquid-financial-infrastructure",
-    "slug": "hyperliquid-financial-infrastructure",
-    "title": "Hyperliquid: From Exchange to Financial Infrastructure",
-    "subtitle": "Telaah Arsitektur Layer-1 HyperBFT, Performa Order Book On-Chain, dan Transformasi HIP Menuju Fondasi Pasar Finansial Modern",
-    "category": "Digital Assets",
-    "date": "16 Sep 2026",
-    "timestamp": 1789574400000,
-    "readTime": "11 min read",
-    "author": "Farel Arya Priguna & Tim Engineering Almere Research",
-    "status": "Published",
-    "abstract": "Analisis mendalam mengenai evolusi Hyperliquid dari sekadar platform perdagangan perpetual desentralisasi menjadi jaringan Layer-1 berkinerja tinggi mandiri. Dibangun di atas mekanisme konsensus kustom HyperBFT dan state machine berbasis Rust, Hyperliquid membuktikan kemampuan eksekusi hingga 200.000 transaksi per detik dengan latensi submili-detik tanpa membebankan biaya gas untuk pembatalan order. Makalah ini menganalisis implikasi protokol HIP-1 dan HIP-2 serta efisiensi modal yang menjadikan platform ini fondasi baru bagi infrastruktur keuangan institusional terdesentralisasi.",
-    "keyTakeaways": [
-      "HyperBFT mencapai finalitas blok dalam rentang 0.2 detik tanpa mengorbankan sifat desentralisasi dan determinisme konsensus.",
-      "Zero gas fee untuk order placement/cancellation menghadirkan likuiditas order book sedalam exchange tersentralisasi (CEX) tier-1.",
-      "Standar native token HIP-1 dan liquidity bootstrapping HIP-2 mentransformasikan Hyperliquid menjadi ekosistem pasar modal on-chain berdaulat."
-    ],
-    "sections": [
-      {
-        "heading": "1. Pendahuluan: Kebuntuan Desain AMM & EVM untuk High-Frequency Trading",
-        "content": "<p>Selama bertahun-tahun, keuangan terdesentralisasi (DeFi) didominasi oleh model Automated Market Maker (AMM) seperti Uniswap. Meskipun elegan secara matematis, AMM memiliki kelemahan mendasar: slippage tinggi pada order berukuran besar, impermanent loss yang mengikis keuntungan penyedia likuiditas, dan inefisiensi modal yang signifikan jika dibandingkan dengan Central Limit Order Book (CLOB) tradisional di Wall Street.</p><p>Mencoba menjalankan CLOB penuh di atas Ethereum Virtual Machine (EVM) umum selalu terbentur batasan throughput (TPS rendah) dan biaya gas per transaksi. Hyperliquid memecahkan kebuntuan ini bukan dengan membuat Layer-2 rollup di atas rantai lain, melainkan dengan merancang Layer-1 purpose-built dari awal.</p>"
-      },
-      {
-        "heading": "2. Arsitektur HyperBFT & Mesin Eksekusi On-Chain",
-        "content": "<p>Di jantung Hyperliquid terdapat <strong>HyperBFT</strong>, varian konsensus Byzantine Fault Tolerant yang dioptimalkan secara mendalam menggunakan bahasa pemrograman Rust. Seluruh logika pencocokan pesanan (order matching engine), margin risk calculation, serta likuidasi dijalankan secara deterministik langsung di tingkat konsensus L1.</p><p>Hal ini memungkinkan pembatalan pesanan tanpa biaya gas (gas-free cancellations), sebuah prasyarat mutlak bagi pembuat pasar kuantitatif (market makers) profesional untuk menyediakan likuiditas dua arah (bid-ask spread) yang sangat ketat tanpa risiko tersendat oleh kemacetan jaringan.</p>"
-      },
-      {
-        "heading": "3. Transisi Melalui HIP-1 dan HIP-2: Terbukanya Ekosistem L1",
-        "content": "<p>Evolusi paling krusial terjadi saat peluncuran standar Hyperliquid Improvement Proposals (HIP-1 dan HIP-2). Melalui standar ini, Hyperliquid tidak lagi hanya memfasilitasi perdagangan kontrak berjangka (perps), melainkan membuka kemampuan penciptaan aset native spot (HIP-1) dan lelang likuiditas on-chain otomatis (HIP-2).</p><p>Hasilnya adalah terciptanya pasar modal vertikal lengkap di mana proyek-proyek inovatif dapat menerbitkan token, menghimpun likuiditas, dan memperdagangkannya secara instan dengan efisiensi modal yang belum pernah tercapai di ekosistem blockchain mana pun sebelumnya.</p>"
-      },
-      {
-        "heading": "4. Tesis Investasi Almere & Co pada Ekosistem Hyperliquid",
-        "content": "<p>Almere & Co memandang Hyperliquid sebagai salah satu inovasi teknologi finansial paling penting dalam dekade ini. Kombinasi transparansi ledger publik, self-custody keamanan dana pengguna, dan kecepatan eksekusi setara bursa Wall Street menjadikan Hyperliquid pilar alokasi kunci dalam portofolio kami.</p>"
-      }
-    ],
-    "methodology": "Analisis telemetri validator Hyperliquid Mainnet, pengujian benchmarking latensi WebSocket/API, audit dokumen arsitektur teknis HyperBFT, serta evaluasi data volume on-chain Artemis & DeFiLlama.",
-    "disclaimer": "Riset ini bersifat analitis dan edukatif untuk keterbukaan publik. Almere & Co memiliki eksposur kepemilikan aset pada ekosistem yang dibahas. Riset ini bukan merupakan rekomendasi finansial."
-  },
-  {
-    "id": "role-of-cash-during-risk-off",
-    "slug": "role-of-cash-during-risk-off",
-    "title": "The Role of Cash During Risk-Off Regimes",
-    "subtitle": "Instrumen Opsionalitas Strategis, Mitigasi Drawdown, dan Kerangka Rebalancing Asimetris di Tengah Volatilitas Ekstrem Pasar",
-    "category": "Portfolio",
-    "date": "28 Aug 2026",
-    "timestamp": 1787961600000,
-    "readTime": "6 min read",
-    "author": "Felicia Tanuwijayaa (Co-Founder & Pro Trader) & Farel Arya Priguna",
-    "status": "Published",
-    "abstract": "Studi komprehensif mengenai tata kelola alokasi kas tunai (USD & IDR) dalam manajemen portofolio independen. Sering kali kas disalahartikan sebagai aset 'terbuang' karena tergerus inflasi tahunan. Namun, dalam rezim pasar bergejolak (risk-off regimes), kepemilikan kas tunai berfungsi sebagai opsi beli (call option) gratis tanpa tanggal kedaluwarsa atas seluruh aset bernilai diskon di pasar, sekaligus pilar utama dalam meredam drawdowns portofolio secara drastis.",
-    "keyTakeaways": [
-      "Kas tunai memberikan 'opsionalitas murni' untuk memanfaatkan likuidasi paksa pelaku pasar yang menggunakan leverage berlebihan.",
-      "Menjaga rasio kas 15%–30% menurunkan volatilitas portofolio tahunan sebesar 38% tanpa mengorbankan return majemuk jangka panjang.",
-      "Proses rebalancing berbasis aturan tegas (rule-based) menghilangkan bias emosional saat melakukan akumulasi pada titik terendah pasar."
-    ],
-    "sections": [
-      {
-        "heading": "1. Paradoks Kas: Biaya Peluang vs. Nilai Opsionalitas",
-        "content": "<p>Dalam teori portofolio klasik, memegang kas sering dikritik karena imbal hasil riilnya yang negatif terhadap inflasi. Namun, teori tersebut mengasumsikan pasar selalu berada dalam kondisi efisien dan likuiditas selalu tersedia di setiap saat. Kenyataan di lapangan menunjukkan bahwa saat terjadi peristiwa krisis likuiditas (liquidity crunch), korelasi antar aset berisiko melonjak menuju 1.0 (semua aset jatuh bersamaan).</p><p>Pada momen tersebut, kas adalah satu-satunya aset yang memiliki daya beli absolut seketika. Memegang porsi kas bukan berarti bersikap pesimis terhadap masa depan, melainkan mempertahankan kemampuan taktis untuk bertindak agresif ketika orang lain terpaksa melikuidasi posisi mereka.</p>"
-      },
-      {
-        "heading": "2. Kerangka Alokasi Dinamis Almere & Co",
-        "content": "<p>Di Almere & Co, kami menerapkan batas cadangan kas tunai fleksibel antara 10% hingga 35% dari total nilai portofolio. Porsi kas dialokasikan dalam kombinasi kas bank primer (IDR/USD) dan stablecoin yang diaudit ketat (USDC). Ketika indikator pasar berada di wilayah euforia dan valuasi melampaui rata-rata historis, kami merealisasikan keuntungan (take profit) secara bertahap ke dalam bentuk kas.</p><p>Sebaliknya, ketika pasar mengalami kapitulasi massal (panik ekstrem), cadangan kas inilah yang dideploy secara sistematis untuk membeli aset-aset dengan fundamental terbaik pada harga diskon yang signifikan.</p>"
-      },
-      {
-        "heading": "3. Studi Kasus: Ketahanan Portofolio Saat Deleveraging Shock",
-        "content": "<p>Simulasi historis kami terhadap peristiwa volatilitas tinggi membuktikan bahwa portofolio dengan cadangan kas 20% memiliki drawdown maksimum yang jauh lebih dangkal (-14.2% vs. -34.8% pada portofolio 100% aset berisiko). Lebih penting lagi, waktu yang dibutuhkan portofolio untuk pulih kembali ke titik tertinggi (recovery time to ATH) terpangkas hingga lebih dari 60%.</p>"
-      }
-    ],
-    "methodology": "Simulasi Monte Carlo 10.000 iterasi dengan parameter volatilitas historis S&P 500, US Treasury 3-Month, dan Bitcoin periode 2017–2026.",
-    "disclaimer": "Diterbitkan untuk tujuan edukasi portofolio mandiri Almere & Co. Seluruh keputusan investasi memiliki risiko dan harus ditimbang secara independen."
-  },
+
   {
     "id": "24-7-markets-evolution-infrastructure",
     "slug": "24-7-markets-evolution-infrastructure",

@@ -9,7 +9,7 @@
 
   // --- STATE ---
   let allPapers = [];
-  let activeCategory = 'All';
+  let activeCategory = 'Macro';
   let currentOpenPaperId = null;
 
   // --- DOM ELEMENTS ---
@@ -162,7 +162,7 @@
     pill.addEventListener('click', () => {
       filterPills.forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
-      activeCategory = pill.getAttribute('data-category') || 'All';
+      activeCategory = pill.getAttribute('data-category') || 'Macro';
       renderPaperList();
     });
   });

@@ -3532,7 +3532,7 @@ body {
   }
 
   .desktop-only {
-    display: none;
+    display: none !important;
   }
 
   .mobile-menu-toggle {
@@ -3629,7 +3629,8 @@ body {
   }
 
   .currency-switch-wrap {
-    margin-left: auto;
+    margin-right: auto;
+    margin-left: 0;
   }
 
   .asset-view-tabs {

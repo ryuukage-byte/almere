@@ -3687,6 +3687,11 @@ body {
     width: 100%;
   }
 
+  .tx-filter-btn {
+    flex: 1;
+    text-align: center;
+  }
+
   /* Responsive About Card & Action Button */
   .about-card {
     padding: 24px 20px;

@@ -1,45 +1,45 @@
 {
-  "totalValuationUsd": 1772.97,
-  "totalValuationIdr": 31606504,
+  "totalValuationUsd": 1766.23,
+  "totalValuationIdr": 31486481,
   "usdIdrRate": 17827,
   "holdings": [
     {
+      "code": "BTC",
+      "name": "Bitcoin",
+      "quantity": 0.011913,
+      "unitsText": "0.011913 BTC",
+      "avgBuyPriceUsd": 80320.78,
+      "avgBuyPriceIdr": 1431878536,
+      "currentPriceUsd": 82827.45,
+      "currentPriceIdr": 1476564951,
+      "totalCostIdr": 17057969,
+      "totalCostUsd": 957,
+      "valueUsd": 986.72,
+      "valueIdr": 17590318,
+      "unrealizedPnlIdr": 532349,
+      "unrealizedPnlUsd": 29.86,
+      "unrealizedPnlPct": 3.12,
+      "change30d": "+3.1%",
+      "allocationPct": 55.9
+    },
+    {
       "code": "CASH",
       "name": "Kas Tunai",
-      "quantity": 21816598,
-      "unitsText": "Rp 21.816.598 · Cadangan Kas",
+      "quantity": 11958629,
+      "unitsText": "Rp 11.958.629 · Cadangan Kas",
       "avgBuyPriceUsd": 1,
       "avgBuyPriceIdr": 17827,
       "currentPriceUsd": 1,
       "currentPriceIdr": 17827,
-      "totalCostIdr": 21816598,
-      "totalCostUsd": 1223.8,
-      "valueUsd": 1223.8,
-      "valueIdr": 21816598,
+      "totalCostIdr": 11958629,
+      "totalCostUsd": 670.82,
+      "valueUsd": 670.82,
+      "valueIdr": 11958629,
       "unrealizedPnlIdr": 0,
       "unrealizedPnlUsd": 0,
       "unrealizedPnlPct": 0,
       "change30d": "0.0%",
-      "allocationPct": 69
-    },
-    {
-      "code": "BTC",
-      "name": "Bitcoin",
-      "quantity": 0.005318,
-      "unitsText": "0.005318 BTC",
-      "avgBuyPriceUsd": 75946.17,
-      "avgBuyPriceIdr": 1353892441,
-      "currentPriceUsd": 82827.45,
-      "currentPriceIdr": 1476564951,
-      "totalCostIdr": 7200000,
-      "totalCostUsd": 404,
-      "valueUsd": 440.48,
-      "valueIdr": 7852372,
-      "unrealizedPnlIdr": 652372,
-      "unrealizedPnlUsd": 36.59,
-      "unrealizedPnlPct": 9.06,
-      "change30d": "+9.1%",
-      "allocationPct": 24.8
+      "allocationPct": 38
     },
     {
       "code": "HYPE",
@@ -58,11 +58,11 @@
       "unrealizedPnlUsd": 7.71,
       "unrealizedPnlPct": 7.64,
       "change30d": "+7.6%",
-      "allocationPct": 6.1
+      "allocationPct": 6.2
     }
   ],
-  "cashBalanceIdr": 21816598,
-  "cashBalanceUsd": 1224,
+  "cashBalanceIdr": 11958629,
+  "cashBalanceUsd": 671,
   "realizedPnlIdr": 0,
   "realizedPnlUsd": 0,
   "documentedSales": [],
@@ -246,6 +246,24 @@
   },
   "transactions": [
     {
+      "id": 8,
+      "reference_id": "MANUAL-MV3T0TQV",
+      "type": "BUY",
+      "asset": "BTC",
+      "quantity": 0.006595,
+      "rate_idr": 1494764064,
+      "rate_usd": 83848.32,
+      "amount_idr": 9857969,
+      "amount_usd": 552.98,
+      "fee_idr": 0,
+      "total_received": 0.006595,
+      "currency": "IDR",
+      "tx_timestamp": "2026-10-11T12:33:28.471Z",
+      "status": "COMPLETED",
+      "sale_pnl_idr": 0,
+      "sale_pnl_usd": 0
+    },
+    {
       "id": 7,
       "reference_id": "MANUAL-MV3T05DW",
       "type": "SELL",
@@ -336,6 +354,6 @@
       "sale_pnl_usd": 0
     }
   ],
-  "transactionCount": 5,
-  "lastUpdated": "2026-10-11T12:33:20.170Z"
+  "transactionCount": 6,
+  "lastUpdated": "2026-10-11T12:33:37.985Z"
 }

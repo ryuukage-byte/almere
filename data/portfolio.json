@@ -1,26 +1,26 @@
 {
-  "totalValuationUsd": 1158.54,
-  "totalValuationIdr": 20653205,
+  "totalValuationUsd": 1772.97,
+  "totalValuationIdr": 31606504,
   "usdIdrRate": 17827,
   "holdings": [
     {
       "code": "CASH",
       "name": "Kas Tunai",
-      "quantity": 10863299,
-      "unitsText": "Rp 10.863.299 · Cadangan Kas",
+      "quantity": 21816598,
+      "unitsText": "Rp 21.816.598 · Cadangan Kas",
       "avgBuyPriceUsd": 1,
       "avgBuyPriceIdr": 17827,
       "currentPriceUsd": 1,
       "currentPriceIdr": 17827,
-      "totalCostIdr": 10863299,
-      "totalCostUsd": 609.37,
-      "valueUsd": 609.37,
-      "valueIdr": 10863299,
+      "totalCostIdr": 21816598,
+      "totalCostUsd": 1223.8,
+      "valueUsd": 1223.8,
+      "valueIdr": 21816598,
       "unrealizedPnlIdr": 0,
       "unrealizedPnlUsd": 0,
       "unrealizedPnlPct": 0,
       "change30d": "0.0%",
-      "allocationPct": 52.6
+      "allocationPct": 69
     },
     {
       "code": "BTC",
@@ -39,7 +39,7 @@
       "unrealizedPnlUsd": 36.59,
       "unrealizedPnlPct": 9.06,
       "change30d": "+9.1%",
-      "allocationPct": 38
+      "allocationPct": 24.8
     },
     {
       "code": "HYPE",
@@ -58,11 +58,11 @@
       "unrealizedPnlUsd": 7.71,
       "unrealizedPnlPct": 7.64,
       "change30d": "+7.6%",
-      "allocationPct": 9.4
+      "allocationPct": 6.1
     }
   ],
-  "cashBalanceIdr": 10863299,
-  "cashBalanceUsd": 609,
+  "cashBalanceIdr": 21816598,
+  "cashBalanceUsd": 1224,
   "realizedPnlIdr": 0,
   "realizedPnlUsd": 0,
   "documentedSales": [],
@@ -246,6 +246,24 @@
   },
   "transactions": [
     {
+      "id": 7,
+      "reference_id": "MANUAL-MV3T05DW",
+      "type": "SELL",
+      "asset": "USDT",
+      "quantity": 617.60390523,
+      "rate_idr": 17735,
+      "rate_usd": 0.99,
+      "amount_idr": 10953299,
+      "amount_usd": 614.42,
+      "fee_idr": 0,
+      "total_received": 10953299,
+      "currency": "IDR",
+      "tx_timestamp": "2026-10-11T12:32:56.900Z",
+      "status": "COMPLETED",
+      "sale_pnl_idr": 0,
+      "sale_pnl_usd": 0
+    },
+    {
       "id": 6,
       "reference_id": "MANUAL-MV3SZ8FH",
       "type": "DEPOSIT",
@@ -318,6 +336,6 @@
       "sale_pnl_usd": 0
     }
   ],
-  "transactionCount": 4,
-  "lastUpdated": "2026-10-11T12:32:35.599Z"
+  "transactionCount": 5,
+  "lastUpdated": "2026-10-11T12:33:20.170Z"
 }

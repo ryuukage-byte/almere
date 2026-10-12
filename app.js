@@ -1767,9 +1767,9 @@
     try {
       let data = null;
 
-      // 1. Try relative /api/portfolio/summary
+      // 1. Try relative /api/portfolio/summary with cache buster
       try {
-        const res = await fetch('/api/portfolio/summary');
+        const res = await fetch('/api/portfolio/summary?t=' + Date.now());
         if (res.ok) data = await res.json();
       } catch (e) {}
 
@@ -1792,7 +1792,7 @@
       // 3. Try local node server directly (http://127.0.0.1:4173)
       if (!data || typeof data.totalValuationUsd !== 'number') {
         try {
-          const resLocal = await fetch('http://127.0.0.1:4173/api/portfolio/summary');
+          const resLocal = await fetch('http://127.0.0.1:4173/api/portfolio/summary?t=' + Date.now());
           if (resLocal.ok) data = await resLocal.json();
         } catch (e) {}
       }
@@ -1810,55 +1810,81 @@
         if (typeof data.realizedPnlUsd === 'number') REALIZED_PNL_USD = data.realizedPnlUsd;
         if (typeof data.realizedPnlIdr === 'number') REALIZED_PNL_IDR = data.realizedPnlIdr;
 
-        // Only adopt backend holdings valuation if we don't have live market prices already active
-        if (!currentHoldings || currentHoldings.length === 0) {
-          BASE_TOTAL_USD = data.totalValuationUsd;
-          currentHoldings = data.holdings || [];
-          if (data.marketPrices) {
-            if (data.marketPrices.BTC?.usd) liveCryptoPrices.BTC.usd = data.marketPrices.BTC.usd;
-            if (data.marketPrices.HYPE?.usd) liveCryptoPrices.HYPE.usd = data.marketPrices.HYPE.usd;
-          }
-          if (data.forexRates && typeof data.forexRates === 'object') {
-            Object.keys(CURRENCIES).forEach(code => {
-              if (code === 'USD') return;
-              if (typeof data.forexRates[code] === 'number') {
-                CURRENCIES[code].rate = data.forexRates[code];
-              }
-            });
-          }
-          if (data.usdIdrRate) {
-            liveCryptoPrices.USD_IDR = data.usdIdrRate;
-            CURRENCIES.IDR.rate = data.usdIdrRate;
-          }
-          renderHoldingsAndAllocations();
-          renderMarketTicker();
-          renderTransactions(activeTxFilter);
-          updateCurrencyUI(activeCurrencyCode, false);
-        } else {
-          if (data.forexRates && typeof data.forexRates === 'object') {
-            Object.keys(CURRENCIES).forEach(code => {
-              if (code === 'USD') return;
-              if (typeof data.forexRates[code] === 'number') {
-                CURRENCIES[code].rate = data.forexRates[code];
-              }
-            });
-          }
-          // Sync base quantities and costs without overwriting live market valuation
-          (data.holdings || []).forEach(dh => {
-            const match = currentHoldings.find(h => h.code === dh.code);
-            if (match) {
-              match.quantity = dh.quantity;
-              match.unitsText = dh.unitsText;
-              match.totalCostIdr = dh.totalCostIdr;
-              match.totalCostUsd = dh.totalCostUsd;
-              match.avgBuyPriceIdr = dh.avgBuyPriceIdr;
-              match.avgBuyPriceUsd = dh.avgBuyPriceUsd;
-            } else {
-              currentHoldings.push(dh);
+        if (data.forexRates && typeof data.forexRates === 'object') {
+          Object.keys(CURRENCIES).forEach(code => {
+            if (code === 'USD') return;
+            if (typeof data.forexRates[code] === 'number') {
+              CURRENCIES[code].rate = data.forexRates[code];
             }
           });
-          renderTransactions(activeTxFilter);
         }
+        if (data.usdIdrRate) {
+          liveCryptoPrices.USD_IDR = data.usdIdrRate;
+          CURRENCIES.IDR.rate = data.usdIdrRate;
+        }
+        if (data.marketPrices) {
+          if (data.marketPrices.BTC?.usd && (!liveCryptoPrices.BTC || !liveCryptoPrices.BTC.usd)) {
+            liveCryptoPrices.BTC = { usd: data.marketPrices.BTC.usd };
+          }
+          if (data.marketPrices.HYPE?.usd && (!liveCryptoPrices.HYPE || !liveCryptoPrices.HYPE.usd)) {
+            liveCryptoPrices.HYPE = { usd: data.marketPrices.HYPE.usd };
+          }
+        }
+
+        // Synchronize currentHoldings directly with backend holdings list
+        // Remove any holding that no longer exists in data.holdings (e.g. liquidated CASH or sold assets)
+        const incomingCodes = new Set((data.holdings || []).map(h => h.code));
+        currentHoldings = currentHoldings.filter(h => incomingCodes.has(h.code));
+
+        (data.holdings || []).forEach(dh => {
+          const match = currentHoldings.find(h => h.code === dh.code);
+          if (match) {
+            match.name = dh.name;
+            match.quantity = dh.quantity;
+            match.unitsText = dh.unitsText;
+            match.totalCostIdr = dh.totalCostIdr;
+            match.totalCostUsd = dh.totalCostUsd;
+            match.avgBuyPriceIdr = dh.avgBuyPriceIdr;
+            match.avgBuyPriceUsd = dh.avgBuyPriceUsd;
+            match.change30d = dh.change30d;
+            if (dh.code === 'CASH') {
+              match.valueUsd = dh.valueUsd;
+              match.valueIdr = dh.valueIdr;
+            }
+          } else {
+            currentHoldings.push({ ...dh });
+          }
+        });
+
+        // Recompute allocations and totals based on live prices
+        const rate = liveCryptoPrices.USD_IDR || CURRENCIES.IDR.rate || 17840;
+        let newTotalUsd = 0;
+        currentHoldings.forEach(h => {
+          if (h.code !== 'CASH') {
+            const livePriceUsd = (liveCryptoPrices[h.code] && liveCryptoPrices[h.code].usd)
+              ? liveCryptoPrices[h.code].usd
+              : (h.currentPriceUsd || 0);
+            if (livePriceUsd > 0) {
+              h.currentPriceUsd = livePriceUsd;
+              h.currentPriceIdr = Math.round(livePriceUsd * rate);
+              h.valueUsd = parseFloat((h.quantity * livePriceUsd).toFixed(2));
+              h.valueIdr = Math.round(h.quantity * h.currentPriceIdr);
+            }
+          }
+          newTotalUsd += (h.valueUsd || 0);
+        });
+
+        BASE_TOTAL_USD = parseFloat(newTotalUsd.toFixed(2));
+        currentHoldings.forEach(h => {
+          h.allocationPct = BASE_TOTAL_USD > 0
+            ? parseFloat(((h.valueUsd / BASE_TOTAL_USD) * 100).toFixed(1))
+            : 0;
+        });
+
+        renderHoldingsAndAllocations();
+        renderMarketTicker();
+        renderTransactions(activeTxFilter);
+        updateCurrencyUI(activeCurrencyCode, false);
       }
 
       lastSyncSuccess = Date.now();

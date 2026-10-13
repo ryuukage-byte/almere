@@ -120,5 +120,127 @@
       }
     ],
     "disclosure": "Dokumen ini merupakan riset independen Almere&Co berdasarkan sumber publik. Bukan nasihat keuangan atau rekomendasi untuk membeli, menjual, atau menahan sekuritas. Proyeksi dapat berubah. Diagram dan skenario adalah kerangka analitis, bukan estimasi ekonometrika."
+  },
+  {
+    "title": "Tekanan Pasokan dan Permintaan Obligasi AS",
+    "brand": "Almere&Co",
+    "language": "id",
+    "publication_date": "2026-10-13",
+    "sections": [
+      {
+        "heading": "Ringkasan eksekutif",
+        "content": "Pasar Treasury AS merupakan acuan harga dan jaminan penting bagi berbagai aset global. Defisit fiskal yang berkelanjutan menciptakan kebutuhan pendanaan, sementara pembiayaan ulang membuat pemerintah terpapar pada suku bunga yang berlaku saat utang jatuh tempo. Jika investor meminta kompensasi lebih besar untuk menyerap risiko durasi atau likuiditas pasar memburuk, imbal hasil jangka panjang dapat naik meskipun suku bunga kebijakan Federal Reserve tidak berubah."
+      },
+      {
+        "heading": "Temuan utama",
+        "content": [
+          "Tekanan fiskal dapat diukur: CBO memproyeksikan defisit US$1,9 triliun pada tahun fiskal 2026 dan biaya bunga bersih US$1,0 triliun.",
+          "Penerbitan utang besar tidak otomatis menaikkan imbal hasil jika permintaan meningkat cukup besar.",
+          "Saham paling rentan ketika imbal hasil naik bersamaan dengan penurunan ekspektasi laba atau pelebaran spread kredit.",
+          "Belanja modal AI dapat meningkatkan kebutuhan pembiayaan perusahaan; dampaknya bergantung pada arus kas, sumber dana, dan hasil investasi.",
+          "Pemantauan beberapa indikator lebih kuat daripada mengandalkan satu berita utang."
+        ]
+      },
+      {
+        "heading": "1. Mekanisme: pasokan, permintaan, dan imbal hasil",
+        "content": "Surat berharga Treasury diterbitkan untuk membiayai kebutuhan kas pemerintah dan mengganti utang yang jatuh tempo. Ketika pembeli meminta harga lebih rendah untuk menyerap tambahan risiko durasi, imbal hasil naik. Suku bunga kebijakan terutama mencerminkan perkiraan jalur suku bunga jangka pendek, sedangkan imbal hasil jangka panjang juga mencakup ekspektasi suku bunga masa depan, kompensasi inflasi, dan premi jangka waktu."
+      },
+      {
+        "heading": "2. Prospek fiskal",
+        "content": "Proyeksi dasar CBO Februari 2026 menempatkan defisit federal pada US$1,9 triliun di tahun fiskal 2026, atau 5,8% dari PDB. Utang yang dipegang publik diproyeksikan sebesar 101% dari PDB pada 2026 dan 120% pada 2036. Pengeluaran bunga bersih diproyeksikan naik dari US$1,0 triliun pada 2026 menjadi US$2,1 triliun pada 2036. Angka ini adalah proyeksi, bukan hasil yang pasti terjadi."
+      },
+      {
+        "heading": "3. Dari imbal hasil Treasury ke pasar saham",
+        "content": [
+          "Tekanan tingkat diskonto: kenaikan imbal hasil riil jangka panjang dapat menurunkan nilai kini arus kas masa depan, terutama pada saham berdurasi panjang.",
+          "Pendanaan dan pembiayaan ulang: imbal hasil acuan yang lebih tinggi dapat menaikkan biaya obligasi korporasi, pinjaman, dan investasi baru.",
+          "Peralihan portofolio dan premi risiko: Treasury dapat menjadi alternatif lebih menarik dibanding saham; investor mungkin meminta kompensasi risiko lebih besar.",
+          "Likuiditas dan leverage: volatilitas, penjualan paksa, dan tekanan pendanaan dapat memperbesar pergerakan harga.",
+          "Investasi AI: risiko bergantung pada kebutuhan modal, sumber pembiayaan, monetisasi, dan hasil atas modal yang diinvestasikan."
+        ]
+      },
+      {
+        "heading": "4. Kerangka skenario",
+        "content": [
+          {
+            "name": "Penyesuaian teratur",
+            "description": "Pasokan Treasury terserap dan imbal hasil jangka panjang naik bertahap. Valuasi saham menyesuaikan secara selektif sementara laba tetap tangguh."
+          },
+          {
+            "name": "Tekanan premi jangka waktu bertahan",
+            "description": "Investor meminta kompensasi lebih besar atas risiko durasi. Imbal hasil jangka panjang tetap tinggi dan saham berdurasi panjang menghadapi tekanan."
+          },
+          {
+            "name": "Guncangan likuiditas atau risiko",
+            "description": "Lelang lemah, penyesuaian inflasi mendadak, tekanan pendanaan, atau penjualan paksa terjadi bersamaan dengan kedalaman pasar yang rendah."
+          }
+        ]
+      },
+      {
+        "heading": "5. Dasbor pemantauan",
+        "content": [
+          {
+            "indicator": "Lelang Treasury",
+            "monitor": "Bid-to-cover, selisih hasil lelang, komposisi penawar, porsi dealer",
+            "bearish_confirmation": "Permintaan berulang kali lemah dibanding tren terkini"
+          },
+          {
+            "indicator": "Imbal hasil 10/30 tahun",
+            "monitor": "Yield nominal, yield riil, bentuk kurva",
+            "bearish_confirmation": "Kenaikan berkelanjutan yang tidak cukup dijelaskan pertumbuhan"
+          },
+          {
+            "indicator": "Premi jangka waktu",
+            "monitor": "Estimasi model dan trennya",
+            "bearish_confirmation": "Naik berkelanjutan bersama pasokan durasi tinggi"
+          },
+          {
+            "indicator": "Likuiditas pasar",
+            "monitor": "Selisih bid-ask, kedalaman pasar, volatilitas",
+            "bearish_confirmation": "Kedalaman turun saat volatilitas dan biaya transaksi naik"
+          },
+          {
+            "indicator": "Kondisi kredit",
+            "monitor": "Spread obligasi investment-grade/high-yield dan standar pinjaman",
+            "bearish_confirmation": "Spread melebar dan akses kredit mengetat"
+          },
+          {
+            "indicator": "Indikator internal saham",
+            "monitor": "Keluasan pasar, revisi laba, valuasi, volatilitas",
+            "bearish_confirmation": "Keluasan pasar dan revisi laba melemah"
+          },
+          {
+            "indicator": "Data fiskal",
+            "monitor": "Prospek CBO, estimasi pinjaman Treasury, bunga bersih",
+            "bearish_confirmation": "Defisit dan biaya bunga naik dibanding proyeksi dasar"
+          }
+        ]
+      },
+      {
+        "heading": "6. Risiko, keterbatasan, dan kesimpulan",
+        "content": "Defisit besar yang diproyeksikan dan biaya bunga bersih yang meningkat menciptakan tantangan pendanaan jangka menengah. Dampak pasar jangka pendek bergantung pada pembeli marginal, komposisi jatuh tempo, ekspektasi inflasi, dan likuiditas. Tekanan Treasury menjadi lebih berdampak pada saham ketika disertai kredit yang lebih ketat, ekspektasi laba yang melemah, dan kedalaman pasar yang menurun. Almere&Co mengklasifikasikan isu ini sebagai kerentanan makro struktural yang perlu dipantau, bukan bukti bahwa kehancuran pasar obligasi atau saham akan segera terjadi."
+      },
+      {
+        "heading": "Sumber dan metodologi",
+        "content": [
+          {
+            "name": "Congressional Budget Office",
+            "title": "The Budget and Economic Outlook: 2026 to 2036",
+            "url": "https://www.cbo.gov/publication/62105"
+          },
+          {
+            "name": "Federal Reserve",
+            "title": "Financial Stability Report",
+            "url": "https://www.federalreserve.gov/publications/financial-stability-report.htm"
+          },
+          {
+            "name": "Federal Reserve",
+            "title": "Financial Stability Report — Asset Valuations (April 2025)",
+            "url": "https://www.federalreserve.gov/publications/April-2025-financial-stability-report-Asset-Valuations.htm"
+          }
+        ]
+      }
+    ],
+    "disclosure": "Dokumen ini merupakan riset independen Almere&Co berdasarkan sumber publik. Bukan nasihat keuangan atau rekomendasi untuk membeli, menjual, atau menahan sekuritas. Proyeksi dapat berubah. Diagram dan skenario adalah kerangka analitis, bukan estimasi ekonometrika."
   }
 ]

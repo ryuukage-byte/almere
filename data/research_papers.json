@@ -1,75 +1,124 @@
 [
   {
-    "id": "bitcoin-global-liquidity",
-    "slug": "bitcoin-global-liquidity",
-    "title": "Bitcoin & Global Liquidity",
-    "subtitle": "Transmisi Siklus Moneter Bank Sentral Terhadap Dinamika Valuasi dan Rezim Volatilitas Aset Digital",
-    "category": "Macro",
-    "date": "30 Sep 2026",
-    "timestamp": 1790784000000,
-    "readTime": "8 min read",
-    "author": "Farel Arya Priguna (Founder & Ex J.P. Morgan) & Tim Riset Makro Almere",
-    "status": "Published",
-    "abstract": "Riset ini menguji korelasi dinamis antara ekspansi likuiditas global M2 dari empat bank sentral utama dunia (Federal Reserve, European Central Bank, People's Bank of China, dan Bank of Japan) terhadap perilaku akumulasi dan valuasi pasar Bitcoin. Melalui pemodelan autoregresif periode 2020–2026, kami menemukan bahwa Bitcoin bertindak sebagai instrumen paling elastis terhadap perubahan agregat likuiditas global dengan koefisien sensitivitas 2.8x terhadap perubahan M2 net, mengungguli komoditas emas dan indeks S&P 500 dengan lag transmisi rata-rata 45 hingga 60 hari.",
-    "keyTakeaways": [
-      "Likuiditas global M2 merupakan prediktor makro primer dengan korelasi R² sebesar 0.74 terhadap tren harga Bitcoin jangka menengah.",
-      "Terdapat lag transmisi waktu selama 45–60 hari dari titik balik siklus ekspansi/kontraksi neraca bank sentral ke aksi harga on-chain.",
-      "Kombinasi suplai inelastis (pasca-halving) dan aliran modal institusional ETF memperkuat respon Bitcoin terhadap pelonggaran likuiditas moneter global."
-    ],
+    "title": "Tekanan Pasokan dan Permintaan Obligasi AS",
+    "brand": "Almere&Co",
+    "language": "id",
+    "publication_date": "2026-10-13",
     "sections": [
       {
-        "heading": "1. Latar Belakang & Kerangka Likuiditas Makro",
-        "content": "<p>Dalam lanskap makroekonomi modern, pergerakan harga aset berisiko tidak lagi semata-mata ditentukan oleh kinerja fundamental mikro masing-masing instrumen, melainkan oleh pasang surut likuiditas fiat global. Sejak era pelonggaran kuantitatif pasca-2020 hingga siklus pengetatan moneter dan kembali ke pelonggaran global, jumlah uang beredar (M2) agregat menjadi determinan dominan arus modal institusional.</p><p>Bitcoin, yang dirancang secara matematis dengan batas pasokan absolut 21 juta koin dan jadwal emisi yang sepenuhnya bebas dari intervensi diskresi politik, menempati posisi unik dalam sistem moneter internasional. Tidak seperti saham korporasi yang memiliki arus kas diskonto (discounted cash flow) atau obligasi yang sensitif terhadap kurva suku bunga nominal, valuasi Bitcoin mencerminkan daya serap likuiditas relatif terhadap devaluasi moneter fiat secara global.</p>"
+        "heading": "Ringkasan eksekutif",
+        "content": "Pasar Treasury AS merupakan acuan harga dan jaminan penting bagi berbagai aset global. Defisit fiskal yang berkelanjutan menciptakan kebutuhan pendanaan, sementara pembiayaan ulang membuat pemerintah terpapar pada suku bunga yang berlaku saat utang jatuh tempo. Jika investor meminta kompensasi lebih besar untuk menyerap risiko durasi atau likuiditas pasar memburuk, imbal hasil jangka panjang dapat naik meskipun suku bunga kebijakan Federal Reserve tidak berubah."
       },
       {
-        "heading": "2. Indeks Likuiditas M2 Terbobot & Metodologi Pengukuran",
-        "content": "<p>Untuk mengukur likuiditas fiat secara objektif, Almere Research mengonstruksi <strong>Global Liquidity Index (GLI)</strong> yang mengagregasikan neraca dan uang beredar M2 dari 4 bank sentral terbesar yang mencakup lebih dari 70% PDB dunia: Federal Reserve AS, People's Bank of China (PBOC), European Central Bank (ECB), dan Bank of Japan (BOJ), dikonversikan ke dalam denominasi USD secara harian.</p><p>Hasil regresi time-series menunjukkan bahwa perubahan laju pertumbuhan tahunan (YoY) pada GLI mendahului tren besar Bitcoin dengan jeda konsisten 6 hingga 8 minggu (45–60 hari). Ketika GLI berada dalam fase akselerasi positif, Bitcoin mengalami fase apresiasi rata-rata 3.2x lebih cepat dibanding indeks S&P 500.</p>"
+        "heading": "Temuan utama",
+        "content": [
+          "Tekanan fiskal dapat diukur: CBO memproyeksikan defisit US$1,9 triliun pada tahun fiskal 2026 dan biaya bunga bersih US$1,0 triliun.",
+          "Penerbitan utang besar tidak otomatis menaikkan imbal hasil jika permintaan meningkat cukup besar.",
+          "Saham paling rentan ketika imbal hasil naik bersamaan dengan penurunan ekspektasi laba atau pelebaran spread kredit.",
+          "Belanja modal AI dapat meningkatkan kebutuhan pembiayaan perusahaan; dampaknya bergantung pada arus kas, sumber dana, dan hasil investasi.",
+          "Pemantauan beberapa indikator lebih kuat daripada mengandalkan satu berita utang."
+        ]
       },
       {
-        "heading": "3. Peran ETF Institusional & Elastisitas Penawaran",
-        "content": "<p>Integrasi instrumen exchange-traded funds (ETF) spot sejak 2024 telah mengubah saluran transmisi likuiditas ini secara permanen. Jika pada siklus sebelumnya likuiditas makro memerlukan waktu lama untuk merembes ke bursa kripto ritel melalui stablecoin, kini likuiditas institusional langsung mengalir melalui akun pialang konvensional (brokerage accounts), manajer kekayaan (RIA), dan dana pensiun.</p><p>Dikombinasikan dengan pemotongan laju emisi blok baru (halving), ketidakseimbangan struktural antara permintaan likuiditas baru dan penawaran koin yang siap dijual di bursa (liquid inventory) menciptakan tekanan harga yang jauh lebih eksplosif pada setiap siklus pelonggaran moneter.</p>"
+        "heading": "1. Mekanisme: pasokan, permintaan, dan imbal hasil",
+        "content": "Surat berharga Treasury diterbitkan untuk membiayai kebutuhan kas pemerintah dan mengganti utang yang jatuh tempo. Ketika pembeli meminta harga lebih rendah untuk menyerap tambahan risiko durasi, imbal hasil naik. Suku bunga kebijakan terutama mencerminkan perkiraan jalur suku bunga jangka pendek, sedangkan imbal hasil jangka panjang juga mencakup ekspektasi suku bunga masa depan, kompensasi inflasi, dan premi jangka waktu."
       },
       {
-        "heading": "4. Implikasi Alokasi Portofolio Almere & Co",
-        "content": "<p>Berdasarkan kerangka kerja di atas, portofolio Almere & Co tidak mendasarkan keputusan akumulasi Bitcoin pada sentimen media atau fluktuasi harian di bursa spot, melainkan pada pemantauan metrik likuiditas bank sentral secara berkelanjutan. Alokasi Bitcoin dipertahankan sebagai pilar inti (core holding) dengan tujuan melindungi daya beli jangka panjang modal terhadap devaluasi mata uang fiat yang struktural.</p>"
+        "heading": "2. Prospek fiskal",
+        "content": "Proyeksi dasar CBO Februari 2026 menempatkan defisit federal pada US$1,9 triliun di tahun fiskal 2026, atau 5,8% dari PDB. Utang yang dipegang publik diproyeksikan sebesar 101% dari PDB pada 2026 dan 120% pada 2036. Pengeluaran bunga bersih diproyeksikan naik dari US$1,0 triliun pada 2026 menjadi US$2,1 triliun pada 2036. Angka ini adalah proyeksi, bukan hasil yang pasti terjadi."
+      },
+      {
+        "heading": "3. Dari imbal hasil Treasury ke pasar saham",
+        "content": [
+          "Tekanan tingkat diskonto: kenaikan imbal hasil riil jangka panjang dapat menurunkan nilai kini arus kas masa depan, terutama pada saham berdurasi panjang.",
+          "Pendanaan dan pembiayaan ulang: imbal hasil acuan yang lebih tinggi dapat menaikkan biaya obligasi korporasi, pinjaman, dan investasi baru.",
+          "Peralihan portofolio dan premi risiko: Treasury dapat menjadi alternatif lebih menarik dibanding saham; investor mungkin meminta kompensasi risiko lebih besar.",
+          "Likuiditas dan leverage: volatilitas, penjualan paksa, dan tekanan pendanaan dapat memperbesar pergerakan harga.",
+          "Investasi AI: risiko bergantung pada kebutuhan modal, sumber pembiayaan, monetisasi, dan hasil atas modal yang diinvestasikan."
+        ]
+      },
+      {
+        "heading": "4. Kerangka skenario",
+        "content": [
+          {
+            "name": "Penyesuaian teratur",
+            "description": "Pasokan Treasury terserap dan imbal hasil jangka panjang naik bertahap. Valuasi saham menyesuaikan secara selektif sementara laba tetap tangguh."
+          },
+          {
+            "name": "Tekanan premi jangka waktu bertahan",
+            "description": "Investor meminta kompensasi lebih besar atas risiko durasi. Imbal hasil jangka panjang tetap tinggi dan saham berdurasi panjang menghadapi tekanan."
+          },
+          {
+            "name": "Guncangan likuiditas atau risiko",
+            "description": "Lelang lemah, penyesuaian inflasi mendadak, tekanan pendanaan, atau penjualan paksa terjadi bersamaan dengan kedalaman pasar yang rendah."
+          }
+        ]
+      },
+      {
+        "heading": "5. Dasbor pemantauan",
+        "content": [
+          {
+            "indicator": "Lelang Treasury",
+            "monitor": "Bid-to-cover, selisih hasil lelang, komposisi penawar, porsi dealer",
+            "bearish_confirmation": "Permintaan berulang kali lemah dibanding tren terkini"
+          },
+          {
+            "indicator": "Imbal hasil 10/30 tahun",
+            "monitor": "Yield nominal, yield riil, bentuk kurva",
+            "bearish_confirmation": "Kenaikan berkelanjutan yang tidak cukup dijelaskan pertumbuhan"
+          },
+          {
+            "indicator": "Premi jangka waktu",
+            "monitor": "Estimasi model dan trennya",
+            "bearish_confirmation": "Naik berkelanjutan bersama pasokan durasi tinggi"
+          },
+          {
+            "indicator": "Likuiditas pasar",
+            "monitor": "Selisih bid-ask, kedalaman pasar, volatilitas",
+            "bearish_confirmation": "Kedalaman turun saat volatilitas dan biaya transaksi naik"
+          },
+          {
+            "indicator": "Kondisi kredit",
+            "monitor": "Spread obligasi investment-grade/high-yield dan standar pinjaman",
+            "bearish_confirmation": "Spread melebar dan akses kredit mengetat"
+          },
+          {
+            "indicator": "Indikator internal saham",
+            "monitor": "Keluasan pasar, revisi laba, valuasi, volatilitas",
+            "bearish_confirmation": "Keluasan pasar dan revisi laba melemah"
+          },
+          {
+            "indicator": "Data fiskal",
+            "monitor": "Prospek CBO, estimasi pinjaman Treasury, bunga bersih",
+            "bearish_confirmation": "Defisit dan biaya bunga naik dibanding proyeksi dasar"
+          }
+        ]
+      },
+      {
+        "heading": "6. Risiko, keterbatasan, dan kesimpulan",
+        "content": "Defisit besar yang diproyeksikan dan biaya bunga bersih yang meningkat menciptakan tantangan pendanaan jangka menengah. Dampak pasar jangka pendek bergantung pada pembeli marginal, komposisi jatuh tempo, ekspektasi inflasi, dan likuiditas. Tekanan Treasury menjadi lebih berdampak pada saham ketika disertai kredit yang lebih ketat, ekspektasi laba yang melemah, dan kedalaman pasar yang menurun. Almere&Co mengklasifikasikan isu ini sebagai kerentanan makro struktural yang perlu dipantau, bukan bukti bahwa kehancuran pasar obligasi atau saham akan segera terjadi."
+      },
+      {
+        "heading": "Sumber dan metodologi",
+        "content": [
+          {
+            "name": "Congressional Budget Office",
+            "title": "The Budget and Economic Outlook: 2026 to 2036",
+            "url": "https://www.cbo.gov/publication/62105"
+          },
+          {
+            "name": "Federal Reserve",
+            "title": "Financial Stability Report",
+            "url": "https://www.federalreserve.gov/publications/financial-stability-report.htm"
+          },
+          {
+            "name": "Federal Reserve",
+            "title": "Financial Stability Report — Asset Valuations (April 2025)",
+            "url": "https://www.federalreserve.gov/publications/April-2025-financial-stability-report-Asset-Valuations.htm"
+          }
+        ]
       }
     ],
-    "methodology": "Model ekonometrika VAR (Vector Autoregression) dengan data historis harian dari Federal Reserve FRED, PBOC statistical release, Bank of Japan Data Portal, dan Glassnode On-Chain Intelligence (periode Januari 2020 – September 2026).",
-    "disclaimer": "Riset ini diterbitkan oleh Almere & Co sebagai bagian dari transparansi intelektual dan dokumentasi tata kelola portofolio internal. Konten ini bukan merupakan saran investasi, rekomendasi finansial, atau ajakan untuk membeli maupun menjual aset apa pun."
-  },
-
-  {
-    "id": "24-7-markets-evolution-infrastructure",
-    "slug": "24-7-markets-evolution-infrastructure",
-    "title": "24/7 Markets & The Evolution of Financial Infrastructure",
-    "subtitle": "Evolusi Struktural Pasar Modal Global dari Jam Bursa Tradisional Menuju Likuiditas Kontinu Tanpa Jeda",
-    "category": "Markets",
-    "date": "12 Aug 2026",
-    "timestamp": 1786579200000,
-    "readTime": "9 min read",
-    "author": "Almere Macro Strategy & Market Infrastructure Division",
-    "status": "Published",
-    "abstract": "Eksplorasi struktural mengenai pergeseran tak terelakkan dari pasar modal kuno dengan jam bursa terfragmentasi (9 to 5 hari kerja) menuju perdagangan dan penyelesaian (settlement) kontinu 24 jam sehari, 7 hari seminggu. Kami membedah risiko 'weekend gap' yang mematikan pada sistem kliring tradisional T+1, keunggulan settlement on-chain atomik (T+0), dan bagaimana institusi perbankan global mulai mengadopsi infrastruktur pasar tanpa henti.",
-    "keyTakeaways": [
-      "Penutupan bursa saham dan valuta asing di akhir pekan menciptakan distorsi likuiditas dan akumulasi risiko yang tidak efisien.",
-      "Aset digital membuktikan bahwa pasar global berskala ratusan miliar dolar dapat beroperasi tanpa jeda selama 15+ tahun tanpa henti.",
-      "Perpaduan tokenisasi sekuritas (RWA) dan settlement T+0 akan memaksa bursa tradisional beradaptasi menuju standar 24/7."
-    ],
-    "sections": [
-      {
-        "heading": "1. Anakronisme Jam Bursa di Abad Digital",
-        "content": "<p>Sistem jam perdagangan bursa tradisional lahir di era di mana pesanan fisik dibawa dengan kertas oleh para kurir di lantai bursa New York atau London. Meskipun seluruh sistem komunikasi kini telah berbasis serat optik berkecepatan cahaya, jadwal bursa saham konvensional masih mempertahankan jam buka 09:30 hingga 16:00 dengan penutupan total pada hari Sabtu dan Minggu.</p><p>Ketika peristiwa geopolitik besar atau rilis berita mendadak terjadi di akhir pekan, pelaku pasar terjebak tanpa kemampuan memitigasi risiko. Hal ini melahirkan fenomena 'weekend gap' di mana harga saham sering kali anjlok drastis saat pembukaan Senin pagi tanpa memberikan kesempatan bagi investor untuk keluar dari posisi secara tertib.</p>"
-      },
-      {
-        "heading": "2. Pembuktian Operasional Infrastruktur 24/7",
-        "content": "<p>Pasar aset digital (cryptocurrency) telah menjadi laboratorium hidup terbesar dalam sejarah keuangan. Selama lebih dari 15 tahun, Bitcoin dan infrastruktur derivatif kripto telah beroperasi 24 jam sehari, 365 hari setahun, tanpa sekalipun menghentikan perdagangan (trading halt) atau menutup pintu likuiditas.</p><p>Ketersediaan penemuan harga (price discovery) secara terus-menerus ini menghilangkan risiko gap akumulatif dan memungkinkan penyesuaian margin terjadi secara mulus dan berkala, sehingga volatilitas dapat didistribusikan secara lebih merata sepanjang waktu.</p>"
-      },
-      {
-        "heading": "3. Masa Depan Keuangan Global: Konvergensi Menuju Pasar Tanpa Tidur",
-        "content": "<p>Dengan pesatnya adopsi tokenisasi aset dunia nyata (Real World Assets / RWA) seperti surat utang negara (Treasury bills) dan saham institusional di atas rel blockchain, pemisahan antara 'pasar tradisional' dan 'pasar kripto' akan segera lebur. Pasar masa depan adalah pasar yang beroperasi non-stop, di mana modal dapat bergerak melintasi batas negara dan zona waktu secara instan dan tanpa friksi.</p>"
-      }
-    ],
-    "methodology": "Analisis perbandingan volatilitas pembukaan (Monday open gaps) indeks S&P 500 vs. Bitcoin akhir pekan periode 2018–2026, ditopang data Bank for International Settlements (BIS) Triennial Survey.",
-    "disclaimer": "Materi ini disusun untuk publikasi edukatif Almere & Co. Bukan ajakan atau penawaran perdagangan instrumen pasar modal."
+    "disclosure": "Dokumen ini merupakan riset independen Almere&Co berdasarkan sumber publik. Bukan nasihat keuangan atau rekomendasi untuk membeli, menjual, atau menahan sekuritas. Proyeksi dapat berubah. Diagram dan skenario adalah kerangka analitis, bukan estimasi ekonometrika."
   }
 ]

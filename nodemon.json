@@ -1,0 +1,17 @@
+{
+  "watch": [
+    "backend",
+    "lib",
+    "db"
+  ],
+  "ext": "js,sql",
+  "ignore": [
+    "data/*",
+    "*.json",
+    "assets/*",
+    "*.html",
+    "*.css",
+    ".git/*"
+  ],
+  "delay": 1500
+}

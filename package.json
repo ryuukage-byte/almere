@@ -4,6 +4,12 @@
   "description": "Website portofolio investasi publik milik Almere & Co. Menghadirkan transparansi kepemilikan aset secara objektif, analitis, dan apa adanya tanpa mengekspos raw wallet address.",
   "scripts": {
     "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "bot": "node backend/server.js",
+    "watchdog": "start-bot.bat",
+    "background": "wscript run-background.vbs",
+    "status": "status-bot.bat",
+    "stop": "stop-bot.bat",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,5 +27,8 @@
   "dependencies": {
     "dotenv": "^18.0.0",
     "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }

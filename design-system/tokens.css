@@ -1,0 +1,64 @@
+/* ==========================================================================
+   ALMERE & CO — DESIGN TOKENS
+   Extract from styles.css
+   ========================================================================== */
+
+:root {
+  /* Core Monochrome Palette */
+  --bg-black: #080808;
+  --bg-surface: #0e0e0e;
+  --panel: #131313;
+  --panel-elevated: #181818;
+  --panel-hover: #1f1f1f;
+  
+  /* Borders & Dividers */
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-medium: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --border-glow: rgba(255, 255, 255, 0.35);
+
+  /* Monochrome Typography Shades */
+  --text-pure: #ffffff;
+  --text-primary: #f2f1ee;
+  --text-secondary: #b5b3ad;
+  --text-muted: #85837e;
+  --text-faint: #575551;
+  --text-ghost: #3a3936;
+
+  /* Asset Allocation Grayscales */
+  --alloc-btc: #f0eeea;
+  --alloc-hype: #8c8a84;
+  --alloc-cash: #4b4946;
+  --track-bg: rgba(255, 255, 255, 0.08);
+
+  /* Functional Status Colors */
+  --color-success: #38ef7d;
+  --color-success-bg: rgba(56, 239, 125, 0.1);
+  --color-error: #ff5e62;
+  --color-error-bg: rgba(255, 94, 98, 0.1);
+  --color-warning: #ffb400;
+  --color-warning-bg: rgba(255, 180, 0, 0.12);
+  --color-gold: #d4af37;
+
+  /* Fonts */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* Shadows */
+  --shadow-panel: 0 12px 40px rgba(0, 0, 0, 0.35);
+  --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.85);
+  --shadow-glow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* Transitions & Animation Easing */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --trans-fast: 0.15s var(--ease-out);
+  --trans-medium: 0.25s var(--ease-out);
+}

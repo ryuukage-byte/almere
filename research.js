@@ -55,12 +55,133 @@
     }, 3200);
   }
 
+  // Escape HTML helper
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function slugify(text) {
+    return String(text || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+  }
+
+  function formatDateDisplay(dateVal) {
+    if (!dateVal) {
+      const now = new Date();
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      return `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    }
+    const d = new Date(dateVal);
+    if (!isNaN(d.getTime())) {
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+    return String(dateVal);
+  }
+
+  /**
+   * Normalizes incoming raw paper data so all components can render gracefully
+   * even if fields were missing in the uploaded JSON.
+   */
+  function normalizePaper(raw) {
+    if (!raw) return null;
+    const title = (raw.title || 'Publikasi Riset Almere').trim();
+    const slug = raw.slug || slugify(title) || `research-${Date.now()}`;
+    const id = raw.id || slug;
+    // Default category to 'Macro' if missing or blank
+    const category = (raw.category && raw.category.trim()) ? raw.category.trim() : 'Macro';
+    const date = raw.date || formatDateDisplay(raw.publication_date || raw.timestamp);
+    const author = raw.author || raw.brand || 'Almere Research Team';
+
+    // Abstract extraction fallback
+    let abstract = raw.abstract || '';
+    if (!abstract && Array.isArray(raw.sections)) {
+      const summarySec = raw.sections.find(s =>
+        s.heading && (
+          s.heading.toLowerCase().includes('ringkasan') ||
+          s.heading.toLowerCase().includes('abstract') ||
+          s.heading.toLowerCase().includes('summary')
+        )
+      );
+      if (summarySec && typeof summarySec.content === 'string') {
+        abstract = summarySec.content;
+      } else if (raw.sections[0] && typeof raw.sections[0].content === 'string') {
+        abstract = raw.sections[0].content;
+      }
+    }
+
+    // Key takeaways extraction fallback
+    let keyTakeaways = raw.keyTakeaways;
+    if (!Array.isArray(keyTakeaways) && Array.isArray(raw.sections)) {
+      const findingsSec = raw.sections.find(s =>
+        s.heading && (
+          s.heading.toLowerCase().includes('temuan') ||
+          s.heading.toLowerCase().includes('takeaway') ||
+          s.heading.toLowerCase().includes('poin')
+        )
+      );
+      if (findingsSec && Array.isArray(findingsSec.content)) {
+        keyTakeaways = findingsSec.content.map(String);
+      }
+    }
+
+    // Methodology extraction fallback
+    let methodology = raw.methodology || '';
+    if (!methodology && Array.isArray(raw.sections)) {
+      const methSec = raw.sections.find(s =>
+        s.heading && (
+          s.heading.toLowerCase().includes('metodologi') ||
+          s.heading.toLowerCase().includes('sumber')
+        )
+      );
+      if (methSec) {
+        if (typeof methSec.content === 'string') {
+          methodology = methSec.content;
+        } else if (Array.isArray(methSec.content)) {
+          methodology = methSec.content.map(item => item.name ? `${item.name} (${item.title || ''})` : String(item)).join('; ');
+        }
+      }
+    }
+
+    const disclaimer = raw.disclaimer || raw.disclosure || 'Dokumen ini merupakan riset independen Almere & Co berdasarkan data publik. Bukan merupakan saran investasi atau rekomendasi finansial.';
+
+    return {
+      id,
+      slug,
+      title,
+      subtitle: raw.subtitle || '',
+      category,
+      date,
+      publication_date: raw.publication_date || '',
+      timestamp: raw.timestamp || Date.now(),
+      readTime: raw.readTime || '8 min read',
+      author,
+      abstract,
+      keyTakeaways: Array.isArray(keyTakeaways) ? keyTakeaways : [],
+      sections: Array.isArray(raw.sections) ? raw.sections : [],
+      rawContent: raw.rawContent || '',
+      methodology: methodology || 'Data internal dan riset independen Almere & Co.',
+      disclaimer
+    };
+  }
+
   // --- 1. LOAD RESEARCH PAPERS ---
   async function loadResearchPapers() {
     try {
       const response = await fetch('data/research_papers.json?v=' + Date.now());
       if (response.ok) {
-        allPapers = await response.json();
+        const rawList = await response.json();
+        allPapers = (Array.isArray(rawList) ? rawList : [rawList])
+          .map(normalizePaper)
+          .filter(Boolean);
       } else {
         console.warn('Could not fetch data/research_papers.json, using fallback');
         allPapers = [];
@@ -76,11 +197,11 @@
       if (stored) {
         const customPapers = JSON.parse(stored);
         if (Array.isArray(customPapers)) {
-          // Prepend custom papers
           const existingIds = new Set(allPapers.map(p => p.id));
           customPapers.forEach(cp => {
-            if (!existingIds.has(cp.id)) {
-              allPapers.unshift(cp);
+            const normalized = normalizePaper(cp);
+            if (normalized && !existingIds.has(normalized.id)) {
+              allPapers.unshift(normalized);
             }
           });
         }
@@ -100,7 +221,8 @@
 
     const filtered = allPapers.filter(paper => {
       if (activeCategory === 'All') return true;
-      return (paper.category || '').toLowerCase() === activeCategory.toLowerCase();
+      const cat = (paper.category || 'Macro').trim().toLowerCase();
+      return cat === activeCategory.toLowerCase();
     });
 
     if (filtered.length === 0) {
@@ -126,6 +248,8 @@
             <span class="meta-cat">${escapeHtml(paper.category || 'Macro')}</span>
             <span class="meta-dot">&middot;</span>
             <span class="meta-date">${escapeHtml(paper.date || '')}</span>
+            <span class="meta-dot">&middot;</span>
+            <span class="meta-readtime">${escapeHtml(paper.readTime || '6 min read')}</span>
           </div>
         </div>
         <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
@@ -146,26 +270,124 @@
     });
   }
 
-  // Escape HTML helper
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
   // --- 3. FILTER TABS INTERACTION ---
   filterPills.forEach(pill => {
     pill.addEventListener('click', () => {
-      filterPills.forEach(p => p.classList.remove('active'));
+      filterPills.forEach(p => {
+        p.classList.remove('active');
+        p.setAttribute('aria-selected', 'false');
+      });
       pill.classList.add('active');
+      pill.setAttribute('aria-selected', 'true');
       activeCategory = pill.getAttribute('data-category') || 'Macro';
       renderPaperList();
     });
   });
+
+  /**
+   * Formats section content dynamically depending on its type:
+   * string, array of strings, scenario cards, indicator table, or source links.
+   */
+  function renderSectionContent(content) {
+    if (!content) return '';
+
+    // 1. Plain text or HTML string
+    if (typeof content === 'string') {
+      if (content.includes('<p>') || content.includes('<div>') || content.includes('<ul>')) {
+        return content;
+      }
+      return content
+        .split('\n\n')
+        .filter(p => p.trim().length > 0)
+        .map(p => `<p>${escapeHtml(p.trim())}</p>`)
+        .join('');
+    }
+
+    // 2. Array of items
+    if (Array.isArray(content)) {
+      if (content.length === 0) return '';
+
+      // Case A: Array of simple strings -> styled bullet list
+      if (typeof content[0] === 'string') {
+        return `
+          <ul class="paper-bullet-list">
+            ${content.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
+          </ul>
+        `;
+      }
+
+      // Case B: Array of scenarios: [{ name, description }]
+      if (content[0].name && content[0].description) {
+        return `
+          <div class="paper-scenario-grid">
+            ${content.map((item, idx) => `
+              <div class="paper-scenario-card">
+                <div class="scenario-badge">Skenario ${idx + 1}</div>
+                <h4 class="scenario-title">${escapeHtml(item.name)}</h4>
+                <p class="scenario-desc">${escapeHtml(item.description)}</p>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      // Case C: Array of monitor indicators: [{ indicator, monitor, bearish_confirmation }]
+      if (content[0].indicator) {
+        return `
+          <div class="paper-table-wrap">
+            <table class="paper-table">
+              <thead>
+                <tr>
+                  <th style="width: 26%;">Indikator</th>
+                  <th style="width: 38%;">Metrik yang Dipantau</th>
+                  <th style="width: 36%;">Konfirmasi Pelemahan / Risiko</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${content.map(row => `
+                  <tr>
+                    <td class="td-indicator"><strong>${escapeHtml(row.indicator)}</strong></td>
+                    <td>${escapeHtml(row.monitor || '-')}</td>
+                    <td class="td-bearish">${escapeHtml(row.bearish_confirmation || '-')}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // Case D: Array of references/sources: [{ name, title, url }]
+      if (content[0].url || (content[0].name && content[0].title)) {
+        return `
+          <ul class="paper-source-list">
+            ${content.map(src => `
+              <li>
+                <a href="${escapeHtml(src.url || '#')}" target="_blank" rel="noopener noreferrer">
+                  <span class="source-inst">${escapeHtml(src.name || '')}</span>
+                  <span class="source-title">${escapeHtml(src.title || src.url || '')}</span>
+                  <span class="source-icon">&rarr;</span>
+                </a>
+              </li>
+            `).join('')}
+          </ul>
+        `;
+      }
+
+      // Fallback for other object arrays
+      return `
+        <div class="paper-generic-list">
+          ${content.map(obj => `
+            <div class="paper-scenario-card" style="margin-bottom: 12px;">
+              ${Object.entries(obj).map(([k, v]) => `<strong>${escapeHtml(k)}:</strong> ${escapeHtml(String(v))}`).join('<br>')}
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    return `<p>${escapeHtml(String(content))}</p>`;
+  }
 
   // --- 4. PAPER READER VIEW LOGIC ---
   function openPaperReader(paperId, updateHistory = true) {
@@ -220,7 +442,7 @@
           secWrapper.className = 'paper-section-block';
           secWrapper.innerHTML = `
             <h2>${escapeHtml(sec.heading)}</h2>
-            ${sec.content}
+            ${renderSectionContent(sec.content)}
           `;
           readerBodyContentEl.appendChild(secWrapper);
         });
@@ -384,7 +606,7 @@
         })
         .join('');
 
-      const newPaper = {
+      const newPaper = normalizePaper({
         id,
         slug,
         title,
@@ -408,7 +630,7 @@
         ],
         methodology: 'Riset mandiri dan observasi pasar internal Almere & Co.',
         disclaimer: 'Publikasi ini disediakan semata-mata untuk tujuan edukasi dan transparansi riset internal Almere & Co.'
-      };
+      });
 
       // 1. Try to POST to backend API if available
       try {

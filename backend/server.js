@@ -14,9 +14,42 @@ const fs = require('fs');
 const db = require('../db/index.js');
 const { calculatePortfolio } = require('../lib/portfolio_engine.js');
 const { getMarketPrices } = require('../lib/price_feed.js');
-const { startTelegramBot } = require('../lib/telegram_bot.js');
+const { startTelegramBot, stopTelegramBot } = require('../lib/telegram_bot.js');
 
 const PORT = process.env.PORT || 4173;
+const PID_FILE = path.join(__dirname, '..', '.bot.pid');
+
+// Prevent multiple instances from running concurrently
+try {
+  if (fs.existsSync(PID_FILE)) {
+    const existingPid = parseInt(fs.readFileSync(PID_FILE, 'utf8').trim(), 10);
+    if (!isNaN(existingPid)) {
+      try {
+        process.kill(existingPid, 0); // throws error if process is dead
+        console.warn(`⚠️ [Single Instance] Bot sudah berjalan dengan PID ${existingPid}. Proses ini dihentikan agar tidak bentrok.`);
+        process.exit(0);
+      } catch (e) {
+        // Process is dead, proceed normally
+      }
+    }
+  }
+  fs.writeFileSync(PID_FILE, String(process.pid), 'utf8');
+} catch (e) {
+  // Ignore filesystem race conditions
+}
+
+function cleanupPid() {
+  try {
+    if (fs.existsSync(PID_FILE)) {
+      const storedPid = parseInt(fs.readFileSync(PID_FILE, 'utf8').trim(), 10);
+      if (storedPid === process.pid) {
+        fs.unlinkSync(PID_FILE);
+      }
+    }
+  } catch (e) {}
+}
+
+process.on('exit', cleanupPid);
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -176,25 +209,49 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-// Startup sequence: Init DB -> Start Telegram Bot -> Start HTTP Server
-async function startApp() {
-  try {
-    await db.initDatabase();
-    console.log('✅ Connected to Neon PostgreSQL Database.');
-
-    // Start Telegram Sentinel Bot
-    startTelegramBot().catch(err => {
-      console.error('Telegram bot startup error:', err);
-    });
-
-    server.listen(PORT, '127.0.0.1', () => {
-      console.log(`🚀 Almere & Co Server running at http://127.0.0.1:${PORT}`);
-      console.log(`🤖 Telegram Bot active: @SevntinelBot`);
-    });
-  } catch (err) {
-    console.error('Fatal initialization error:', err);
-    process.exit(1);
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.warn(`⚠️ [Port Conflict] Port ${PORT} sedang dipakai proses lain. Bot Telegram tetap berjalan normal.`);
+  } else {
+    console.error('⚠️ [Server Error]:', err.message);
   }
+});
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+  console.log('\n🛑 Menghentikan server & bot Telegram secara aman...');
+  stopTelegramBot();
+  server.close(() => process.exit(0));
+});
+
+process.on('SIGTERM', () => {
+  stopTelegramBot();
+  server.close(() => process.exit(0));
+});
+
+// Startup sequence: Init DB (with auto-retry on boot/network delay) -> Start Telegram Bot -> Start HTTP Server
+async function startApp() {
+  let dbConnected = false;
+  while (!dbConnected) {
+    try {
+      await db.initDatabase();
+      dbConnected = true;
+      console.log('✅ Connected to Neon PostgreSQL Database.');
+    } catch (err) {
+      console.warn(`⚠️ [Database Pending] Menunggu koneksi internet & PostgreSQL (${err.message}). Coba lagi dalam 5 detik...`);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+    }
+  }
+
+  // Start Telegram Sentinel Bot
+  startTelegramBot().catch(err => {
+    console.error('Telegram bot startup error:', err);
+  });
+
+  server.listen(PORT, '127.0.0.1', () => {
+    console.log(`🚀 Almere & Co Server running at http://127.0.0.1:${PORT}`);
+    console.log(`🤖 Telegram Bot active: @SevntinelBot`);
+  });
 }
 
 startApp();

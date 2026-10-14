@@ -16,6 +16,11 @@ const pool = new Pool({
   }
 });
 
+// Handle idle connection drops gracefully (crucial for Neon serverless Postgres)
+pool.on('error', (err) => {
+  console.warn('⚠️ [PostgreSQL Pool] Idle client dropped or connection error:', err.message);
+});
+
 async function initDatabase() {
   const client = await pool.connect();
   try {

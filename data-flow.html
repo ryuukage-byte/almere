@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SevnQuest English · Indonesian Learner Data Flow Map</title>
+<style>
+  :root{
+    --bg:#0f131b; --grid:rgba(120,150,200,.07); --panel:#171d28; --panel-hi:#1c2433; --well:#121824;
+    --line:rgba(120,150,200,.28); --line-strong:rgba(120,150,200,.52); --inner:rgba(120,150,200,.16);
+    --text:#e6eaf3; --dim:#98a2b8; --muted:#6f7a92; --gold:#e5b93f;
+    --core:#4fae86; --engine:#e5b93f; --event:#53b9dd; --state:#a78bfa; --storage:#7a96d9; --ui:#f08fc0; --optional:#8a96b0;
+    --score:#52c78d; --attempt:#58a6ff; --error:#e2555b; --edge:#8a96b0;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:13px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+  #top{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 14px;background:rgba(15,19,27,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  #top h1{margin:0 8px 0 0;font:750 14px/1 system-ui;letter-spacing:.04em}
+  #top h1 small{display:block;margin-top:4px;font-weight:500;color:var(--muted);letter-spacing:0;font-size:10px}
+  .seg{display:flex;gap:4px;flex-wrap:wrap}
+  button.chip{cursor:pointer;color:var(--dim);background:var(--well);border:1px solid var(--inner);border-radius:12px;padding:6px 11px;font:650 11px system-ui}
+  button.chip:hover{border-color:var(--line);color:var(--text)}
+  button.chip.on{background:var(--panel-hi);border-color:var(--line-strong);color:var(--text)}
+  button.view.on{color:var(--gold)}
+  #search{width:245px;background:var(--well);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:7px 11px;font:13px system-ui}
+  #search:focus{outline:none;border-color:var(--line-strong)}
+  #hint{color:var(--muted);font-size:11px}
+  #viewport{position:fixed;inset:0;cursor:grab;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px}
+  #viewport.drag{cursor:grabbing}
+  #canvas{position:absolute;left:0;top:0;transform-origin:0 0}
+  svg#edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+  .lane{position:absolute;border:1px dashed var(--inner);border-radius:18px;background:rgba(23,29,40,.30);pointer-events:none}
+  .lane span{position:absolute;left:14px;top:-9px;padding:0 8px;background:var(--bg);color:var(--muted);font:750 10px system-ui;letter-spacing:.12em}
+  .node{position:absolute;width:252px;min-height:142px;background:var(--panel);border:1px solid var(--line);border-radius:16px;
+        box-shadow:0 8px 20px rgba(0,0,0,.28),inset 0 0 0 4px var(--panel),inset 0 0 0 5px var(--inner);padding:13px 14px 12px 16px;cursor:pointer;transition:opacity .15s,border-color .15s,transform .15s}
+  .node:hover{border-color:var(--line-strong);transform:translateY(-1px)}
+  .node.sel{border-color:var(--gold)}
+  .node.dim{opacity:.14}
+  .node.hit{border-color:var(--gold);box-shadow:0 0 0 2px rgba(229,185,63,.25),0 8px 20px rgba(0,0,0,.28),inset 0 0 0 4px var(--panel),inset 0 0 0 5px var(--inner)}
+  .node::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:var(--st,var(--muted))}
+  .node .nm{font:750 13px system-ui;margin:0 0 2px;color:var(--text);padding-right:2px}
+  .node .row1{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:5px}
+  .tag{font:750 9px system-ui;letter-spacing:.08em;padding:2px 6px;border-radius:7px;background:var(--well);border:1px solid var(--inner);color:var(--dim)}
+  .st{font:750 9px system-ui;letter-spacing:.08em;padding:2px 6px;border-radius:7px;color:#0f131b;background:var(--st,var(--muted))}
+  .node .src{font:10.5px ui-monospace,Consolas,monospace;color:var(--gold);word-break:break-word;margin-bottom:6px}
+  .node .io{font-size:10.5px;color:var(--dim);margin-top:2px}
+  .node .io b{color:var(--muted);font-weight:750;letter-spacing:.06em;font-size:9px;margin-right:4px}
+  .ports{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .port{display:flex;align-items:center;gap:5px;border:1px solid var(--inner);background:var(--well);border-radius:9px;padding:3px 7px;font:700 9px/1.3 system-ui;color:var(--dim)}
+  .port i{display:inline-block;width:7px;height:7px;border-radius:50%}
+  .port.score i{background:var(--score)} .port.attempt i{background:var(--attempt)} .port.error i{background:var(--error)}
+  .mult{color:var(--gold);font-weight:800}
+  .elabel{position:absolute;transform:translate(-50%,-50%);max-width:190px;padding:2px 7px;border-radius:9px;background:var(--well);border:1px solid var(--inner);color:var(--dim);font:650 10px system-ui;text-align:center;pointer-events:none;transition:opacity .15s}
+  .elabel.dim{opacity:.08}
+  path.e{fill:none;stroke-width:1.7;transition:opacity .15s}
+  path.e.dim{opacity:.06}
+  #panel{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:94vw;z-index:40;transform:translateX(102%);transition:transform .2s;background:var(--panel);border-left:1px solid var(--line-strong);padding:62px 18px 24px;overflow:auto}
+  #panel.open{transform:none}
+  #panel h2{margin:0 0 4px;font:750 17px system-ui}
+  #panel .meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+  #panel h3{margin:15px 0 5px;font:750 10px system-ui;letter-spacing:.12em;color:var(--muted)}
+  #panel p,#panel li{margin:0;color:var(--dim)}
+  #panel ul{margin:0;padding-left:16px}
+  #panel code{font:11px ui-monospace,Consolas,monospace;color:var(--gold)}
+  #panel .formula{padding:9px 10px;border:1px solid var(--inner);border-radius:10px;background:var(--well);color:var(--text);font:11px ui-monospace,Consolas,monospace}
+  #panel .portbox{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  #panel .portcard{padding:8px 9px;border:1px solid var(--inner);border-radius:10px;background:var(--well);font-size:11px;color:var(--dim)}
+  #panel .portcard b{display:block;color:var(--text);margin-bottom:2px}
+  #close{position:absolute;top:62px;right:14px;cursor:pointer}
+  #legend{position:fixed;left:14px;bottom:14px;z-index:30;background:rgba(23,29,40,.94);border:1px solid var(--line);border-radius:14px;padding:9px 12px;display:flex;gap:10px 14px;flex-wrap:wrap;max-width:min(980px,78vw);font-size:11px;color:var(--dim)}
+  #legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  #legend u{display:inline-block;width:26px;border-top:2px solid var(--dim);margin-right:5px;vertical-align:3px}
+  #note{position:fixed;left:14px;top:62px;z-index:25;max-width:520px;font-size:11px;color:var(--dim);background:rgba(23,29,40,.90);border:1px solid var(--inner);border-radius:12px;padding:8px 11px}
+  #note b{color:var(--text)} #note code{color:var(--gold)}
+  #zoom{position:fixed;right:14px;bottom:14px;z-index:30;display:flex;gap:6px}
+  @media (max-width:780px){#search{width:160px}#legend{max-width:calc(100vw - 28px)}#note{display:none}.node{width:236px}}
+</style>
+</head>
+<body>
+<div id="top">
+  <h1>SEVNQUEST ENGLISH · INDONESIAN LEARNER DATA FLOW<small>English learning architecture · CEFR · Indonesia-aware errors · entity → engine → event → mastery</small></h1>
+  <div class="seg" id="views"></div>
+  <div class="seg" id="filters"></div>
+  <input id="search" type="search" placeholder="cari: vocabulary, speaking, tense, article, CEFR…" autocomplete="off">
+  <span id="hint">seret = geser · scroll = zoom · klik node = detail · / = cari</span>
+</div>
+<div id="note"></div>
+<div id="viewport"><div id="canvas"><svg id="edges"></svg></div></div>
+<aside id="panel"><button class="chip" id="close">tutup ✕</button><div id="pbody"></div></aside>
+<div id="legend"></div>
+<div id="zoom"><button class="chip" id="zin">＋</button><button class="chip" id="zout">－</button><button class="chip" id="zfit">fit</button></div>
+
+<script>
+const ST={CORE:'var(--core)',ENGINE:'var(--engine)',EVENT:'var(--event)',STATE:'var(--state)',STORAGE:'var(--storage)',UI:'var(--ui)',OPTIONAL:'var(--optional)'};
+const GROUPS=['INGEST','LANGUAGE ENTITY','ENGINES','EVENT ROUTER','LEARNING STATE','PERSISTENCE','PROGRESSION / UI'];
+const NODES={};
+function N(id,name,type,group,source,inn,out,status,d={}){NODES[id]={id,name,type,group,source,inn,out,status,d,tags:(d.tags||'')}}
+
+/* ============================ INGEST ============================ */
+N('raw_import','Raw English Learning Source','DATA','INGEST','JSON / CSV / API / editor','raw word / phrase / grammar / pronunciation / sentence','raw records','CORE',{
+  fields:['sourceId','rawEnglish','rawIndonesian','rawLevel','rawPronunciation','metadata'],
+  features:['Import batch','Source traceability','Versioned curriculum source','Bilingual source support'],
+  tags:'raw import english source indonesia bilingual json csv api'});
+N('normalizer','Normalize & Validate','PROCESS','INGEST','schema validator + English normalizer','raw records','normalized entity draft','CORE',{
+  features:['Lowercase/lemma candidate','Normalize apostrophe & punctuation','CEFR normalization A1–C2','POS/schema validation','Indonesian meaning cleanup','Duplicate candidate detection'],
+  formula:'normalized = validate(normalize(raw))',
+  tags:'normalize validate schema cefr lemma indonesia'});
+N('canonicalizer','Canonical Identity Resolver','PROCESS','INGEST','entity identity layer','normalized draft','canonicalEntityId + aliases','CORE',{
+  features:['1 lemma/phrase = 1 canonical ID','Inflected forms point to lemma','Alias & legacy IDs resolve to canonical entity','Prevents split mastery'],
+  formula:'canonicalId = resolve(lemma + POS + senseKey)',
+  tags:'canonical id lemma identity alias sense'});
+
+/* ======================== LANGUAGE ENTITY ======================== */
+N('vocab','Vocabulary / Lemma Entity','ENTITY','LANGUAGE ENTITY','english/vocabulary','canonical draft','VocabularyRecord','CORE',{
+  fields:['id / canonicalId','lemma','displayForm','meaningId[]','partOfSpeech','CEFR A1–C2','frequencyBand','countability?','transitivity?','irregularForms?','collocationIds[]','phraseIds[]','pronunciationId','topicTags[]','baseValue','difficultyWeight','examples[]'],
+  features:['One lexical identity','Inflection links stay under same lemma','Bilingual Indonesian meanings','Frequency + CEFR ready'],
+  formula:'baseValue = cefrBase × lexicalDifficulty × frequencyWeight × curriculumWeight',
+  tags:'english vocabulary lemma kosakata arti indonesia cefr part of speech base value'});
+N('phrase','Phrase · Collocation · Phrasal Verb','ENTITY','LANGUAGE ENTITY','english/phrase','canonical draft','PhraseRecord','CORE',{
+  fields:['id','surface','type: collocation|phrasalVerb|idiom|chunk','meaningId[]','CEFR','headLemmaIds[]','pattern','separable?','register','usageNotesId','baseValue','examples[]'],
+  features:['Natural word combinations','Phrasal verb separability','Lexical chunks for fluency'],
+  formula:'baseValue = cefrBase × phraseComplexity × usagePriority',
+  tags:'phrase collocation phrasal verb idiom chunk natural english'});
+N('grammar','Grammar / Usage Entity','ENTITY','LANGUAGE ENTITY','english/grammar','canonical draft','GrammarRecord','CORE',{
+  fields:['id','pattern','CEFR','form','function','tenseAspect?','constraints','contrastId','commonTransferErrors[]','register','baseValue','examples[]'],
+  features:['Form + meaning + use','Contrast with Indonesian structure','Common learner-error hooks'],
+  formula:'baseValue = cefrBase × structuralComplexity × productionWeight',
+  tags:'grammar tense aspect article preposition usage indonesia transfer'});
+N('pronunciation','Pronunciation Entity','ENTITY','LANGUAGE ENTITY','english/pronunciation','word / phrase identity','PronunciationRecord','CORE',{
+  fields:['id','entityId','ipaUS?','ipaUK?','syllables[]','wordStress','phonemes[]','minimalPairIds[]','audioRefs[]','indoDifficultyTags[]','baseValue'],
+  features:['IPA optional display','Word stress','Minimal pairs','Indonesian-specific difficult sounds'],
+  tags:'pronunciation ipa stress th dh v f vowel minimal pair speaking'});
+N('sentence','Sentence / Example Entity','ENTITY','LANGUAGE ENTITY','english/sentence','linked vocab + phrase + grammar','SentenceRecord','CORE',{
+  fields:['id','english','indonesian','tokenEntityIds[]','phraseIds[]','grammarIds[]','CEFR','context','naturalness','audioRef?','baseValue'],
+  features:['Context-bearing example','Bilingual alignment','Reusable across listening/reading/translation/speaking'],
+  tags:'sentence example english indonesian translation context'});
+
+/* ============================ ENGINES ============================ */
+N('flashcard_engine','Flashcard / Recall Engine','ENGINE','ENGINES','engine/flashcard','Vocabulary / Phrase / Grammar','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:0.70,
+  features:['EN → ID recall','ID → EN production','Definition mode','Example-cloze mode','Known / unsure / missed','Timed recall'],
+  scorePort:'recallRating, direction, responseMs, score',
+  attemptPort:'reviewCount +1, durationMs, interaction=flashcard',
+  errorPort:'missedMeaning / wrongSense / slowRecall',
+  formula:'engineScore = baseValue × 0.70 × recallFactor × directionFactor',
+  tags:'flashcard vocabulary recall indonesia meaning multiplier'});
+N('spelling_engine','Spelling / Writing Engine','ENGINE','ENGINES','engine/spelling','Vocabulary / Phrase / Sentence','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:1.05,
+  features:['Listen → type','ID meaning → type English','Missing-letter drill','Word segmentation','Sentence typing'],
+  scorePort:'editSimilarity, exactMatch, responseMs, score',
+  attemptPort:'spellingCount +1, typedChars, durationMs',
+  errorPort:'spellingError / apostrophe / wordBoundary / capitalization',
+  formula:'engineScore = baseValue × 1.05 × spellingAccuracy',
+  tags:'spelling writing typing dictation english'});
+N('verb_engine','Verb Form · Tense · Aspect Engine','ENGINE','ENGINES','engine/verb-forms','Vocabulary(verb) + Grammar','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:1.40,
+  features:['Base → past → participle → -ing','Irregular verb recall','Tense/aspect selection','Auxiliary selection','Affirmative / negative / question transforms'],
+  scorePort:'correctForm, tenseAspect, auxiliary, responseMs, score',
+  attemptPort:'verbFormCount +1, transformCount +1, durationMs',
+  errorPort:'wrongVerbForm / tenseMismatch / auxiliaryError / SVAError',
+  formula:'engineScore = baseValue × 1.40 × correctness × transformDifficulty',
+  tags:'verb tense aspect conjugation perubahan kata past participle auxiliary'});
+N('grammar_engine','Grammar Usage Engine','ENGINE','ENGINES','engine/grammar','Grammar + Vocabulary + Sentence','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:1.35,
+  features:['Article a/an/the','Subject–verb agreement','Do/be distinction','Plural & countability','Preposition choice','Question formation','Relative clause / modal / conditionals'],
+  scorePort:'ruleAccuracy, usageAccuracy, responseMs, score',
+  attemptPort:'grammarAttemptCount +1, durationMs',
+  errorPort:'articleError / SVAError / doBeError / prepositionError / countabilityError / wordOrder',
+  formula:'engineScore = baseValue × 1.35 × formMeaningUseAccuracy',
+  tags:'grammar article sva do be preposition countable indonesia error'});
+N('sentence_engine','Sentence Builder / Production Engine','ENGINE','ENGINES','engine/sentence-builder','Vocabulary + Phrase + Grammar + Sentence','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:1.65,
+  features:['Word ordering','Free sentence build','Required-word challenge','Grammar constraint validation','Naturalness / collocation check','Meaning preservation'],
+  scorePort:'grammarScore, lexicalScore, naturalnessScore, semanticScore, totalScore',
+  attemptPort:'sentenceBuildCount +1, producedWords, durationMs',
+  errorPort:'wordOrder / missingArticle / unnaturalCollocation / agreement / missingFunctionWord',
+  formula:'engineScore = baseValueSum × 1.65 × productionQuality',
+  tags:'sentence builder production word order naturalness english'});
+N('translation_engine','ID ↔ EN Translation Engine','ENGINE','ENGINES','engine/translation','Vocabulary + Phrase + Grammar + Sentence','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:1.50,
+  features:['Indonesian → English production','English → Indonesian comprehension','Meaning equivalence','Literal-translation detection','Multiple valid answer support'],
+  scorePort:'semanticScore, grammarScore, naturalnessScore, direction, totalScore',
+  attemptPort:'translationCount +1, directionCount, durationMs',
+  errorPort:'literalTranslation / falseFriend / omittedSubject / tenseTransfer / unnaturalPhrase',
+  formula:'engineScore = baseValueSum × 1.50 × semanticFidelity × naturalness',
+  tags:'translation indonesia english literal translation false friend'});
+N('listening_engine','Listening / Dictation Engine','ENGINE','ENGINES','engine/listening','Pronunciation + Vocabulary + Sentence + audio','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:1.35,
+  features:['Listen → meaning','Listen → type','Keyword recognition','Reduced speech','Replay count','Speed/accent variation'],
+  scorePort:'comprehensionScore, dictationSimilarity, replayCount, score',
+  attemptPort:'listeningCount +1, replayCount, listenMs',
+  errorPort:'phonemeConfusion / missedFunctionWord / segmentationError / reducedSpeech',
+  formula:'engineScore = baseValue × 1.35 × listeningAccuracy × replayPenalty',
+  tags:'listening dictation audio accent reduced speech'});
+N('speaking_engine','Pronunciation / Speaking Engine','ENGINE','ENGINES','engine/speaking','Pronunciation + Vocabulary + Phrase + Sentence','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:1.75,
+  features:['Listen & repeat','Minimal-pair drill','Word stress','Sentence shadowing','Read aloud','Free spoken response'],
+  scorePort:'phonemeScore, stressScore, fluencyScore, intelligibilityScore, totalScore',
+  attemptPort:'speakingCount +1, spokenMs, recordedUtterances +1',
+  errorPort:'thSubstitution / vFConfusion / vowelLength / stressError / finalConsonant / clusterReduction',
+  formula:'engineScore = baseValueSum × 1.75 × intelligibility × pronunciationQuality',
+  tags:'speaking pronunciation indonesia th v f stress vowel shadowing'});
+N('reading_engine','Reading Comprehension Engine','ENGINE','ENGINES','engine/reading','Vocabulary + Phrase + Grammar + Sentence/Text','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:1.20,
+  features:['Main idea','Detail','Inference','Reference words','Vocabulary in context','Reading speed'],
+  scorePort:'comprehensionScore, wpm, responseMs, score',
+  attemptPort:'readingCount +1, readingMs, wordsRead',
+  errorPort:'contextMismatch / referenceError / inferenceError / lexicalGuessError',
+  formula:'engineScore = baseValueSum × 1.20 × comprehension × levelFactor',
+  tags:'reading comprehension context inference wpm'});
+N('recall_engine','Smart Recall / SRS Engine','ENGINE','ENGINES','engine/recall','Entity + SRS schedule','ResultEvent + ActivityEvent','ENGINE',{
+  multiplier:0.90,
+  features:['Due queue','Weak-item priority','Mix receptive/productive directions','Confidence rating','Lapse handling','Interleave skills'],
+  scorePort:'recallQuality, score, previousInterval, direction',
+  attemptPort:'reviewCount +1, lapseCount?, durationMs',
+  errorPort:'lapse / lowConfidence / repeatedSameError',
+  formula:'engineScore = baseValue × 0.90 × recallQuality',
+  tags:'srs smart recall review spaced repetition'});
+
+/* ========================= EVENT ROUTER ========================= */
+N('result_event','Result Event Port','EVENT','EVENT ROUTER','event/result','engine result payload','normalized ResultEvent','EVENT',{
+  fields:['eventId','entityIds[]','engineId','baseValueSum','multiplier','rawScore','accuracy','durationMs','CEFR','timestamp','contextId?'],
+  features:['One result format across engines','Immutable evidence','Supports multi-entity tasks'],
+  tags:'score result event output value'});
+N('activity_event','Activity / Attempt Port','EVENT','EVENT ROUTER','event/activity','engine activity payload','normalized ActivityEvent','EVENT',{
+  fields:['eventId','entityIds[]','engineId','actionType','attemptDelta','durationMs','skill','timestamp','sessionId'],
+  features:['Frequency separated from score','Daily/weekly/monthly counters','Per-engine and per-skill counts'],
+  tags:'attempt count activity frequency berapa kali melakukan'});
+N('error_event','Learner Error Port','EVENT','EVENT ROUTER','event/error','engine detected error','ErrorEvent','EVENT',{
+  fields:['entityIds[]','engineId','errorType','severity','skill','sourceLanguageTransfer?','context','timestamp'],
+  tags:'error learner mistake indonesia transfer'});
+N('score_engine','Score & Reward Calculator','PROCESS','EVENT ROUTER','engine/scoring','ResultEvent','FinalScoreEvent','CORE',{
+  features:['Apply engine multiplier','Accuracy/quality factor','CEFR difficulty factor','Production bonus','Speed bonus optional','Repeat-farming dampener','Clamp & anti-abuse'],
+  formula:'finalScore = baseValueSum × engineMultiplier × quality × cefrDifficulty × productionBonus × noveltyFactor − penalty',
+  scorePort:'finalScore, masteryDelta, expDelta, skillDelta',
+  tags:'score reward multiplier exp calculation'});
+N('activity_counter','Activity Counter','PROCESS','EVENT ROUTER','engine/activity-counter','ActivityEvent','ActivityDelta','CORE',{
+  fields:['totalAttempts','byEngine{}','bySkill{}','byEntity{}','byCEFR{}','studyMinutes','spokenMinutes','wordsRead','sentencesProduced','reviewsToday'],
+  formula:'counter[key] += attemptDelta; duration += durationMs',
+  tags:'activity counter attempts study minutes speaking count'});
+N('error_classifier','Indonesian Learner Error Classifier','PROCESS','EVENT ROUTER','engine/error-classifier','ErrorEvent[]','ErrorPattern[]','CORE',{
+  features:['Article omission','Subject–verb agreement','Do/be confusion','Tense/aspect transfer','Plural/countability','Preposition','Word order','Literal translation','False friends','Collocation','Pronunciation phoneme/stress'],
+  formula:'patternStrength = frequency × recency × severity × crossEngineEvidence',
+  tags:'indonesian learner error classifier article tense literal translation pronunciation'});
+
+/* ======================== LEARNING STATE ======================== */
+N('mastery','Multi-Skill Mastery Engine','STATE','LEARNING STATE','state/mastery','FinalScoreEvent + ErrorPattern + history','EntityMastery + SkillMastery','STATE',{
+  fields:['overallMastery','receptiveMastery','productiveMastery','listeningMastery','speakingMastery','readingMastery','writingMastery','accuracyEMA','attempts','successes','fails','engineCoverage','lastSeenAt','confidence'],
+  features:['Per entity + per skill mastery','Receptive ≠ productive mastery','Cross-engine evidence','Diminishing return','Recency/decay optional'],
+  formula:'masteryNext = f(previous, finalScore, skill, productionWeight, recency, engineDiversity, errorPenalty)',
+  tags:'mastery skill receptive productive speaking listening reading writing'});
+N('activity_stats','Activity / Exposure Stats','STATE','LEARNING STATE','state/activity','ActivityDelta','ActivityStats','STATE',{
+  fields:['totalActions','byEngine{}','bySkill{}','studyMinutes','speakingMinutes','listeningMinutes','wordsRead','sentencesProduced','uniqueEntities','daily[]','weekly[]','streakDays'],
+  tags:'activity stats exposure attempts streak minutes'});
+N('srs_schedule','SRS Scheduler','STATE','LEARNING STATE','state/srs','EntityMastery + recall quality + direction','nextReviewAt + interval + nextMode','STATE',{
+  features:['Interval update','Due queue','Lapse reset','Difficulty modifier','Switch EN→ID to ID→EN when ready','Promote to production task'],
+  formula:'nextInterval,nextMode = schedule(previousInterval, recallQuality, productiveMastery, errorPattern)',
+  tags:'srs schedule next review productive recall'});
+N('player_reward','Player Reward / XP State','STATE','LEARNING STATE','state/player-reward','FinalScoreEvent','EXP / coins / CEFR progress points','STATE',{
+  fields:['totalExp','coins','cefrPoints','dailyExp','skillExpBreakdown','engineExpBreakdown'],
+  tags:'exp reward cefr points player state'});
+N('cefr_profile','CEFR Skill Profile','STATE','LEARNING STATE','state/cefr-profile','mastery + assessed evidence','A1–C2 skill estimates','STATE',{
+  fields:['overallBand','vocabularyBand','grammarBand','listeningBand','speakingBand','readingBand','writingBand','evidenceCoverage','confidence'],
+  features:['Do not promote from EXP alone','Require skill evidence','Can show uneven profile, e.g. Reading B1 / Speaking A2'],
+  formula:'band(skill) = threshold(weightedMastery, coverage, recentAssessment)',
+  tags:'cefr a1 a2 b1 b2 c1 c2 level profile'});
+
+/* ========================= PERSISTENCE ========================= */
+N('local_store','Local Session Cache','PERSIST','PERSISTENCE','localStorage / IndexedDB','state snapshots + event queue','offline cache','STORAGE',{
+  features:['Instant resume','Offline-first','Pending event queue','Safe retry'],
+  tags:'local storage indexeddb cache'});
+N('cloud_store','Cloud English Learner Profile','PERSIST','PERSISTENCE','Supabase / API','mastery + activity + errors + CEFR + rewards','cross-device profile','STORAGE',{
+  fields:['user_mastery','user_skill_mastery','user_activity','user_errors','user_scores','user_cefr_profile','user_rewards','event_log'],
+  features:['Merge-safe collections','Server timestamps','Audit event log','Cross-device continuity'],
+  tags:'cloud supabase profile persistence english'});
+
+/* ======================= PROGRESSION / UI ======================= */
+N('recommendation','Adaptive Next-Lesson Engine','ENGINE','PROGRESSION / UI','engine/recommendation','mastery + activity + SRS + errors + CEFR','nextAction / nextEntities / nextSkill','UI',{
+  features:['Due-first','Weakest-skill balancing','Indonesian-error remediation','Production after recognition','Avoid over-drilling one mode','CEFR curriculum constraints'],
+  formula:'priority = due + weakness + transferError + curriculum + productionNeed − fatigue − overexposure',
+  tags:'recommendation adaptive next lesson indonesia cefr'});
+N('progression','CEFR / Course / Tower Progression','UI','PROGRESSION / UI','progression systems','CEFR profile + mastery + score + activity','unlock / stage clear / skill gate','UI',{
+  features:['A1 → A2 → B1 → B2 → C1 → C2','Skill-specific gates','Course chapters / Tower floors','Achievements','Mission counters'],
+  tags:'progression cefr a1 a2 b1 b2 c1 c2 tower stage'});
+N('analytics','Indonesian Learner Analytics','UI','PROGRESSION / UI','profile dashboard','mastery + activity + errors + CEFR + rewards','charts / diagnosis / insights','UI',{
+  features:['CEFR by skill','Receptive vs productive gap','Attempts by engine','Speaking/listening minutes','Top Indonesian-transfer errors','Vocabulary coverage','Grammar weakness','Score efficiency'],
+  tags:'analytics dashboard indonesia learner stats cefr'});
+
+/* ============================== EDGES ============================== */
+const E=[];
+function e(a,b,label,kind='flow',views=['sys']){E.push({a,b,label,kind,views})}
+const ALL=['sys'];
+e('raw_import','normalizer','raw bilingual records','flow',ALL); e('normalizer','canonicalizer','validated draft','flow',ALL);
+e('canonicalizer','vocab','VocabularyRecord','flow',ALL); e('canonicalizer','phrase','PhraseRecord','flow',ALL); e('canonicalizer','grammar','GrammarRecord','flow',ALL); e('canonicalizer','pronunciation','PronunciationRecord','flow',ALL);
+e('vocab','sentence','token links','flow',ALL); e('phrase','sentence','phrase links','flow',ALL); e('grammar','sentence','grammar links','flow',ALL); e('pronunciation','sentence','audio/pronunciation links','flow',ALL);
+
+e('vocab','flashcard_engine','lemma + sense + meaningId','flow',['sys','vocab']); e('phrase','flashcard_engine','chunk + meaning','flow',['sys','vocab']); e('grammar','flashcard_engine','form/meaning/use','flow',['sys']);
+e('vocab','spelling_engine','surface + spelling','flow',['sys','vocab']); e('phrase','spelling_engine','multiword spelling','flow',['sys','vocab']); e('sentence','spelling_engine','sentence typing','flow',['sys']);
+e('vocab','verb_engine','verb lemma + irregular forms','flow',['sys','vocab','grammar']); e('grammar','verb_engine','tense/aspect rules','flow',['sys','grammar']);
+e('grammar','grammar_engine','pattern + contrast','flow',['sys','grammar']); e('vocab','grammar_engine','lexical constraints','flow',['sys','grammar']); e('sentence','grammar_engine','usage context','flow',['sys','grammar']);
+e('vocab','sentence_engine','lexical candidates','flow',['sys','vocab']); e('phrase','sentence_engine','natural chunks','flow',['sys','vocab']); e('grammar','sentence_engine','grammar constraints','flow',['sys','grammar']); e('sentence','sentence_engine','target examples','flow',['sys']);
+e('vocab','translation_engine','lexical senses','flow',['sys','vocab']); e('phrase','translation_engine','non-literal chunks','flow',['sys','vocab']); e('grammar','translation_engine','structure mapping','flow',['sys','grammar']); e('sentence','translation_engine','bilingual target','flow',['sys']);
+e('pronunciation','listening_engine','phoneme + stress + audio','flow',['sys','speaking']); e('vocab','listening_engine','lexical target','flow',['sys','vocab']); e('sentence','listening_engine','utterance/audio','flow',['sys','speaking']);
+e('pronunciation','speaking_engine','target pronunciation','flow',['sys','speaking']); e('vocab','speaking_engine','word target','flow',['sys','vocab','speaking']); e('phrase','speaking_engine','chunk target','flow',['sys','speaking']); e('sentence','speaking_engine','shadowing / response','flow',['sys','speaking']);
+e('vocab','reading_engine','lexical identity','flow',['sys','vocab']); e('phrase','reading_engine','chunk identity','flow',['sys']); e('grammar','reading_engine','structure cues','flow',['sys','grammar']); e('sentence','reading_engine','context','flow',['sys']);
+e('vocab','recall_engine','due lexical item','flow',['sys','vocab']); e('phrase','recall_engine','due phrase','flow',['sys','vocab']); e('grammar','recall_engine','due grammar','flow',['sys','grammar']); e('pronunciation','recall_engine','due pronunciation pair','flow',['sys','speaking']);
+
+const engines=['flashcard_engine','spelling_engine','verb_engine','grammar_engine','sentence_engine','translation_engine','listening_engine','speaking_engine','reading_engine','recall_engine'];
+engines.forEach(id=>{e(id,'result_event','SCORE OUT','score',['sys','vocab','speaking','grammar','score']);e(id,'activity_event','ATTEMPT OUT','attempt',['sys','vocab','speaking','grammar','activity']);e(id,'error_event','ERROR OUT','error',['sys','vocab','speaking','grammar','mastery']);});
+e('result_event','score_engine','base × multiplier × quality','score',['sys','vocab','speaking','grammar','score']);
+e('activity_event','activity_counter','attemptDelta + duration + skill','attempt',['sys','vocab','speaking','grammar','activity']);
+e('error_event','error_classifier','typed learner error','error',['sys','vocab','speaking','grammar','mastery']);
+e('score_engine','mastery','skill-weighted mastery evidence','score',['sys','vocab','speaking','grammar','score','mastery']);
+e('score_engine','player_reward','EXP / CEFR point delta','score',['sys','score']);
+e('activity_counter','activity_stats','counts / time / exposure','attempt',['sys','vocab','speaking','grammar','activity']);
+e('error_classifier','mastery','weakness / error penalty','error',['sys','vocab','speaking','grammar','mastery']);
+e('mastery','srs_schedule','mastery + direction readiness','flow',['sys','vocab','speaking','grammar','mastery']);
+e('srs_schedule','recall_engine','due queue + next mode','flow',['sys','vocab','speaking','grammar','mastery']);
+e('mastery','cefr_profile','skill mastery evidence','flow',['sys','mastery']); e('error_classifier','cefr_profile','error evidence','error',['sys','mastery']);
+e('mastery','recommendation','weakness / production gap','flow',['sys','mastery']); e('activity_stats','recommendation','frequency / fatigue','attempt',['sys','activity','mastery']); e('srs_schedule','recommendation','due entities','flow',['sys','mastery']); e('error_classifier','recommendation','Indonesia-specific remediation','error',['sys','mastery']); e('cefr_profile','recommendation','skill band + next target','flow',['sys','mastery']);
+e('mastery','progression','mastery gates','flow',['sys','mastery']); e('activity_stats','progression','mission counters','attempt',['sys','activity']); e('player_reward','progression','EXP / points','score',['sys','score']); e('cefr_profile','progression','A1→C2 skill gates','flow',['sys','mastery']);
+e('mastery','analytics','mastery metrics','flow',['sys','mastery']); e('activity_stats','analytics','activity metrics','attempt',['sys','activity']); e('error_classifier','analytics','learner-error profile','error',['sys','mastery']); e('cefr_profile','analytics','CEFR by skill','flow',['sys','mastery']); e('player_reward','analytics','reward metrics','score',['sys','score']);
+['mastery','activity_stats','srs_schedule','player_reward','cefr_profile'].forEach(id=>e(id,'local_store','snapshot','flow',['sys']));
+e('local_store','cloud_store','sync queue','flow',['sys']); e('mastery','cloud_store','mastery upsert','flow',['sys','mastery']); e('activity_stats','cloud_store','activity upsert','attempt',['sys','activity']); e('error_classifier','cloud_store','error patterns','error',['sys','mastery']); e('cefr_profile','cloud_store','CEFR profile','flow',['sys','mastery']); e('player_reward','cloud_store','reward upsert','score',['sys','score']);
+
+/* ============================== VIEWS ============================== */
+const X0=60,Y0=80,COL=350,ROW=174;
+const SYS_POS={
+  raw_import:[60,90],normalizer:[60,264],canonicalizer:[60,438],
+  vocab:[410,40],phrase:[410,214],grammar:[410,388],pronunciation:[410,562],sentence:[410,736],
+  flashcard_engine:[760,20],spelling_engine:[760,194],verb_engine:[760,368],grammar_engine:[760,542],sentence_engine:[760,716],translation_engine:[760,890],listening_engine:[760,1064],speaking_engine:[760,1238],reading_engine:[760,1412],recall_engine:[760,1586],
+  result_event:[1110,270],activity_event:[1110,650],error_event:[1110,1030],score_engine:[1460,270],activity_counter:[1460,650],error_classifier:[1460,1030],
+  mastery:[1810,160],activity_stats:[1810,450],srs_schedule:[1810,740],player_reward:[1810,1030],cefr_profile:[1810,1320],
+  local_store:[2160,430],cloud_store:[2160,760],
+  recommendation:[2510,230],progression:[2510,610],analytics:[2510,990]
+};
+const VIEWS={
+  sys:{label:'SYSTEM',note:'<b>Blueprint English untuk pelajar Indonesia.</b> Entity menyimpan identitas + <code>baseValue</code>. Engine menghasilkan tiga bukti terpisah: <b>SCORE</b>, <b>ATTEMPT</b>, dan <b>ERROR</b>. Error classifier sengaja Indonesia-aware agar rekomendasi tidak hanya melihat benar/salah.',pos:SYS_POS},
+  vocab:{label:'VOCAB FLOW',note:'<b>Alur kosakata English.</b> Lemma, arti Indonesia, POS, CEFR, frequency, countability/transitivity, irregular form, collocation, pronunciation, dan baseValue berada pada identitas yang sama. Satu vocabulary entity dapat diuji lewat banyak engine tanpa membuat ID mastery baru.',pos:{raw_import:[40,360],normalizer:[340,360],canonicalizer:[640,360],vocab:[940,360],flashcard_engine:[1260,10],spelling_engine:[1260,184],verb_engine:[1260,358],grammar_engine:[1260,532],sentence_engine:[1260,706],translation_engine:[1260,880],listening_engine:[1260,1054],speaking_engine:[1260,1228],reading_engine:[1260,1402],recall_engine:[1260,1576],result_event:[1610,300],activity_event:[1610,700],error_event:[1610,1100],score_engine:[1960,300],activity_counter:[1960,700],error_classifier:[1960,1100],mastery:[2310,260],activity_stats:[2310,650],srs_schedule:[2310,1040],cefr_profile:[2660,260],recommendation:[2660,650],analytics:[2660,1040]}},
+  speaking:{label:'SPEAKING FLOW',note:'<b>Pronunciation + speaking flow.</b> Target bunyi dan stress datang dari Pronunciation Entity; kata/frasa/kalimat memberi konteks. Hasil memisahkan intelligibility/fluency dari jumlah latihan, sementara error seperti <code>/θ/→/t/</code>, <code>/v/→/f/</code>, final consonant, cluster, dan stress masuk ke profil kelemahan.',pos:{pronunciation:[60,140],vocab:[60,350],phrase:[60,560],sentence:[60,770],listening_engine:[420,180],speaking_engine:[420,500],recall_engine:[420,820],result_event:[800,180],activity_event:[800,500],error_event:[800,820],score_engine:[1160,180],activity_counter:[1160,500],error_classifier:[1160,820],mastery:[1520,250],activity_stats:[1520,560],srs_schedule:[1520,870],cefr_profile:[1880,250],recommendation:[1880,560],analytics:[1880,870]}},
+  grammar:{label:'GRAMMAR FLOW',note:'<b>Grammar untuk learner Indonesia.</b> Grammar entity menyimpan form–meaning–use dan contrast terhadap Bahasa Indonesia. Verb/Tense, Grammar Usage, Sentence Builder, dan Translation memberi bukti berbeda atas struktur yang sama.',pos:{grammar:[60,280],vocab:[60,520],sentence:[60,760],verb_engine:[430,60],grammar_engine:[430,270],sentence_engine:[430,480],translation_engine:[430,690],reading_engine:[430,900],recall_engine:[430,1110],result_event:[800,290],activity_event:[800,610],error_event:[800,930],score_engine:[1160,290],activity_counter:[1160,610],error_classifier:[1160,930],mastery:[1520,290],activity_stats:[1520,610],srs_schedule:[1520,930],cefr_profile:[1880,290],recommendation:[1880,610],analytics:[1880,930]}},
+  score:{label:'SCORE FLOW',note:'<b>Jalur nilai.</b> Engine tidak langsung menaikkan mastery atau CEFR. Engine hanya mengirim ResultEvent; Score Engine menerapkan <code>baseValue × multiplier × quality × CEFR difficulty × production bonus</code> lalu menghasilkan bukti mastery dan reward.',pos:{vocab:[40,180],phrase:[40,380],grammar:[40,580],pronunciation:[40,780],flashcard_engine:[370,20],spelling_engine:[370,194],verb_engine:[370,368],grammar_engine:[370,542],sentence_engine:[370,716],translation_engine:[370,890],listening_engine:[370,1064],speaking_engine:[370,1238],reading_engine:[370,1412],recall_engine:[370,1586],result_event:[740,430],score_engine:[1100,430],mastery:[1460,280],player_reward:[1460,610],cefr_profile:[1460,940],progression:[1820,430],analytics:[1820,760],cloud_store:[1820,110]}},
+  activity:{label:'ACTIVITY FLOW',note:'<b>Jalur “berapa kali dilakukan”.</b> Attempt tidak dihitung dari score. Setiap engine mengirim ActivityEvent: berapa kali flashcard, speaking, translation, grammar, berapa menit listening/speaking, berapa kata dibaca, dan berapa kalimat diproduksi.',pos:{flashcard_engine:[40,20],spelling_engine:[40,194],verb_engine:[40,368],grammar_engine:[40,542],sentence_engine:[40,716],translation_engine:[40,890],listening_engine:[40,1064],speaking_engine:[40,1238],reading_engine:[40,1412],recall_engine:[40,1586],activity_event:[410,500],activity_counter:[770,500],activity_stats:[1130,500],recommendation:[1490,240],progression:[1490,560],analytics:[1490,880],cloud_store:[1850,500]}},
+  mastery:{label:'MASTERY / CEFR',note:'<b>Mastery ≠ EXP.</b> Sistem menggabungkan kualitas hasil, error berulang, skill yang digunakan, receptive/productive evidence, recency, dan engine diversity. CEFR Profile kemudian dapat menunjukkan profil tidak rata, misalnya Reading B1 tetapi Speaking A2.',pos:{result_event:[40,100],score_engine:[390,100],error_event:[40,420],error_classifier:[390,420],activity_event:[40,740],activity_counter:[390,740],mastery:[760,260],activity_stats:[760,610],srs_schedule:[1120,260],cefr_profile:[1120,610],recall_engine:[1480,260],recommendation:[1480,610],progression:[1840,260],analytics:[1840,610],cloud_store:[1120,940]}}
+};
+
+const FILTERS={ALL:()=>true,ENTITY:n=>n.group==='LANGUAGE ENTITY',ENGINE:n=>n.group==='ENGINES'||n.type==='ENGINE',EVENT:n=>n.group==='EVENT ROUTER',STATE:n=>n.group==='LEARNING STATE',STORE_UI:n=>n.group==='PERSISTENCE'||n.group==='PROGRESSION / UI'};
+
+const $=s=>document.querySelector(s); const canvas=$('#canvas'),svg=$('#edges'),vp=$('#viewport');
+let view='sys',filter='ALL',q='',selected=null,T={x:0,y:0,k:1}; let nodeEls={},edgeEls=[],labelEls=[];
+function esc(s){return String(s??'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function list(a){return a&&a.length?'<ul>'+a.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':'<p>–</p>'}
+function buildLegend(){
+  const items=[['CORE','CORE / PROCESS'],['ENGINE','ENGINE'],['EVENT','EVENT'],['STATE','STATE'],['STORAGE','STORAGE'],['UI','PROGRESSION / UI'],['OPTIONAL','OPTIONAL']];
+  $('#legend').innerHTML=items.map(([k,l])=>`<span><i style="background:${ST[k]}"></i>${l}</span>`).join('')+
+    '<span><u style="border-color:var(--score)"></u>SCORE</span><span><u style="border-color:var(--attempt)"></u>ATTEMPT</span><span><u style="border-color:var(--error);border-top-style:dotted"></u>ERROR</span>';
+}
+function buildControls(){
+  $('#views').innerHTML=Object.entries(VIEWS).map(([k,v])=>`<button class="chip view ${k===view?'on':''}" data-v="${k}">${v.label}</button>`).join('');
+  $('#filters').innerHTML=Object.keys(FILTERS).map(k=>`<button class="chip ${k===filter?'on':''}" data-f="${k}">${k}</button>`).join('');
+}
+function ports(n){const d=n.d||{},arr=[];if(d.scorePort)arr.push('<span class="port score"><i></i>SCORE OUT</span>');if(d.attemptPort)arr.push('<span class="port attempt"><i></i>ATTEMPT OUT</span>');if(d.errorPort)arr.push('<span class="port error"><i></i>ERROR OUT</span>');return arr.length?`<div class="ports">${arr.join('')}</div>`:''}
+function render(){
+  canvas.querySelectorAll('.node,.elabel,.lane').forEach(n=>n.remove());svg.innerHTML='';nodeEls={};edgeEls=[];labelEls=[];
+  const V=VIEWS[view];$('#note').innerHTML=V.note;$('#note').style.display='block';const ids=Object.keys(V.pos).filter(id=>NODES[id]);
+  if(view==='sys'){
+    GROUPS.forEach(g=>{const list=ids.filter(id=>NODES[id].group===g);if(!list.length)return;const xs=list.map(id=>V.pos[id][0]),ys=list.map(id=>V.pos[id][1]);
+      const x=Math.min(...xs)-14,y=Math.min(...ys)-26,w=Math.max(...xs)-Math.min(...xs)+252+28,h=Math.max(...ys)-Math.min(...ys)+164+42;
+      const l=document.createElement('div');l.className='lane';l.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:${h}px`;l.innerHTML=`<span>${g}</span>`;canvas.appendChild(l);});
+  }
+  ids.forEach(id=>{const n=NODES[id],[x,y]=V.pos[id],el=document.createElement('div');el.className='node';el.dataset.id=id;el.style.left=x+'px';el.style.top=y+'px';el.style.setProperty('--st',ST[n.status]||'var(--optional)');
+    const io=`<div class="io"><b>IN</b>${esc(n.inn||'–')}</div><div class="io"><b>OUT</b>${esc(n.out||'–')}</div>`;
+    const mult=n.d&&n.d.multiplier?`<span class="tag mult">×${Number(n.d.multiplier).toFixed(2)}</span>`:'';
+    el.innerHTML=`<div class="row1"><span class="tag">${esc(n.type)}</span><span class="st">${esc(n.status)}</span>${mult}</div><div class="nm">${esc(n.name)}</div>${n.source?`<div class="src">${esc(n.source)}</div>`:''}${io}${ports(n)}`;canvas.appendChild(el);nodeEls[id]=el;});
+  const vis=new Set(ids),seen=new Set();
+  const edges=E.filter(ed=>ed.views.includes(view)&&vis.has(ed.a)&&vis.has(ed.b));
+  const defs=`<defs>${['flow','score','attempt','error'].map(k=>{const c=k==='score'?'var(--score)':k==='attempt'?'var(--attempt)':k==='error'?'var(--error)':'var(--edge)';return `<marker id="arr-${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`}).join('')}</defs>`;svg.innerHTML=defs;
+  edges.forEach(ed=>{const key=ed.a+'>'+ed.b+'>'+ed.label+'>'+ed.kind;if(seen.has(key))return;seen.add(key);const A=nodeEls[ed.a],B=nodeEls[ed.b],pa=V.pos[ed.a],pb=V.pos[ed.b],aw=A.offsetWidth,ah=A.offsetHeight,bw=B.offsetWidth,bh=B.offsetHeight;let x1,y1,x2,y2,c1x,c1y,c2x,c2y;
+    if(pb[0]>pa[0]+aw*.6){x1=pa[0]+aw;y1=pa[1]+ah/2;x2=pb[0];y2=pb[1]+bh/2;const d=Math.max(55,(x2-x1)/2);c1x=x1+d;c1y=y1;c2x=x2-d;c2y=y2}
+    else if(pb[0]+bw<pa[0]+aw*.4){x1=pa[0];y1=pa[1]+ah/2;x2=pb[0]+bw;y2=pb[1]+bh/2;const d=Math.max(55,(x1-x2)/2);c1x=x1-d;c1y=y1;c2x=x2+d;c2y=y2}
+    else if(pb[1]>pa[1]){x1=pa[0]+aw/2;y1=pa[1]+ah;x2=pb[0]+bw/2;y2=pb[1];const d=Math.max(42,(y2-y1)/2);c1x=x1;c1y=y1+d;c2x=x2;c2y=y2-d}
+    else{x1=pa[0]+aw/2;y1=pa[1];x2=pb[0]+bw/2;y2=pb[1]+bh;const d=Math.max(42,(y1-y2)/2);c1x=x1;c1y=y1-d;c2x=x2;c2y=y2+d}
+    const col=ed.kind==='score'?'var(--score)':ed.kind==='attempt'?'var(--attempt)':ed.kind==='error'?'var(--error)':'var(--edge)';const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',`M${x1},${y1} C${c1x},${c1y} ${c2x},${c2y} ${x2},${y2}`);p.setAttribute('class','e');p.setAttribute('stroke',col);p.setAttribute('marker-end',`url(#arr-${ed.kind})`);if(ed.kind==='error')p.setAttribute('stroke-dasharray','2 5');else if(ed.kind==='attempt')p.setAttribute('stroke-dasharray','7 5');svg.appendChild(p);edgeEls.push({el:p,a:ed.a,b:ed.b});
+    if(ed.label){const l=document.createElement('div');l.className='elabel';l.textContent=ed.label;l.style.left=((x1+x2)/2)+'px';l.style.top=((y1+y2)/2)+'px';if(ed.kind==='score')l.style.color='var(--score)';if(ed.kind==='attempt')l.style.color='var(--attempt)';if(ed.kind==='error')l.style.color='#f2a3a7';canvas.appendChild(l);labelEls.push({el:l,a:ed.a,b:ed.b});}
+  });
+  let maxX=0,maxY=0;ids.forEach(id=>{maxX=Math.max(maxX,V.pos[id][0]+290);maxY=Math.max(maxY,V.pos[id][1]+205)});svg.setAttribute('width',maxX);svg.setAttribute('height',maxY);applyHighlight();
+}
+function adj(){const up={},down={};edgeEls.forEach(e=>{(down[e.a]=down[e.a]||[]).push(e.b);(up[e.b]=up[e.b]||[]).push(e.a)});return{up,down}}
+function walk(seed,map){const s=new Set(seed),st=[...seed];while(st.length){const x=st.pop();(map[x]||[]).forEach(y=>{if(!s.has(y)){s.add(y);st.push(y)}})}return s}
+function matches(n,term){const d=n.d||{},t=term.toLowerCase();return [n.name,n.source,n.inn,n.out,n.tags,d.formula,d.scorePort,d.attemptPort,d.errorPort,...(d.fields||[]),...(d.features||[])].join(' ').toLowerCase().includes(t)}
+function applyHighlight(){const ids=Object.keys(nodeEls),F=FILTERS[filter];let hit=new Set(),path=null;if(q.trim()){hit=new Set(ids.filter(id=>matches(NODES[id],q)));if(hit.size){const{up,down}=adj(),u=walk([...hit],up),d=walk([...hit],down);path=new Set([...u,...d])}}ids.forEach(id=>{const n=NODES[id],filtered=!F(n),inPath=path?path.has(id):true;nodeEls[id].classList.toggle('dim',filtered||!inPath);nodeEls[id].classList.toggle('hit',hit.has(id));nodeEls[id].classList.toggle('sel',id===selected)});const on=(a,b)=>nodeEls[a]&&nodeEls[b]&&!nodeEls[a].classList.contains('dim')&&!nodeEls[b].classList.contains('dim');edgeEls.forEach(e=>e.el.classList.toggle('dim',!on(e.a,e.b)));labelEls.forEach(l=>l.el.classList.toggle('dim',!on(l.a,l.b)))}
+function openPanel(id){selected=id;const n=NODES[id],d=n.d||{};const inc=E.filter(e=>e.b===id&&e.views.includes(view)).map(e=>`${NODES[e.a]?.name}${e.label?` — ${e.label}`:''}`),outg=E.filter(e=>e.a===id&&e.views.includes(view)).map(e=>`${NODES[e.b]?.name}${e.label?` — ${e.label}`:''}`);
+  const portCards=[d.scorePort&&`<div class="portcard"><b style="color:var(--score)">SCORE OUT</b>${esc(d.scorePort)}</div>`,d.attemptPort&&`<div class="portcard"><b style="color:var(--attempt)">ATTEMPT OUT</b>${esc(d.attemptPort)}</div>`,d.errorPort&&`<div class="portcard"><b style="color:var(--error)">ERROR OUT</b>${esc(d.errorPort)}</div>`].filter(Boolean).join('');
+  $('#pbody').innerHTML=`<h2>${esc(n.name)}</h2><div class="meta"><span class="tag">${esc(n.type)}</span><span class="tag">${esc(n.group)}</span><span class="st" style="--st:${ST[n.status]}">${esc(n.status)}</span>${d.multiplier?`<span class="tag mult">MULTIPLIER ×${Number(d.multiplier).toFixed(2)}</span>`:''}</div>
+  <h3>SYSTEM / SOURCE</h3><p><code>${esc(n.source||'–')}</code></p><h3>INPUT</h3><p>${esc(n.inn||'–')}</p>${list(inc)}<h3>OUTPUT</h3><p>${esc(n.out||'–')}</p>${list(outg)}
+  ${d.fields?`<h3>DATA FIELDS</h3>${list(d.fields)}`:''}${d.features?`<h3>FEATURES / RULES</h3>${list(d.features)}`:''}${d.formula?`<h3>FORMULA</h3><div class="formula">${esc(d.formula)}</div>`:''}${portCards?`<h3>ENGINE PORTS</h3><div class="portbox">${portCards}</div>`:''}`;
+  $('#panel').classList.add('open');applyHighlight();
+}
+$('#close').onclick=()=>{$('#panel').classList.remove('open');selected=null;applyHighlight()};
+function setT(){canvas.style.transform=`translate(${T.x}px,${T.y}px) scale(${T.k})`;vp.style.backgroundPosition=`${T.x}px ${T.y}px`;vp.style.backgroundSize=`${32*T.k}px ${32*T.k}px`}
+function barH(){return document.getElementById('top').offsetHeight}
+function place(){const h=barH();$('#note').style.top=(h+8)+'px';$('#panel').style.paddingTop=(h+14)+'px';$('#close').style.top=(h+14)+'px'}
+function fit(){place();const ids=Object.keys(nodeEls);if(!ids.length)return;const V=VIEWS[view];let x1=1e9,y1=1e9,x2=0,y2=0;ids.forEach(id=>{const[x,y]=V.pos[id];x1=Math.min(x1,x);y1=Math.min(y1,y);x2=Math.max(x2,x+270);y2=Math.max(y2,y+190)});const BH=barH(),w=innerWidth,h=innerHeight-BH,k=Math.min(1,Math.min(w/(x2-x1+120),h/(y2-y1+120)));T.k=Math.max(.16,k);T.x=(w-(x2-x1)*T.k)/2-x1*T.k;T.y=BH+(h-(y2-y1)*T.k)/2-y1*T.k;setT()}
+let drag=null;vp.addEventListener('mousedown',e=>{$('#note').style.display='none';if(e.target.closest('.node'))return;drag={x:e.clientX-T.x,y:e.clientY-T.y};vp.classList.add('drag')});addEventListener('mousemove',e=>{if(!drag)return;T.x=e.clientX-drag.x;T.y=e.clientY-drag.y;setT()});addEventListener('mouseup',()=>{drag=null;vp.classList.remove('drag')});vp.addEventListener('wheel',e=>{$('#note').style.display='none';e.preventDefault();const f=e.deltaY<0?1.1:1/1.1,nk=Math.min(2.25,Math.max(.14,T.k*f)),px=e.clientX,py=e.clientY;T.x=px-(px-T.x)*(nk/T.k);T.y=py-(py-T.y)*(nk/T.k);T.k=nk;setT()},{passive:false});
+let touch=null;vp.addEventListener('touchstart',e=>{if(e.touches.length===1&&!e.target.closest('.node'))touch={x:e.touches[0].clientX-T.x,y:e.touches[0].clientY-T.y}});vp.addEventListener('touchmove',e=>{if(touch&&e.touches.length===1){T.x=e.touches[0].clientX-touch.x;T.y=e.touches[0].clientY-touch.y;setT()}});vp.addEventListener('touchend',()=>touch=null);
+$('#zin').onclick=()=>{T.k=Math.min(2.25,T.k*1.2);setT()};$('#zout').onclick=()=>{T.k=Math.max(.14,T.k/1.2);setT()};$('#zfit').onclick=fit;
+canvas.addEventListener('click',e=>{const n=e.target.closest('.node');if(n)openPanel(n.dataset.id)});$('#views').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view=b.dataset.v;$('#panel').classList.remove('open');selected=null;buildControls();render();fit()});$('#filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;filter=b.dataset.f;buildControls();applyHighlight()});$('#search').addEventListener('input',e=>{q=e.target.value;if(q.trim()){const t=q.toLowerCase(),inView=Object.keys(nodeEls).some(id=>matches(NODES[id],t));if(!inView){const alt=Object.keys(VIEWS).find(v=>Object.keys(VIEWS[v].pos).some(id=>NODES[id]&&matches(NODES[id],t)));if(alt){view=alt;buildControls();render();fit();return}}}applyHighlight()});addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==$('#search')){e.preventDefault();$('#search').focus()}if(e.key==='Escape')$('#close').click()});addEventListener('resize',fit);
+buildLegend();buildControls();render();fit();
+</script>
+</body>
+</html>

@@ -103,7 +103,8 @@
       }
     ],
     "methodology": "Congressional Budget Office (The Budget and Economic Outlook: 2026 to 2036) & Federal Reserve Financial Stability Report (Asset Valuations).",
-    "disclaimer": "Dokumen ini merupakan riset independen Almere&Co berdasarkan sumber publik. Bukan nasihat keuangan atau rekomendasi untuk membeli, menjual, atau menahan sekuritas. Proyeksi dapat berubah. Diagram dan skenario adalah kerangka analitis, bukan estimasi ekonometrika."
+    "disclaimer": "Dokumen ini merupakan riset independen Almere&Co berdasarkan sumber publik. Bukan nasihat keuangan atau rekomendasi untuk membeli, menjual, atau menahan sekuritas. Proyeksi dapat berubah. Diagram dan skenario adalah kerangka analitis, bukan estimasi ekonometrika.",
+    "pdfUrl": "assets/research/tekanan-pasokan-dan-permintaan-obligasi-as.pdf"
   },
   {
     "id": "bitcoin-global-liquidity",
@@ -141,7 +142,8 @@
       }
     ],
     "methodology": "Model ekonometrika VAR (Vector Autoregression) dengan data historis harian dari Federal Reserve FRED, PBOC statistical release, Bank of Japan Data Portal, dan Glassnode On-Chain Intelligence (periode Januari 2020 – September 2026).",
-    "disclaimer": "Riset ini diterbitkan oleh Almere & Co sebagai bagian dari transparansi intelektual dan dokumentasi tata kelola portofolio internal. Konten ini bukan merupakan saran investasi, rekomendasi finansial, atau ajakan untuk membeli maupun menjual aset apa pun."
+    "disclaimer": "Riset ini diterbitkan oleh Almere & Co sebagai bagian dari transparansi intelektual dan dokumentasi tata kelola portofolio internal. Konten ini bukan merupakan saran investasi, rekomendasi finansial, atau ajakan untuk membeli maupun menjual aset apa pun.",
+    "pdfUrl": "assets/research/bitcoin-global-liquidity.pdf"
   },
   {
     "id": "24-7-markets-evolution-infrastructure",
@@ -175,6 +177,7 @@
       }
     ],
     "methodology": "Analisis perbandingan volatilitas pembukaan (Monday open gaps) indeks S&P 500 vs. Bitcoin akhir pekan periode 2018–2026, ditopang data Bank for International Settlements (BIS) Triennial Survey.",
-    "disclaimer": "Materi ini disusun untuk publikasi edukatif Almere & Co. Bukan ajakan atau penawaran perdagangan instrumen pasar modal."
+    "disclaimer": "Materi ini disusun untuk publikasi edukatif Almere & Co. Bukan ajakan atau penawaran perdagangan instrumen pasar modal.",
+    "pdfUrl": "assets/research/24-7-markets-evolution-infrastructure.pdf"
   }
 ]

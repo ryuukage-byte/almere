@@ -169,7 +169,8 @@
       sections: Array.isArray(raw.sections) ? raw.sections : [],
       rawContent: raw.rawContent || '',
       methodology: methodology || 'Data internal dan riset independen Almere & Co.',
-      disclaimer
+      disclaimer,
+      pdfUrl: raw.pdfUrl || raw.pdf || raw.fileUrl || ''
     };
   }
 
@@ -241,6 +242,10 @@
       item.setAttribute('data-id', paper.id);
       item.setAttribute('data-slug', paper.slug || paper.id);
 
+      const pdfBadge = paper.pdfUrl
+        ? `<span class="meta-dot">&middot;</span><span class="meta-pdf-tag" title="Dokumen PDF Resmi"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style="margin-right:2px;"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>PDF</span>`
+        : '';
+
       item.innerHTML = `
         <div class="research-item-left">
           <h3 class="research-item-title">${escapeHtml(paper.title)}</h3>
@@ -250,19 +255,27 @@
             <span class="meta-date">${escapeHtml(paper.date || '')}</span>
             <span class="meta-dot">&middot;</span>
             <span class="meta-readtime">${escapeHtml(paper.readTime || '6 min read')}</span>
+            ${pdfBadge}
           </div>
         </div>
         <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
       `;
 
-      item.addEventListener('click', () => {
-        openPaperReader(paper.id);
-      });
+      function handlePaperClick() {
+        if (paper.pdfUrl) {
+          // Direct native PDF opening in new tab or browser viewer
+          window.open(paper.pdfUrl, '_blank');
+        } else {
+          openPaperReader(paper.id);
+        }
+      }
+
+      item.addEventListener('click', handlePaperClick);
 
       item.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          openPaperReader(paper.id);
+          handlePaperClick();
         }
       });
 
@@ -459,6 +472,17 @@
     // Disclaimer
     if (readerDisclaimerEl) {
       readerDisclaimerEl.textContent = paper.disclaimer || 'Riset ini bersifat analitis dan bukan merupakan saran investasi.';
+    }
+
+    // Direct PDF Link Button in Reader Top Bar
+    const readerPdfBtn = document.getElementById('reader-pdf-link-btn');
+    if (readerPdfBtn) {
+      if (paper.pdfUrl) {
+        readerPdfBtn.href = paper.pdfUrl;
+        readerPdfBtn.style.display = 'inline-flex';
+      } else {
+        readerPdfBtn.style.display = 'none';
+      }
     }
 
     // Show Reader, Hide Index

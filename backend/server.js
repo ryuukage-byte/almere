@@ -60,7 +60,8 @@ const MIME_TYPES = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.webp': 'image/webp',
-  '.svg': 'image/svg+xml'
+  '.svg': 'image/svg+xml',
+  '.pdf': 'application/pdf'
 };
 
 const server = http.createServer(async (req, res) => {

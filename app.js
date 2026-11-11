@@ -51,7 +51,9 @@
 
   function formatValue(usdAmount, currencyCode = activeCurrencyCode) {
     const config = CURRENCIES[currencyCode] || CURRENCIES.USD;
-    const converted = usdAmount * config.rate;
+    const isNegative = typeof usdAmount === 'number' && usdAmount < 0;
+    const absUsd = Math.abs(usdAmount || 0);
+    const converted = absUsd * config.rate;
     
     // Formatting with thousands separator
     const formatted = Math.round(converted).toLocaleString(config.locale, {
@@ -59,11 +61,13 @@
       minimumFractionDigits: config.digits
     });
 
+    const prefix = isNegative ? '-' : '';
+
     return {
       symbol: config.symbol,
       numberStr: formatted,
-      fullText: `${config.symbol}${formatted}`,
-      numericValue: Math.round(converted)
+      fullText: `${prefix}${config.symbol}${formatted}`,
+      numericValue: Math.round((usdAmount || 0) * config.rate)
     };
   }
 
@@ -233,43 +237,54 @@
   const ctx = canvas ? canvas.getContext('2d') : null;
   const chartTooltip = document.getElementById('chartTooltip');
 
-  // Base Historical Datasets (normalized in USD)
-  const HISTORICAL_PROFILES = {
+  // Base Historical Datasets (authentic baseline calculated from ledger transactions & Hyperliquid candles)
+  let HISTORICAL_PROFILES = {
     '7D': {
       days: 7,
-      growthPct: 3.2,
-      dataPoints: [180600, 181200, 182900, 182100, 184500, 185800, 186420],
-      labels: ['6 Hari lalu', '5 Hari lalu', '4 Hari lalu', '3 Hari lalu', '2 Hari lalu', 'Kemarin', 'Hari ini']
+      startUsd: 1125,
+      dataPoints: [1125, 1058, 1059, 1058, 1039, 1047, 1022, 1025],
+      labels: ['4 Nov', '5 Nov', '6 Nov', '7 Nov', '8 Nov', '9 Nov', '10 Nov', 'Hari ini']
     },
     '30D': {
       days: 30,
-      growthPct: 12.8,
+      startUsd: 1135,
       dataPoints: [
-        165240, 166100, 164800, 167300, 168900, 168200, 170400,
-        171200, 169800, 172600, 174500, 173900, 175800, 177200,
-        176400, 178100, 179500, 178900, 180400, 182100, 181500,
-        183400, 184200, 183600, 185100, 185900, 184900, 186100, 185800, 186420
+        1135, 1152, 1133, 1142, 1131, 1125, 1134, 1133, 1148, 1161,
+        1123, 1120, 1115, 1106, 1110, 1125, 1129, 1105, 1100, 1098,
+        1108, 1082, 1091, 1125, 1058, 1059, 1058, 1039, 1047, 1022, 1025
       ],
-      labels: Array.from({ length: 30 }, (_, i) => `${30 - i}H lalu`)
+      labels: [
+        '12 Okt', '13 Okt', '14 Okt', '15 Okt', '16 Okt', '17 Okt', '18 Okt', '19 Okt', '20 Okt', '21 Okt',
+        '22 Okt', '23 Okt', '24 Okt', '25 Okt', '26 Okt', '27 Okt', '28 Okt', '29 Okt', '30 Okt', '31 Okt',
+        '1 Nov', '2 Nov', '3 Nov', '4 Nov', '5 Nov', '6 Nov', '7 Nov', '8 Nov', '9 Nov', '10 Nov', 'Hari ini'
+      ]
     },
     '90D': {
       days: 90,
-      growthPct: 24.6,
+      startUsd: 1117,
       dataPoints: [
-        149600, 151200, 153400, 152100, 155800, 157200, 156400, 159100,
-        161500, 160200, 163400, 165800, 167200, 169400, 172800, 175100,
-        174200, 177900, 180400, 182800, 184200, 186420
+        0, 0, 0, 0, 0, 0, 0, 504, 549, 583, 567, 561, 576, 542,
+        1135, 1131, 1148, 1115, 1129, 1108, 1058, 1047, 1025
       ],
-      labels: Array.from({ length: 22 }, (_, i) => `W${i + 1}`)
+      labels: [
+        '13 Agu', '17 Agu', '21 Agu', '25 Agu', '29 Agu', '2 Sep', '6 Sep', '10 Sep', '15 Sep', '18 Sep',
+        '22 Sep', '26 Sep', '30 Sep', '4 Okt', '8 Okt', '12 Okt', '16 Okt', '20 Okt', '24 Okt', '28 Okt',
+        '1 Nov', '5 Nov', '9 Nov', 'Hari ini'
+      ]
     },
     '1Y': {
       days: 365,
-      growthPct: 92.4,
+      startUsd: 1117,
       dataPoints: [
-        96800, 102400, 108900, 114200, 118700, 126400, 131800, 142100,
-        148900, 156400, 168200, 178900, 186420
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        504, 567, 556, 1134, 1105, 1047, 1025
       ],
-      labels: ['Okt 25', 'Nov', 'Des', 'Jan 26', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep 26', 'Hari ini']
+      labels: [
+        '11 Nov 25', '22 Nov', '3 Des', '14 Des', '25 Des', '5 Jan 26', '16 Jan', '27 Jan', '7 Feb', '18 Feb',
+        '1 Mar', '12 Mar', '23 Mar', '3 Apr', '14 Apr', '25 Apr', '6 Mei', '17 Mei', '28 Mei', '8 Jun',
+        '19 Jun', '30 Jun', '11 Jul', '22 Jul', '2 Agu', '13 Agu', '24 Agu', '4 Sep', '15 Sep', '26 Sep',
+        '7 Okt', '18 Okt', '29 Okt', '9 Nov', 'Hari ini'
+      ]
     }
   };
 
@@ -282,7 +297,10 @@
       const zeroFmt = formatValue(0);
       if (chartStartValEl) chartStartValEl.textContent = zeroFmt.fullText;
       if (chartCurrentValEl) chartCurrentValEl.textContent = zeroFmt.fullText;
-      if (chartGrowthValEl) chartGrowthValEl.textContent = `0.0% (${zeroFmt.fullText})`;
+      if (chartGrowthValEl) {
+        chartGrowthValEl.textContent = `0.0% (${zeroFmt.fullText})`;
+        chartGrowthValEl.className = 'stat-num badge-mono';
+      }
 
       const rect = canvas.getBoundingClientRect();
       if (!rect.width || rect.width <= 0) return;
@@ -317,24 +335,31 @@
     }
 
     const profile = HISTORICAL_PROFILES[activeTimeRange] || HISTORICAL_PROFILES['30D'];
-    const scale = BASE_TOTAL_USD / 186420;
-    const rawData = profile.dataPoints.map((p, idx) => {
-      if (idx === profile.dataPoints.length - 1) return BASE_TOTAL_USD;
-      return Math.max(1, Math.round(p * scale));
-    });
-    const startUsd = rawData[0];
-    const currentUsd = rawData[rawData.length - 1];
-    const diffUsd = currentUsd - startUsd;
+    const rawData = [...profile.dataPoints];
 
-    // Update meta bar figures
+    // Pin the final point to the live portfolio valuation exactly
+    if (rawData.length > 0 && BASE_TOTAL_USD > 0) {
+      rawData[rawData.length - 1] = BASE_TOTAL_USD;
+    }
+
+    const startUsd = profile.startUsd || rawData[0] || 0;
+    const currentUsd = rawData[rawData.length - 1] || 0;
+    const diffUsd = currentUsd - startUsd;
+    const growthPct = startUsd > 0 ? parseFloat(((diffUsd / startUsd) * 100).toFixed(1)) : 0;
+
+    // Update meta bar figures with exact 1:1 precision
     const startFmt = formatValue(startUsd);
     const currFmt = formatValue(currentUsd);
-    const diffFmt = formatValue(diffUsd);
+    const diffFmt = formatValue(Math.abs(diffUsd));
 
     if (chartStartValEl) chartStartValEl.textContent = startFmt.fullText;
     if (chartCurrentValEl) chartCurrentValEl.textContent = currFmt.fullText;
     if (chartGrowthValEl) {
-      chartGrowthValEl.textContent = `+${profile.growthPct}% (+${diffFmt.fullText})`;
+      const isProfit = diffUsd >= 0;
+      const arrow = isProfit ? '▲ +' : '▼ ';
+      const signPrefix = isProfit ? '+' : '-';
+      chartGrowthValEl.textContent = `${arrow}${Math.abs(growthPct).toFixed(1)}% (${signPrefix}${diffFmt.fullText})`;
+      chartGrowthValEl.className = `stat-num badge-mono ${isProfit ? 'mono-up' : 'mono-down'}`;
     }
 
     // High DPI Canvas Scaling
@@ -396,10 +421,17 @@
 
     // 2. Draw Area Gradient under the curve
     if (chartPointsCache.length > 1) {
+      const isLoss = diffUsd < 0;
       const grad = ctx.createLinearGradient(0, padTop, 0, height - padBottom);
-      grad.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
-      grad.addColorStop(0.65, 'rgba(255, 255, 255, 0.03)');
-      grad.addColorStop(1, 'rgba(255, 255, 255, 0.00)');
+      if (isLoss) {
+        grad.addColorStop(0, 'rgba(255, 94, 98, 0.12)');
+        grad.addColorStop(0.65, 'rgba(255, 94, 98, 0.03)');
+        grad.addColorStop(1, 'rgba(255, 94, 98, 0.00)');
+      } else {
+        grad.addColorStop(0, 'rgba(56, 239, 125, 0.12)');
+        grad.addColorStop(0.65, 'rgba(56, 239, 125, 0.03)');
+        grad.addColorStop(1, 'rgba(56, 239, 125, 0.00)');
+      }
 
       ctx.beginPath();
       ctx.moveTo(chartPointsCache[0].x, height - padBottom);
@@ -429,7 +461,7 @@
         ctx.bezierCurveTo(midX, p0.y, midX, p1.y, p1.x, p1.y);
       }
 
-      ctx.strokeStyle = '#ffffff';
+      ctx.strokeStyle = isLoss ? '#ff7d80' : '#ffffff';
       ctx.lineWidth = 2.2;
       ctx.stroke();
 
@@ -437,7 +469,7 @@
       const lastPoint = chartPointsCache[chartPointsCache.length - 1];
       ctx.beginPath();
       ctx.arc(lastPoint.x, lastPoint.y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = isLoss ? '#ff5e62' : '#38ef7d';
       ctx.fill();
     }
   }
@@ -1810,6 +1842,11 @@
         if (typeof data.realizedPnlUsd === 'number') REALIZED_PNL_USD = data.realizedPnlUsd;
         if (typeof data.realizedPnlIdr === 'number') REALIZED_PNL_IDR = data.realizedPnlIdr;
 
+        if (data.historical && typeof data.historical === 'object' && Object.keys(data.historical).length > 0) {
+          HISTORICAL_PROFILES = data.historical;
+          renderHistoricalChart();
+        }
+
         if (data.forexRates && typeof data.forexRates === 'object') {
           Object.keys(CURRENCIES).forEach(code => {
             if (code === 'USD') return;
@@ -1907,6 +1944,67 @@
     }
   }, 5000);
 
+  // --- 11.5 DYNAMIC CLIENT-SIDE HISTORICAL CANDLE POLLER (1:1 PARITY) ---
+  async function fetchClientHistoricalCandles() {
+    try {
+      const now = Date.now();
+      const [rBtc, rHype] = await Promise.all([
+        fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'candleSnapshot',
+            req: { coin: 'BTC', interval: '1d', startTime: now - 35 * 86400000, endTime: now }
+          })
+        }).then(r => r.json()).catch(() => []),
+        fetch('https://api.hyperliquid.xyz/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'candleSnapshot',
+            req: { coin: 'HYPE', interval: '1d', startTime: now - 35 * 86400000, endTime: now }
+          })
+        }).then(r => r.json()).catch(() => [])
+      ]);
+
+      if (Array.isArray(rBtc) && rBtc.length >= 7 && Array.isArray(rHype) && rHype.length >= 7) {
+        const btcQty = currentHoldings.find(h => h.code === 'BTC')?.quantity || 0.011913;
+        const hypeQty = currentHoldings.find(h => h.code === 'HYPE')?.quantity || 1.985574;
+
+        // Build 30D
+        const points30 = rBtc.slice(-31).map(bCandle => {
+          const hCandle = rHype.find(c => Math.abs(c.t - bCandle.t) < 43200000);
+          const bPrice = parseFloat(bCandle.c) || 0;
+          const hPrice = hCandle ? parseFloat(hCandle.c) : 0;
+          const val = Math.round((btcQty * bPrice) + (hypeQty * hPrice));
+          const label = new Date(bCandle.t).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+          return { val, label };
+        });
+
+        if (points30.length > 0) {
+          HISTORICAL_PROFILES['30D'] = {
+            days: 30,
+            startUsd: points30[0].val,
+            dataPoints: points30.map((p, i) => i === points30.length - 1 ? (BASE_TOTAL_USD || p.val) : p.val),
+            labels: points30.map((p, i) => i === points30.length - 1 ? 'Hari ini' : p.label)
+          };
+
+          const pts7 = points30.slice(-8);
+          HISTORICAL_PROFILES['7D'] = {
+            days: 7,
+            startUsd: pts7[0].val,
+            dataPoints: pts7.map((p, i) => i === pts7.length - 1 ? (BASE_TOTAL_USD || p.val) : p.val),
+            labels: pts7.map((p, i) => i === pts7.length - 1 ? 'Hari ini' : p.label)
+          };
+
+          renderHistoricalChart();
+        }
+      }
+    } catch (e) {
+      // Keep static profile fallback
+    }
+  }
+
   // Trigger initial UI rendering & live price loops
   renderHoldingsAndAllocations();
   updateCurrencyUI('USD', true);
@@ -1914,6 +2012,7 @@
   syncPortfolioFromBackend();
   fetchLiveForexRates();
   fetchLiveMarketPrices();
+  fetchClientHistoricalCandles();
 
   // Polling intervals:
   // 1. Live crypto market price movements every 15s (smooth, stable, non-volatile rate polling)
@@ -1921,6 +2020,9 @@
 
   // 1.5 Real-time Forex USD/IDR exchange rate every 60s
   setInterval(fetchLiveForexRates, 60000);
+
+  // 1.8 Client-side historical daily candle poller every 5 minutes
+  setInterval(fetchClientHistoricalCandles, 300000);
 
   // 2. Ledger sync every 20s to capture newly confirmed Triv transactions without race conditions
   setInterval(syncPortfolioFromBackend, 20000);

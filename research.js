@@ -9,7 +9,7 @@
 
   // --- STATE ---
   let allPapers = [];
-  let activeCategory = 'Macro';
+  let activeCategory = 'All';
   let currentOpenPaperId = null;
 
   // --- DOM ELEMENTS ---
@@ -243,7 +243,7 @@
       item.setAttribute('data-slug', paper.slug || paper.id);
 
       const pdfBadge = paper.pdfUrl
-        ? `<span class="meta-dot">&middot;</span><span class="meta-pdf-tag" title="Dokumen PDF Resmi"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style="margin-right:2px;"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>PDF</span>`
+        ? `<span class="meta-dot">&middot;</span><a href="${escapeHtml(paper.pdfUrl)}" target="_blank" rel="noopener noreferrer" class="meta-pdf-tag" title="Buka Dokumen PDF Resmi" onclick="event.stopPropagation();"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style="margin-right:2px;"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/></svg>PDF</a>`
         : '';
 
       item.innerHTML = `
@@ -261,13 +261,11 @@
         <div class="research-item-arrow" aria-hidden="true">&rarr;</div>
       `;
 
-      function handlePaperClick() {
-        if (paper.pdfUrl) {
-          // Direct native PDF opening in new tab or browser viewer
-          window.open(paper.pdfUrl, '_blank');
-        } else {
-          openPaperReader(paper.id);
+      function handlePaperClick(e) {
+        if (e && e.target && (e.target.closest('.meta-pdf-tag') || e.target.classList.contains('meta-pdf-tag'))) {
+          return;
         }
+        openPaperReader(paper.id);
       }
 
       item.addEventListener('click', handlePaperClick);
